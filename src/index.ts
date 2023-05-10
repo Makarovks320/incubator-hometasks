@@ -11,9 +11,13 @@ app.use(jsonParser);
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!');
 });
+
 app.use('/posts', postsRouter);
 
-app.listen(PORT, async () => {
-    await runDb();
-    console.log(`Server is running at http://localhost:${PORT}/`);
-});
+async function startApp() {
+    app.listen(PORT, async () => {
+        await runDb();
+        console.log(`Server is running at http://localhost:${PORT}/`);
+    });
+}
+startApp();
