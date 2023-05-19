@@ -1,29 +1,40 @@
 import {Request, Response, Router} from "express";
 import {postService} from "../domain/postService";
+import {authorization} from "../Middlewares/authorization";
 
 export const postsRouter = Router();
 
-postsRouter.get('/', async (req: Request, res: Response) => {
-    const posts = await postService.getAllPosts();
-    res.send(posts);
-});
+postsRouter.get('/',
+    authorization,
+    async (req: Request, res: Response) => {
+        const posts = await postService.getAllPosts();
+        res.send(posts);
+    });
 
-postsRouter.get('/:id', async (req: Request, res: Response) => {
+postsRouter.get('/:id',
+    authorization,
+    async (req: Request, res: Response) => {
     const posts = await postService.getPostById(req.params.id);
-    posts ? res.send(posts) :res.send(404);
+    posts ? res.send(posts) : res.send(404);
 });
 
-postsRouter.post('/', async (req: Request, res: Response) => {
+postsRouter.post('/',
+    authorization,
+    async (req: Request, res: Response) => {
     const newPost = await postService.createNewPost(req.body);
     res.send(newPost);
 });
 
-postsRouter.put('/:id', async (req: Request, res: Response) => {
+postsRouter.put('/:id',
+    authorization,
+    async (req: Request, res: Response) => {
     const newPost = await postService.updatePostById(req.params.id, req.body)
-    newPost ?  res.send(newPost) : res.send(404);
+    newPost ? res.send(newPost) : res.send(404);
 });
 
-postsRouter.delete('/', async (req: Request, res: Response) => {
+postsRouter.delete('/',
+    authorization,
+    async (req: Request, res: Response) => {
     await postService.deleteAllPosts();
     res.sendStatus(204);
 });
