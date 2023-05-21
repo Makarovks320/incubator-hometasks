@@ -1,6 +1,7 @@
 import express, {Request, Response} from 'express';
 import {runDb} from "./Repositories/db";
 import {postsRouter} from "./Routers/postsRouter";
+import {blogsRouter} from "./Routers/blogsRouter";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();
@@ -13,6 +14,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/posts', postsRouter);
+app.use('/blogs', blogsRouter);
 
 async function startApp() {
     app.listen(PORT, async () => {
