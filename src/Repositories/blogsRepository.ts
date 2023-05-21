@@ -1,6 +1,7 @@
 import {blogCollection, client} from "./db";
 
 export type blog = {
+    id: string,
     name: string,
     description: string,
     websiteUrl: string

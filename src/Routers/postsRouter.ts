@@ -1,6 +1,14 @@
 import {Request, Response, Router} from "express";
 import {postService} from "../domain/postService";
 import {authorization} from "../Middlewares/authorization";
+import {
+    blogIdValidation,
+    contentValidation,
+    shortDescriptionValidation,
+    titleValidation
+} from "../Middlewares/postsValidations";
+import {inputValidator} from "../Middlewares/inputValidator";
+import {checkIdFromUri} from "../Middlewares/checkIdFromUri";
 
 export const postsRouter = Router();
 
@@ -18,6 +26,11 @@ postsRouter.get('/:id',
 
 postsRouter.post('/',
     authorization,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    blogIdValidation,
+    inputValidator,
     async (req: Request, res: Response) => {
         const newPost = await postService.createNewPost(req.body);
         res.send(newPost);
@@ -25,6 +38,12 @@ postsRouter.post('/',
 
 postsRouter.put('/:id',
     authorization,
+    checkIdFromUri,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    blogIdValidation,
+    inputValidator,
     async (req: Request, res: Response) => {
         const newPost = await postService.updatePostById(req.params.id, req.body)
         newPost ? res.send(newPost) : res.send(404);

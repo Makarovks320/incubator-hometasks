@@ -1,6 +1,15 @@
 import {post, postsRepository} from "../Repositories/postsRepository";
 import {blogsRepository} from "../Repositories/blogsRepository";
 
+export type inputPost = {
+    title: string,
+    shortDescription?: string,
+    content: string,
+    blogId: string,
+    blogName: string,
+    createdAt?: string
+}
+
 export const postService = {
     async getAllPosts(): Promise<post[]> {
         return postsRepository.getAllPosts();
@@ -8,7 +17,7 @@ export const postService = {
     async getPostById(id: string): Promise<post | null> {
         return postsRepository.findPostById(id);
     },
-    async createNewPost(p: post): Promise<post> {
+    async createNewPost(p: inputPost): Promise<post> {
         const post = {
             id: new Date().valueOf().toString(),
             ...p
