@@ -2,11 +2,11 @@ import {NextFunction, Request, Response} from "express";
 import {validationResult} from "express-validator";
 
 // типы для режима без any
-// type error = {
+// type Error = {
 //     message: string,
 //     field: string
 // }
-// type initError = {
+// type InitError = {
 //     msg: string,
 //     param: string,
 //     location: string

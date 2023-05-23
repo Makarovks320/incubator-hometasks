@@ -1,7 +1,7 @@
-import {post, postsRepository} from "../Repositories/postsRepository";
+import {Post, postsRepository} from "../Repositories/postsRepository";
 import {blogsRepository} from "../Repositories/blogsRepository";
 
-export type inputPost = {
+export type InputPost = {
     title: string,
     shortDescription?: string,
     content: string,
@@ -11,13 +11,13 @@ export type inputPost = {
 }
 
 export const postService = {
-    async getAllPosts(): Promise<post[]> {
+    async getAllPosts(): Promise<Post[]> {
         return postsRepository.getAllPosts();
     },
-    async getPostById(id: string): Promise<post | null> {
+    async getPostById(id: string): Promise<Post | null> {
         return postsRepository.findPostById(id);
     },
-    async createNewPost(p: inputPost): Promise<post> {
+    async createNewPost(p: InputPost): Promise<Post> {
         const post = {
             id: new Date().valueOf().toString(),
             ...p
@@ -25,7 +25,7 @@ export const postService = {
         return await postsRepository.createNewPost(post);
         // todo здесь мы можем получить ошибку из БД? мб стоит возвращать результат из БД?
     },
-    async updatePostById(id: string, p: post): Promise<boolean> {
+    async updatePostById(id: string, p: Post): Promise<boolean> {
         return await postsRepository.updatePostById(id, p);
         // todo здесь мы можем получить ошибку из БД? мб стоит возвращать результат из БД?
     },
