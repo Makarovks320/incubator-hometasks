@@ -9,24 +9,21 @@ export type Blog = {
 export const DEFAULT_PROJECTION = { _id: false };
 
 export const blogsRepository = {
-    async getBlogs(): Promise<Blog[]> {
-        return blogCollection.find().toArray();
-    },
     async findBlogById(id: string): Promise<Blog | null> {
-        return blogCollection.findOne({id});
+        return blogCollection.findOne({id},{ projection: DEFAULT_PROJECTION});
     },
-    async createNewBlog(p: Blog): Promise<Blog> {
+    async createNewBlog(b: Blog): Promise<Blog> {
         try {
-            await client.db('ht_05').collection('blogs').insertOne({...p});
+            await client.db('ht_05').collection('blogs').insertOne({...b});
         } catch (e) {
             console.log(e);
         }
         // todo: а если ошибка из БД? как раскукожить ошибку из try catch(e) и обработать
         // возвращаем p, хотя в базу ничего не записалось из-за ошибки
-        return p;
+        return b;
     },
-    async updateBlogById(id: string, p: Blog): Promise<boolean> {
-        const result = await blogCollection.updateOne({id}, {"$set": {...p}});
+    async updateBlogById(id: string, b: Blog): Promise<boolean> {
+        const result = await blogCollection.updateOne({id}, {"$set": {...b}});
         return result.matchedCount === 1;
     },
     async deleteAllBlogs(): Promise<void> {
