@@ -1,19 +1,15 @@
 import {Blog, blogsRepository} from "../Repositories/blogsRepository";
 
-type inputBlog = {//todo: Верно ли, что надо объявлять 2 типа блога: из реквеста и для БД?
+type InputBlog = {//todo: Верно ли, что надо объявлять 2 типа блога: из реквеста и для БД?
     name: string,
     description: string,
     websiteUrl: string
 }
-
 export const blogService = {
-    async getBlogs() {
-        return await blogsRepository.getBlogs();
-    },
     async getBlogById(id: string): Promise<Blog | null> {
         return blogsRepository.findBlogById(id);
     },
-    async createNewBlog(p: inputBlog): Promise<Blog> {
+    async createNewBlog(p: InputBlog): Promise<Blog> {
         const blog = {
             id: new Date().valueOf().toString(),
             ...p

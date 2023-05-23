@@ -3,10 +3,18 @@ import {blogService} from "../domain/blogService";
 import {authorization} from "../Middlewares/authorization";
 import {descriptionValidation, nameValidation, websiteUrlValidation} from "../Middlewares/blogsValidations";
 import {inputValidator} from "../Middlewares/inputValidator";
+import {BlogQueryParams, blogsQueryRepository} from "../Repositories/blogsQueryRepository";
 
 export const blogsRouter = Router();
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const blogs = await blogService.getBlogs();
+    const queryParams: BlogQueryParams = {
+        searchNameTerm: req.query.searchNameTerm as string || null,
+        pageNumber: parseInt(req.query.pageNumber as string) || 1,
+        pageSize: parseInt(req.query.pageSize as string) || 10,
+        sortBy: String(req.query.sortBy) || 'createdAt',
+        sortDirection: req.query.sortDirection === 'asc' ?'asc' : 'desc'
+    }
+    const blogs = await blogsQueryRepository.getBlogs(queryParams);
     res.send(blogs);
 });
 

@@ -6,6 +6,7 @@ export type Blog = {
     description: string,
     websiteUrl: string
 }
+export const DEFAULT_PROJECTION = { _id: false };
 
 export const blogsRepository = {
     async getBlogs(): Promise<Blog[]> {
