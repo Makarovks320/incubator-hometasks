@@ -11,14 +11,6 @@ export type Post = {
 }
 
 export const postsRepository = {
-    async getAllPosts(): Promise<Post[]> {
-        return postCollection.find().toArray();
-        // todo зачем <post>? По умолчанию внутри коллекции подразумевается какой-то непонятный дефолтный тип
-        //  'WithId<Document>[]', у которго нет полей, которые мы огласили в сигнатуре метода, из-за чего ошибка.
-        //  Что это за тип  'WithId<Document>[]'?
-        // todo зачем .toArray? Чтобы возвращался не cursor-object, возвращаемый методом find, а массив всех
-        //  найденных элементов.
-    },
     async findPostById(id: string): Promise<Post | null> {
         return postCollection.findOne({id});
     },

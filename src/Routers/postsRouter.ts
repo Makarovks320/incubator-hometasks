@@ -9,12 +9,20 @@ import {
 } from "../Middlewares/postsValidations";
 import {inputValidator} from "../Middlewares/inputValidator";
 import {checkIdFromUri} from "../Middlewares/checkIdFromUri";
+import {postsQueryRepository} from "../Repositories/postsQueryRepository";
+import {PostQueryParams} from "../Repositories/postsQueryRepository";
 
 export const postsRouter = Router();
 
 postsRouter.get('/',
     async (req: Request, res: Response) => {
-        const posts = await postService.getAllPosts();
+        const queryParams: PostQueryParams = {
+            pageNumber: parseInt(req.query.pageNumber as string) || 1,
+            pageSize: parseInt(req.query.pageSize as string) || 10,
+            sortBy: String(req.query.sortBy) || 'createdAt',
+            sortDirection: req.query.sortDirection === 'asc' ?'asc' : 'desc'
+        }
+        const posts = await postsQueryRepository.getPosts(queryParams);
         res.send(posts);
     });
 

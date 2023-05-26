@@ -11,9 +11,6 @@ export type InputPost = {
 }
 
 export const postService = {
-    async getAllPosts(): Promise<Post[]> {
-        return postsRepository.getAllPosts();
-    },
     async getPostById(id: string): Promise<Post | null> {
         return postsRepository.findPostById(id);
     },
