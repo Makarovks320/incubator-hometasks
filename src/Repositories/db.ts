@@ -21,6 +21,9 @@ export const postCollection = db.collection<Post>('posts');
 export async function runDb() {
     try {
         await client.connect();
+        // Establish and verify connection
+        db.command({ping: 1});
+        console.log('Successfully connected to db');
     } catch {
         console.log("couldn't connect to db");
         await client.close();
