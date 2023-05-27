@@ -1,13 +1,14 @@
 import {postCollection} from "./db";
+import {InputPost} from "../domain/postService";
 
 export type Post = {
     id: string,
     title: string,
-    shortDescription?: string,
+    shortDescription: string,
     content: string,
     blogId: string,
     blogName: string,
-    createdAt?: string
+    createdAt: string
 }
 
 export const postsRepository = {
@@ -18,7 +19,7 @@ export const postsRepository = {
         await postCollection.insertOne({...p});
         return p;// todo здесь мы можем получить ошибку из БД? мб стоит возвращать результат из БД?
     },
-    async updatePostById(id: string, p: Post): Promise<boolean> {
+    async updatePostById(id: string, p: InputPost): Promise<boolean> {
         const result = await postCollection.updateOne({id}, {"$set":{...p}});
         return result.matchedCount === 1;
 

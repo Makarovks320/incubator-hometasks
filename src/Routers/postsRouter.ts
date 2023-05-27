@@ -14,25 +14,23 @@ import {PostQueryParams} from "../Repositories/postsQueryRepository";
 
 export const postsRouter = Router();
 
-postsRouter.get('/',
-    async (req: Request, res: Response) => {
-        const queryParams: PostQueryParams = {
-            pageNumber: parseInt(req.query.pageNumber as string) || 1,
-            pageSize: parseInt(req.query.pageSize as string) || 10,
-            sortBy: String(req.query.sortBy) || 'createdAt',
-            sortDirection: req.query.sortDirection === 'asc' ?'asc' : 'desc'
-        }
-        const posts = await postsQueryRepository.getPosts(queryParams);
-        res.send(posts);
-    });
+postsRouter.get('/', async (req: Request, res: Response) => {
+    const queryParams: PostQueryParams = {
+        pageNumber: parseInt(req.query.pageNumber as string) || 1,
+        pageSize: parseInt(req.query.pageSize as string) || 10,
+        sortBy: String(req.query.sortBy) || 'createdAt',
+        sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
+    }
+    const posts = await postsQueryRepository.getPosts(queryParams);
+    res.send(posts);
+});
 
-postsRouter.get('/:id',
-    async (req: Request, res: Response) => {
-        const posts = await postService.getPostById(req.params.id);
-        posts ? res.send(posts) : res.send(404);
-    });
+postsRouter.get('/:id', async (req: Request, res: Response) => {
+    const posts = await postService.getPostById(req.params.id);
+    posts ? res.send(posts) : res.send(404);
+});
 
-postsRouter.post('/',
+postsRouter.post('/', [
     authorization,
     titleValidation,
     shortDescriptionValidation,
@@ -42,9 +40,10 @@ postsRouter.post('/',
     async (req: Request, res: Response) => {
         const newPost = await postService.createNewPost(req.body);
         res.send(newPost);
-    });
+    }
+]);
 
-postsRouter.put('/:id',
+postsRouter.put('/:id', [
     authorization,
     checkIdFromUri,
     titleValidation,
@@ -54,15 +53,17 @@ postsRouter.put('/:id',
     inputValidator,
     async (req: Request, res: Response) => {
         const newPost = await postService.updatePostById(req.params.id, req.body)
-        newPost ? res.send(newPost) : res.send(404);
-    });
+        newPost ?  res.status(204).send() : res.send(404);
+    }
+]);
 
-postsRouter.delete('/',
+postsRouter.delete('/', [
     authorization,
     async (req: Request, res: Response) => {
         await postService.deleteAllPosts();
         res.sendStatus(204);
-    });
+    }
+]);
 
 postsRouter.delete('/:id', [
     authorization,
