@@ -25,8 +25,8 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
 });
 
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    const blogs = await blogService.getBlogById(req.params.id);
-    res.send(blogs);
+    const blog = await blogService.getBlogById(req.params.id);
+    blog ? res.send(blog) :res.send(404);
 });
 
 blogsRouter.post('/', [
@@ -37,7 +37,7 @@ blogsRouter.post('/', [
     inputValidator,
     async (req: Request, res: Response) => {
         const blogs = await blogService.createNewBlog(req.body);
-        res.send(blogs);
+        res.status(201).send(blogs);
     }
 ]);
 

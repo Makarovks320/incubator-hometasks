@@ -4,16 +4,16 @@ import {Blog} from "../../src/Repositories/blogsRepository";
 
 describe('/blogs', () => {
     beforeAll(async () => {
-        await request(app).delete('/testing/all-data');
-    });
+        await request(app).delete('/testing/all-data').set('Authorization', 'Basic YWRtaW46cXdlcnR5');
+    }, 10000);
 
-    it('should return an empty array', async () => {
+    it('should return an object with 0 totalCount', async () => {
          await request(app)
              .get('/blogs')
-             .expect(200,[]);
+             .expect(200,{ pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: [] });
     });
 
-    it('should not return error (websiteUrl)', async () => {
+    it('should return error (websiteUrl)', async () => {
         await request(app)
             .post('/blogs')
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
@@ -22,7 +22,9 @@ describe('/blogs', () => {
                 description: "description test",
                 websiteUrl: "wrong"
             })
-            .expect(400,{ errorsMessages: [ { message: 'Invalid value', field: 'websiteUrl' } ] });
+            .expect(400,{
+                errorsMessages: [ { message: 'websiteUrl should be url', field: 'websiteUrl' } ]
+            });
     });
 
     let createdBlog: Blog | null = null;
