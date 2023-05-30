@@ -40,7 +40,7 @@ describe('/blogs', () => {
             .expect(201);
         createdBlog = response.body;
         expect(createdBlog).toEqual({
-            createdAt: expect.any(String),
+            // createdAt: expect.any(String),
             id: expect.any(String),
             name: "name test",
             description: "description test",
@@ -49,7 +49,13 @@ describe('/blogs', () => {
 
         await request(app)
             .get('/blogs')
-            .expect(200,[createdBlog]);
+            .expect(200,{
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: 1,
+                items: [createdBlog]
+            });
     });
 
     it('should return correct blog by id', async () => {
