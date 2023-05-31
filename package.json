@@ -6,7 +6,9 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon --inspect dist/index.js",
-    "test": "cross-env PORT=3333 jest"
+    "test": "cross-env PORT=3333 jest",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "axios": "^1.4.0",
