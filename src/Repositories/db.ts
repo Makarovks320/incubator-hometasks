@@ -2,6 +2,7 @@ import {MongoClient} from "mongodb";
 import dotenv from "dotenv";
 import {Post} from "./postsRepository";
 import {Blog} from "./blogsRepository";
+import {User} from "./usersRepository";
 
 dotenv.config();
 
@@ -16,7 +17,9 @@ export const client = new MongoClient(mongoUri);
 export const db = client.db('ht_05');
 export const blogCollection = db.collection<Blog>('blogs');
 export const postCollection = db.collection<Post>('posts');
+export const userCollection = db.collection<User>('users');
 
+export const DEFAULT_PROJECTION = { _id: false };
 // создадим асинхронную функцию подключения клиента
 export async function runDb() {
     try {

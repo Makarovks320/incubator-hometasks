@@ -1,4 +1,4 @@
-import {blogCollection, client} from "./db";
+import {blogCollection, DEFAULT_PROJECTION} from "./db";
 
 export type Blog = {
     id: string,
@@ -6,7 +6,6 @@ export type Blog = {
     description: string,
     websiteUrl: string
 }
-export const DEFAULT_PROJECTION = { _id: false };
 
 export const blogsRepository = {
     async findBlogById(id: string): Promise<Blog | null> {
@@ -14,7 +13,7 @@ export const blogsRepository = {
     },
     async createNewBlog(b: Blog): Promise<Blog> {
         try {
-            await client.db('ht_05').collection('blogs').insertOne({...b});
+            await blogCollection.insertOne({...b});
         } catch (e) {
             console.log(e);
         }
