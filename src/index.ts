@@ -40,8 +40,6 @@ app.delete('/testing/all-data',
     //     res.status(500).send(error.message);
     // }
 // }
-    [
-        authorization,
         async (req: Request, res: Response, next: NextFunction) => {
             await postService.deleteAllPosts();
             next();
@@ -50,7 +48,6 @@ app.delete('/testing/all-data',
             await blogService.deleteAllBlogs();
             res.sendStatus(204);
         }
-    ]
 )
 
 app.use('/posts', postsRouter);
