@@ -12,7 +12,8 @@ export const blogService = {
     async createNewBlog(p: InputBlog): Promise<Blog> {
         const blog = {
             id: new Date().valueOf().toString(),
-            ...p
+            ...p,
+            createdAt: (new Date()).toISOString()
         }
         return await blogsRepository.createNewBlog(blog);
         // todo здесь мы можем получить ошибку из БД? мб стоит возвращать результат из БД?

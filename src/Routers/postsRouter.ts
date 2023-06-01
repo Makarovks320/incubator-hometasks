@@ -39,7 +39,7 @@ postsRouter.post('/', [
     inputValidator,
     async (req: Request, res: Response) => {
         const newPost = await postService.createNewPost(req.body);
-        res.send(newPost);
+        res.status(201).send(newPost);
     }
 ]);
 
