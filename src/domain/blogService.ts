@@ -13,6 +13,7 @@ export const blogService = {
         const blog = {
             id: new Date().valueOf().toString(),
             ...p,
+            isMembership: false,
             createdAt: (new Date()).toISOString()
         }
         return await blogsRepository.createNewBlog(blog);
