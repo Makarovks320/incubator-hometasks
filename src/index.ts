@@ -6,6 +6,7 @@ import {blogsRouter} from "./Routers/blogsRouter";
 import {authorization} from "./Middlewares/authorization";
 import {postService} from "./domain/postService";
 import {blogService} from "./domain/blogService";
+import {usersRouter} from "./Routers/usersRouter";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();
@@ -52,6 +53,7 @@ app.delete('/testing/all-data',
 
 app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
+app.use('/users', usersRouter);
 
 async function startApp() {
     app.listen(PORT, async () => {
