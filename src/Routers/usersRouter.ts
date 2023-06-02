@@ -12,7 +12,7 @@ usersRouter.post('/', [
             email: req.body.email,
             password: req.body.password
         }
-        const newUser = userService.createUser(newUserInput);
+        const newUser = await userService.createUser(newUserInput);
         res.status(201).send(newUser);
     }
 ]);
