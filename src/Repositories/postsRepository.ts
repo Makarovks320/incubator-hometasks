@@ -1,4 +1,4 @@
-import {postCollection} from "./db";
+import {DEFAULT_PROJECTION, postCollection} from "./db";
 import {InputPost} from "../domain/postService";
 
 export type Post = {
@@ -13,7 +13,7 @@ export type Post = {
 
 export const postsRepository = {
     async findPostById(id: string): Promise<Post | null> {
-        return postCollection.findOne({id});
+        return postCollection.findOne({id}, { projection: DEFAULT_PROJECTION});
     },
     async createNewPost(p: Post): Promise<Post> {
         await postCollection.insertOne({...p});
