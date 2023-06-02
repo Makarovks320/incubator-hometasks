@@ -84,7 +84,7 @@ blogsRouter.put('/:id', [
     inputValidator,
     async (req: Request, res: Response) => {
         const newBlog = await blogService.updateBlogById(req.params.id, req.body);
-        newBlog ? res.send(newBlog) : res.send(404);
+        newBlog ? res.status(204).send(newBlog) : res.send(404);
     }
 ]);
 

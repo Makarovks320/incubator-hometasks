@@ -70,4 +70,5 @@ describe('/blogs', () => {
             .expect(404);
     });
     //todo проверить GET -> /blogs/:id;
+    //todo проверить GET -> /blogs/:id/posts
 });
