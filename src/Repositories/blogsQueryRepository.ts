@@ -31,7 +31,7 @@ export const blogsQueryRepository = {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
 
-        const res = await blogCollection.find(filter, { projection: DEFAULT_PROJECTION})
+        const res = await blogCollection.find(filter)
             .sort(sort)
             .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
             .limit(queryParams.pageSize)
