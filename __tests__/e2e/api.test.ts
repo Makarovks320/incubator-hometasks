@@ -72,4 +72,6 @@ describe('/blogs', () => {
     //todo проверить GET -> /blogs/:id;
     //todo проверить GET -> /blogs/:id/posts
     //todo проверить PUT -> /blogs/:id
+    //todo проверить GET -> /users
+    //todo проверить POST -> /users
 });
