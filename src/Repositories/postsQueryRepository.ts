@@ -21,7 +21,7 @@ export const postsQueryRepository = {
     async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsOutput> {
         const filter: Filter<Post> = {}
         if (blogId) {
-            filter.blogId = {eq: blogId};
+            filter.blogId = blogId;
         }
         const sort: Sort = {};
         if (queryParams.sortBy) {

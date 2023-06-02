@@ -17,7 +17,7 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
         searchNameTerm: req.query.searchNameTerm as string || null,
         pageNumber: parseInt(req.query.pageNumber as string) || 1,
         pageSize: parseInt(req.query.pageSize as string) || 10,
-        sortBy: String(req.query.sortBy) || 'createdAt',
+        sortBy: req.query.sortBy?.toString() || 'createdAt',
         sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
     }
     const blogs = await blogsQueryRepository.getBlogs(queryParams);
@@ -47,7 +47,7 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
         const queryParams: PostQueryParams = {
             pageNumber: parseInt(req.query.pageNumber as string) || 1,
             pageSize: parseInt(req.query.pageSize as string) || 10,
-            sortBy: String(req.query.sortBy) || 'createdAt',
+            sortBy: req.query.sortBy?.toString() || 'createdAt',
             sortDirection: req.query.sortDirection === 'asc' ?'asc' : 'desc'
         }
         const posts = await postsQueryRepository.getPosts(queryParams, req.params.id);

@@ -69,4 +69,5 @@ describe('/blogs', () => {
             .get('/blogs/' + 'wrong-id-number')
             .expect(404);
     });
+    //todo проверить GET -> /blogs/:id;
 });
