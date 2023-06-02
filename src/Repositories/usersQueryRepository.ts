@@ -1,4 +1,4 @@
-import {blogCollection, DEFAULT_PROJECTION, userCollection} from "./db";
+import {DEFAULT_PROJECTION, userCollection} from "./db";
 import {User} from "./usersRepository";
 import {Filter, Sort} from "mongodb";
 
@@ -18,9 +18,10 @@ type UsersOutput = {
     totalCount: number,
     items: User[]
 }
+const PROJECTION = { ...DEFAULT_PROJECTION, salt: false, hash: false };
 
 export const usersQueryRepository = {
-    async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {
+    async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {//todo ошибка возвращаемого типа
         let filter: Filter<User> = {};
         if (queryParams.searchEmailTerm) {
             filter.email = {$regex: queryParams.searchEmailTerm, $options: 'i'};
@@ -34,7 +35,7 @@ export const usersQueryRepository = {
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const users = await userCollection.find(filter, { projection: DEFAULT_PROJECTION})
+        const users = await userCollection.find(filter, { projection: PROJECTION})
         .sort(sort)
         .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
         .limit(queryParams.pageSize)
