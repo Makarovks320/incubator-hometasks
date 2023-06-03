@@ -54,3 +54,12 @@ usersRouter.delete('/:id', [
         user ? res.status(204).send() : res.status(404).send();
     }
 ]);
+
+usersRouter.post('/login', async (req: Request, res: Response) => {
+    const checkResult = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
+    if (checkResult) {
+        res.sendStatus(204)
+    } else {
+        res.sendStatus(401);
+    }
+});
