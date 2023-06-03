@@ -3,7 +3,7 @@ import {body} from "express-validator";
 export const loginValidation =  body('login')
     .trim()
     .isString().withMessage('should be string')
-    .isLength({max: 30, min: 3}).withMessage('max length: 30, min length: 3')
+    .isLength({max: 10, min: 3}).withMessage('max length: 10, min length: 3')
     .notEmpty().withMessage('should not be empty')
     .matches(/^[a-zA-Z0-9_-]*$/, 'i')
     .withMessage('Некорректный формат логина');
