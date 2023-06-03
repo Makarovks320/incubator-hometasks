@@ -7,6 +7,7 @@ import {authorization} from "./Middlewares/authorization";
 import {postService} from "./domain/postService";
 import {blogService} from "./domain/blogService";
 import {usersRouter} from "./Routers/usersRouter";
+import {userService} from "./domain/userService";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();
@@ -47,8 +48,11 @@ app.delete('/testing/all-data',
         },
         async (req: Request, res: Response) => {
             await blogService.deleteAllBlogs();
-            res.sendStatus(204);
-        }
+        },
+    async (req: Request, res: Response) => {
+        await userService.deleteAllUsers();
+        res.sendStatus(204);
+    }
 )
 
 app.use('/posts', postsRouter);
