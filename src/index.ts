@@ -46,8 +46,9 @@ app.delete('/testing/all-data',
             await postService.deleteAllPosts();
             next();
         },
-        async (req: Request, res: Response) => {
+        async (req: Request, res: Response, next: NextFunction) => {
             await blogService.deleteAllBlogs();
+            next();
         },
     async (req: Request, res: Response) => {
         await userService.deleteAllUsers();
