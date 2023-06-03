@@ -18,28 +18,32 @@ type UsersOutput = {
     totalCount: number,
     items: User[]
 }
-const PROJECTION = { ...DEFAULT_PROJECTION, salt: false, hash: false };
+const PROJECTION = {...DEFAULT_PROJECTION, salt: false, hash: false};
 
 export const usersQueryRepository = {
     async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {//todo ошибка возвращаемого типа
-        let filter: Filter<User> = {};
-        if (queryParams.searchEmailTerm) {
-            filter.email = {$regex: queryParams.searchEmailTerm, $options: 'i'};
+        let filter: Filter<User> = {}
+        if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
+            filter = {
+                $or: []
+            };
         }
-
+        if (queryParams.searchEmailTerm) {
+            filter.$or!.push({"email": {$regex: queryParams.searchEmailTerm, $options: 'i'}});
+        }
         if (queryParams.searchLoginTerm) {
-            filter.login = {$regex: queryParams.searchLoginTerm, $options: 'i'};
+            filter.$or!.push({"login": {$regex: queryParams.searchLoginTerm, $options: 'i'}});
         }
 
         const sort: Sort = {};
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const users = await userCollection.find(filter, { projection: PROJECTION})
-        .sort(sort)
-        .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
-        .limit(queryParams.pageSize)
-        .toArray();
+        const users = await userCollection.find(filter, {projection: PROJECTION})
+            .sort(sort)
+            .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
+            .limit(queryParams.pageSize)
+            .toArray();
 
         const totalCount = await userCollection.countDocuments(filter);
 
@@ -51,4 +55,4 @@ export const usersQueryRepository = {
             items: users
         }
     }
-};
+}
