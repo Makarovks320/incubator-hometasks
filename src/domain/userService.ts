@@ -52,5 +52,8 @@ export const userService = {
     },
     async deleteUserById(id:string): Promise<boolean> {
         return await usersRepository.deleteUserById(id);
+    },
+    async deleteAllUsers(): Promise<void> {
+        return await usersRepository.deleteAllUsers();
     }
 }

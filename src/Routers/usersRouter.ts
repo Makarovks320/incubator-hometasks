@@ -55,6 +55,13 @@ usersRouter.delete('/:id', [
     }
 ]);
 
+usersRouter.delete('/', [
+    async (req: Request, res: Response) => {
+        await userService.deleteAllUsers();
+        res.sendStatus(204);
+    }
+]);
+
 usersRouter.post('/login', async (req: Request, res: Response) => {
     const checkResult = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (checkResult) {
