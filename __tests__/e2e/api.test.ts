@@ -40,10 +40,11 @@ describe('/blogs', () => {
             .expect(201);
         createdBlog = response.body;
         expect(createdBlog).toEqual({
-            // createdAt: expect.any(String),
+            createdAt: expect.any(String),
             id: expect.any(String),
-            name: "name test",
             description: "description test",
+            isMembership: false,
+            name: "name test",
             websiteUrl: "http://test.ru"
         });
 

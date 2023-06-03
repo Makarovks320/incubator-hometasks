@@ -19,7 +19,7 @@ export const usersRepository = {
         return user || null;
     },
     async findByLoginOrEmail(loginOrEmail: string) {
-        const user = userCollection.findOne({or: [{login: loginOrEmail}, {email: loginOrEmail}]});
+        const user = userCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]});
         return user;
     },
     async deleteUserById(id: string): Promise<boolean> {
