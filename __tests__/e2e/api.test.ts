@@ -70,9 +70,44 @@ describe('/blogs', () => {
             .get('/blogs/' + 'wrong-id-number')
             .expect(404);
     });
-    //todo проверить GET -> /blogs/:id;
+
+    it('should return 204', async () => {
+        await request(app)
+            .put('/blogs/' + createdBlog?.id, )
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send({
+                name: "edited name",
+                description: "description test",
+                websiteUrl: "http://test.ru"
+            })
+            .expect(204);
+    });
+
+    it('should return edited blog', async () => {
+        const response = await request(app)
+            .get('/blogs/' + createdBlog?.id);
+
+        let editedBlog: Blog | null = response.body;
+        expect(editedBlog).toEqual({
+            createdAt: expect.any(String),
+            id: expect.any(String),
+            description: "description test",
+            isMembership: false,
+            name: "edited name",
+            websiteUrl: "http://test.ru"
+        });
+
+        await request(app)
+            .get('/blogs')
+            .expect(200,{
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: 1,
+                items: [editedBlog]
+            });
+    });
     //todo проверить GET -> /blogs/:id/posts
-    //todo проверить PUT -> /blogs/:id
     //todo проверить GET -> /users
     //todo проверить POST -> /users
 });
