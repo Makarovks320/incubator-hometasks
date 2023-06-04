@@ -1,6 +1,6 @@
 import {Blog, blogsRepository} from "../Repositories/blogsRepository";
 
-type InputBlog = {//todo: Верно ли, что надо объявлять 2 типа блога: из реквеста и для БД?
+type InputBlog = {
     name: string,
     description: string,
     websiteUrl: string

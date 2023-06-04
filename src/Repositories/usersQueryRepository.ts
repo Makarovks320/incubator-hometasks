@@ -1,4 +1,4 @@
-import {DEFAULT_PROJECTION, userCollection} from "./db";
+import {userCollection} from "./db";
 import {User} from "./usersRepository";
 import {Filter, Sort} from "mongodb";
 
@@ -18,10 +18,10 @@ type UsersOutput = {
     totalCount: number,
     items: User[]
 }
-const PROJECTION = {...DEFAULT_PROJECTION, salt: false, hash: false};
+const PROJECTION = {_id: false, salt: false, hash: false};
 
 export const usersQueryRepository = {
-    async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {//todo ошибка возвращаемого типа
+    async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {
         let filter: Filter<User> = {}
         if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
             filter = {

@@ -20,7 +20,7 @@ export const blogsRepository = {
             console.log(e);
         }
         // todo: а если ошибка из БД? как раскукожить ошибку из try catch(e) и обработать
-        // возвращаем p, хотя в базу ничего не записалось из-за ошибки
+        // возвращаем b, хотя в базу ничего не записалось из-за ошибки
         return b;
     },
     async updateBlogById(id: string, b: Blog): Promise<boolean> {
