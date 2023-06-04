@@ -1,4 +1,4 @@
-import {blogCollection, userCollection} from "./db";
+import {userCollection} from "./db";
 
 export type User = {
     id: string,

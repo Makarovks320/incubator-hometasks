@@ -37,14 +37,14 @@ export const userService = {
     async findUserById(id: string) {
         return await usersRepository.findUserById(id);
     },
-    async checkCredentials(loginOrEmail: string, password: string) {
+    async checkCredentials(loginOrEmail: string, password: string): Promise<User | null> {
         const user = await usersRepository.findByLoginOrEmail(loginOrEmail);
-        if (!user) return false;
+        if (!user) return null;
         const passwordHash = await this._generateHash(password, user.salt);
         if (user.hash !== passwordHash) {
-            return false
+            return null;
         } else {
-            return true;
+            return user;
         }
     },
     async _generateHash(password: string, salt: string) {

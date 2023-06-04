@@ -100,5 +100,6 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": false                                 /* Skip type checking all .d.ts files. */
   },
-  "exclude": ["__tests__"]
+  "files": [ "src/types/index.d.ts" ],
+  "exclude": ["__tests__"],
 }
