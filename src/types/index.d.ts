@@ -2,9 +2,12 @@
 import {Request} from "express";
 
 declare global {
-    namespace Exress {
+    namespace Express {
         export interface Request {
-            userId: string | null,
+            context: {
+                userId: string | null,
+                blogName: string | null
+            }
         }
     }
 }
