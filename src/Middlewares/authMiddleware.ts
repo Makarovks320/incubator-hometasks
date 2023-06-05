@@ -19,6 +19,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         const user = await userService.findUserById(userId);
         req.userId = user!.id;
         next();
+        return;
     }
     res.sendStatus(401);
 }
