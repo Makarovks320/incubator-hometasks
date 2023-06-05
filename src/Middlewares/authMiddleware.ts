@@ -10,15 +10,15 @@ import {userService} from "../domain/userService";
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     if (!req.headers.authorization) {
-        res.send(401);
+        res.sendStatus(401);
         return;
     }
     const token = req.headers.authorization.split(' ')[1];
     const userId = await jwtService.getUserIdByToken(token);
     if (userId) {
         const user = await userService.findUserById(userId);
-        req.context.userId = user!.id;
+        req.userId = user!.id;
         next();
     }
-    res.send(401);
+    res.sendStatus(401);
 }
