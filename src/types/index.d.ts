@@ -1,13 +1,10 @@
 // todo: почему ошибка?
-// @ts-ignor
+import {Request} from "express";
 
 declare global {
     namespace Exress {
         export interface Request {
-            context: {
-                userId: string | null,
-                blogName: string | null
-            }
+            userId: string | null,
         }
     }
 }
