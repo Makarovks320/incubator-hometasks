@@ -1,6 +1,6 @@
 {
-  "name": "ht-05",
-  "version": "5",
+  "name": "hometasks",
+  "version": "6.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
