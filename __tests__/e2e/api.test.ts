@@ -153,7 +153,7 @@ describe('/posts', () => {
                 "title": "title 1",
                 "content": "content 1",
                 "shortDescription": "some short description",
-                "blogId": createdBlog?.id
+                "blogId": createdBlog.id
             })
             .expect(201);
         createdPost = response.body;

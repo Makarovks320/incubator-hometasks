@@ -69,7 +69,7 @@ blogsRouter.post('/:id/posts', [
         const post: InputPost = {
             ...req.body,
             blogId: req.params.id,
-            blogName: req.body.blogName
+            blogName: req.context.blogName
         }
         const newPost = await postService.createNewPost(post);
         res.status(201).send(newPost);

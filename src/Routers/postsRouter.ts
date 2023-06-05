@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {postService} from "../domain/postService";
+import {InputPost, postService} from "../domain/postService";
 import {authorization} from "../Middlewares/authorization";
 import {
     blogIdValidation,
@@ -38,7 +38,12 @@ postsRouter.post('/', [
     blogIdValidation,
     inputValidator,
     async (req: Request, res: Response) => {
-        const newPost = await postService.createNewPost(req.body);
+        const post: InputPost = {
+            ...req.body,
+            blogId: req.body.blogId,
+            blogName: req.context.blogName
+        }
+        const newPost = await postService.createNewPost(post);
         res.status(201).send(newPost);
     }
 ]);
