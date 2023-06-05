@@ -13,10 +13,11 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         res.send(401);
         return;
     }
-    const token = req.headers.authorization!.split(' ')[1];//todo: как без "!"?
+    const token = req.headers.authorization.split(' ')[1];
     const userId = await jwtService.getUserIdByToken(token);
     if (userId) {
-        req.context.userId = await userService.findUserById(userId);
+        const user = await userService.findUserById(userId);
+        (req as Request & {userId: string}).userId = user!.id;
         next();
     }
     res.send(401);
