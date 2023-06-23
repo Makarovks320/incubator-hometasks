@@ -7,6 +7,6 @@ export const checkBlogIdExists: CustomValidator = async (value, { req}) => {
         throw new Error('Incorrect blog id: blog is not found');
     }
     // сразу добавляем в реквест имя блога, чтобы потом не обращаться за ним лишний раз в БД
-    req.context = {blogName: blog.name};
+    req.blogName = blog.name;
     return true;
 };

@@ -41,7 +41,7 @@ postsRouter.post('/', [
         const post: InputPost = {
             ...req.body,
             blogId: req.body.blogId,
-            blogName: req.context.blogName
+            blogName: req.blogName
         }
         const newPost = await postService.createNewPost(post);
         res.status(201).send(newPost);

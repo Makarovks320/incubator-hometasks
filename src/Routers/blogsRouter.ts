@@ -10,6 +10,7 @@ import {checkBlogIdExists} from "../Middlewares/checkBlogIdExists";
 import {blogExistingValidator} from "../Middlewares/blogExistingValidator";
 import {contentValidation, shortDescriptionValidation, titleValidation} from "../Middlewares/postsValidations";
 import {InputPost, postService} from "../domain/postService";
+import { authMiddleware } from "../Middlewares/authMiddleware";
 
 export const blogsRouter = Router();
 blogsRouter.get('/', async (req: Request, res: Response) => {
@@ -30,7 +31,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 });
 
 blogsRouter.post('/', [
-    authorization,
+    authMiddleware,
     nameValidation,
     websiteUrlValidation,
     descriptionValidation,
@@ -69,7 +70,7 @@ blogsRouter.post('/:id/posts', [
         const post: InputPost = {
             ...req.body,
             blogId: req.params.id,
-            blogName: req.context.blogName
+            blogName: req.blogName
         }
         const newPost = await postService.createNewPost(post);
         res.status(201).send(newPost);

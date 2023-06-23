@@ -14,7 +14,7 @@ export const jwtService = {
         try {
             // делаем в цикле try-catch, т.к. verify() может вернуть ошибку
             const result: any = await jwt.verify(token, secret);
-            return result.id
+            return result.userId
         } catch (e) {
             return null;
         }
