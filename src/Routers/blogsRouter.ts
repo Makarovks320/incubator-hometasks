@@ -31,7 +31,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 });
 
 blogsRouter.post('/', [
-    authMiddleware,
+    authorization,
     nameValidation,
     websiteUrlValidation,
     descriptionValidation,
