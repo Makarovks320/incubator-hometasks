@@ -1,6 +1,7 @@
 import {userCollection} from "./db";
 import {User} from "./usersRepository";
 import {Filter, Sort} from "mongodb";
+import { OutputUser } from "../domain/userService";
 
 export type UserQueryParams = {
     searchLoginTerm: string | null,
@@ -16,7 +17,7 @@ type UsersOutput = {
     page: number,
     pageSize: number,
     totalCount: number,
-    items: User[]
+    items: OutputUser[]
 }
 const PROJECTION = {_id: false, salt: false, hash: false};
 
@@ -54,5 +55,9 @@ export const usersQueryRepository = {
             totalCount: totalCount,
             items: users
         }
+    },
+
+    async getUserById(id: string): Promise<OutputUser | null> {
+        return await userCollection.findOne({id: id}, {projection: PROJECTION});
     }
 }
