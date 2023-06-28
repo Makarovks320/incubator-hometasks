@@ -11,6 +11,9 @@ import {inputValidator} from "../Middlewares/inputValidator";
 import {checkIdFromUri} from "../Middlewares/checkIdFromUri";
 import {postsQueryRepository} from "../Repositories/postsQueryRepository";
 import {PostQueryParams} from "../Repositories/postsQueryRepository";
+import { authMiddleware } from "../Middlewares/authMiddleware";
+import { commentContentValidation } from "../Middlewares/commentValidations";
+import {commentService, InputComment } from "../domain/commentService";
 
 export const postsRouter = Router();
 
@@ -75,5 +78,19 @@ postsRouter.delete('/:id', [
     async (req: Request, res: Response) => {
         const blog = await postService.deletePostById(req.params.id);
         blog ? res.status(204).send() : res.status(404).send();
+    }
+]);
+
+// комментарии
+postsRouter.post('/:id/comments', [
+    authMiddleware,
+    commentContentValidation,
+    inputValidator,
+    async (req: Request, res: Response) => {
+        const comment: InputComment = {
+            content: req.body.content
+        }
+        const newComment = await commentService.createNewComment(comment, req.userId!);
+        res.status(201).send(newComment);
     }
 ]);

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import {Post} from "./postsRepository";
 import {Blog} from "./blogsRepository";
 import {User} from "./usersRepository";
+import {Comment} from "./commentsRepository";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ export const db = client.db('ht_05');
 export const blogCollection = db.collection<Blog>('blogs');
 export const postCollection = db.collection<Post>('posts');
 export const userCollection = db.collection<User>('users');
+export const commentCollection = db.collection<Comment>('comments');
 
 export const DEFAULT_PROJECTION = { _id: false };
 // создадим асинхронную функцию подключения клиента
