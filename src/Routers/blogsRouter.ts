@@ -6,11 +6,10 @@ import {descriptionValidation, nameValidation, websiteUrlValidation} from "../Mi
 import {inputValidator} from "../Middlewares/inputValidator";
 import {BlogQueryParams, blogsQueryRepository} from "../Repositories/blogsQueryRepository";
 import {PostQueryParams, postsQueryRepository} from "../Repositories/postsQueryRepository";
-import {checkBlogIdExists} from "../Middlewares/checkBlogIdExists";
+import {checkBlogExists} from "../Middlewares/checkBlogExists";
 import {blogExistingValidator} from "../Middlewares/blogExistingValidator";
 import {contentValidation, shortDescriptionValidation, titleValidation} from "../Middlewares/postsValidations";
 import {InputPost, postService} from "../domain/postService";
-import { authMiddleware } from "../Middlewares/authMiddleware";
 
 export const blogsRouter = Router();
 blogsRouter.get('/', async (req: Request, res: Response) => {
@@ -18,7 +17,7 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
         searchNameTerm: req.query.searchNameTerm as string || null,
         pageNumber: parseInt(req.query.pageNumber as string) || 1,
         pageSize: parseInt(req.query.pageSize as string) || 10,
-        sortBy: req.query.sortBy?.toString() || 'createdAt',
+        sortBy: req.query.sortBy as string || 'createdAt',
         sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
     }
     const blogs = await blogsQueryRepository.getBlogs(queryParams);
@@ -48,7 +47,7 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
         const queryParams: PostQueryParams = {
             pageNumber: parseInt(req.query.pageNumber as string) || 1,
             pageSize: parseInt(req.query.pageSize as string) || 10,
-            sortBy: req.query.sortBy?.toString() || 'createdAt',
+            sortBy: req.query.sortBy as string || 'createdAt',
             sortDirection: req.query.sortDirection === 'asc' ?'asc' : 'desc'
         }
         const posts = await postsQueryRepository.getPosts(queryParams, req.params.id);
@@ -60,7 +59,7 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
 
 blogsRouter.post('/:id/posts', [
     authorization,
-    param('id').custom(checkBlogIdExists).withMessage('blog is not found'),
+    param('id').custom(checkBlogExists).withMessage('blog is not found'),
     blogExistingValidator,
     titleValidation,
     shortDescriptionValidation,

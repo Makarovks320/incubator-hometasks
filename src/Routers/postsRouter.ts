@@ -21,7 +21,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     const queryParams: PostQueryParams = {
         pageNumber: parseInt(req.query.pageNumber as string) || 1,
         pageSize: parseInt(req.query.pageSize as string) || 10,
-        sortBy: req.query.sortBy?.toString() || 'createdAt',
+        sortBy: req.query.sortBy as string|| 'createdAt',
         sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
     }
     const posts = await postsQueryRepository.getPosts(queryParams);

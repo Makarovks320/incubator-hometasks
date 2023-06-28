@@ -1,5 +1,4 @@
 import {body} from "express-validator";
-import {checkBlogIdExists} from "./checkBlogIdExists";
 
 export const commentContentValidation = body('content')
     .trim()
