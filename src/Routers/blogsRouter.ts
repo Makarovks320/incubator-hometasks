@@ -7,7 +7,7 @@ import {inputValidator} from "../Middlewares/inputValidator";
 import {BlogQueryParams, blogsQueryRepository} from "../Repositories/blogsQueryRepository";
 import {PostQueryParams, postsQueryRepository} from "../Repositories/postsQueryRepository";
 import {checkBlogExists} from "../Middlewares/checkBlogExists";
-import {blogExistingValidator} from "../Middlewares/blogExistingValidator";
+import {idFromUrlExistingValidator} from "../Middlewares/idFromUrlExistingValidator";
 import {contentValidation, shortDescriptionValidation, titleValidation} from "../Middlewares/postsValidations";
 import {InputPost, postService} from "../domain/postService";
 
@@ -60,7 +60,7 @@ blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
 blogsRouter.post('/:id/posts', [
     authorization,
     param('id').custom(checkBlogExists).withMessage('blog is not found'),
-    blogExistingValidator,
+    idFromUrlExistingValidator,
     titleValidation,
     shortDescriptionValidation,
     contentValidation,

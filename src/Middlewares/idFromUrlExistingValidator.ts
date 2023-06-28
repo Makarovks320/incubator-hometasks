@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {validationResult} from "express-validator";
 
-export const blogExistingValidator = (req: Request, res: Response, next: NextFunction) => {
+export const idFromUrlExistingValidator = (req: Request, res: Response, next: NextFunction) => {
     const result = validationResult(req);
     if (result.isEmpty()) {
         next();

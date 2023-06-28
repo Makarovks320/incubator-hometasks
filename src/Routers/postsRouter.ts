@@ -14,6 +14,9 @@ import {PostQueryParams} from "../Repositories/postsQueryRepository";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { commentContentValidation } from "../Middlewares/commentValidations";
 import {commentService, InputComment } from "../domain/commentService";
+import {param} from "express-validator";
+import {checkPostExists} from "../Middlewares/checkPostExists";
+import {idFromUrlExistingValidator} from "../Middlewares/idFromUrlExistingValidator";
 
 export const postsRouter = Router();
 
@@ -84,6 +87,8 @@ postsRouter.delete('/:id', [
 // комментарии
 postsRouter.post('/:id/comments', [
     authMiddleware,
+    param('id').custom(checkPostExists).withMessage('post is not found'),
+    idFromUrlExistingValidator,
     commentContentValidation,
     inputValidator,
     async (req: Request, res: Response) => {
