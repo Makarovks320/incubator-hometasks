@@ -1,5 +1,4 @@
 import {Comment, commentsRepository} from "../Repositories/commentsRepository";
-import { User } from "../Repositories/usersRepository";
 import { OutputUser, userService } from "./userService";
 
 export type InputComment = {
@@ -22,5 +21,9 @@ export const commentService = {
             createdAt: (new Date()).toISOString()
         }
         return await commentsRepository.createNewComment(comment);
+    },
+
+    async deleteAllComments(): Promise<void> {
+        await commentsRepository.deleteAllBlogs();
     },
 }

@@ -9,6 +9,7 @@ import {blogService} from "./domain/blogService";
 import {usersRouter} from "./Routers/usersRouter";
 import {userService} from "./domain/userService";
 import {authRouter} from "./Routers/authRouter";
+import {commentService} from "./domain/commentService";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();
@@ -43,18 +44,22 @@ app.delete('/testing/all-data',
     //     res.status(500).send(error.message);
     // }
 // }
-        async (req: Request, res: Response, next: NextFunction) => {
-            await postService.deleteAllPosts();
-            next();
-        },
-        async (req: Request, res: Response, next: NextFunction) => {
-            await blogService.deleteAllBlogs();
-            next();
-        },
+    async (req: Request, res: Response, next: NextFunction) => {
+        await postService.deleteAllPosts();
+        next();
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        await blogService.deleteAllBlogs();
+        next();
+    },
     async (req: Request, res: Response) => {
         await userService.deleteAllUsers();
         res.sendStatus(204);
-    }
+    },
+    async (req: Request, res: Response) => {
+        await commentService.deleteAllComments();
+        res.sendStatus(204);
+    },
 )
 
 app.use('/posts', postsRouter);

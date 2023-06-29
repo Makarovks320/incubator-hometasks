@@ -1,5 +1,4 @@
-import {DEFAULT_PROJECTION, commentCollection} from "./db";
-import {InputComment} from "../domain/commentService";
+import {commentCollection} from "./db";
 
 export type Comment = {
     id: string,
@@ -15,5 +14,9 @@ export const commentsRepository = {
     async createNewComment(comment: Comment): Promise<Comment> {
         await commentCollection.insertOne({...comment});
         return comment;
+    },
+
+    async deleteAllBlogs(): Promise<void> {
+        await commentCollection.deleteMany({});
     },
 }
