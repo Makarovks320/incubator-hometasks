@@ -54,7 +54,7 @@ app.delete('/testing/all-data',
     },
     async (req: Request, res: Response) => {
         await userService.deleteAllUsers();
-        res.sendStatus(204);
+        next();
     },
     async (req: Request, res: Response) => {
         await commentService.deleteAllComments();
