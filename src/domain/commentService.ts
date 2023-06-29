@@ -23,6 +23,10 @@ export const commentService = {
         return await commentsRepository.createNewComment(comment);
     },
 
+    async getCommentById(id: string): Promise<Comment | null> {
+        return await commentsRepository.getCommentById(id);
+    },
+
     async deleteAllComments(): Promise<void> {
         await commentsRepository.deleteAllBlogs();
     },

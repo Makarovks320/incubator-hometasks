@@ -10,6 +10,7 @@ import {usersRouter} from "./Routers/usersRouter";
 import {userService} from "./domain/userService";
 import {authRouter} from "./Routers/authRouter";
 import {commentService} from "./domain/commentService";
+import {commentsRouter} from "./Routers/commentsRouter";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();
@@ -66,6 +67,7 @@ app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/comments', commentsRouter);
 
 async function startApp() {
     app.listen(PORT, async () => {

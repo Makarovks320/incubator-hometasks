@@ -1,4 +1,4 @@
-import {commentCollection} from "./db";
+import {commentCollection, DEFAULT_PROJECTION} from "./db";
 
 export type Comment = {
     id: string,
@@ -14,6 +14,10 @@ export const commentsRepository = {
     async createNewComment(comment: Comment): Promise<Comment> {
         await commentCollection.insertOne({...comment});
         return comment;
+    },
+
+    async getCommentById(id: string): Promise<Comment | null> {
+        return await commentCollection.findOne({id}, {projection: DEFAULT_PROJECTION});
     },
 
     async deleteAllBlogs(): Promise<void> {
