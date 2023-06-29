@@ -52,7 +52,7 @@ app.delete('/testing/all-data',
         await blogService.deleteAllBlogs();
         next();
     },
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: NextFunction) => {
         await userService.deleteAllUsers();
         next();
     },
