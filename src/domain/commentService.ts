@@ -27,6 +27,9 @@ export const commentService = {
         return await commentsRepository.getCommentById(id);
     },
 
+    async deleteCommentById(id: string): Promise<boolean> {
+        return commentsRepository.deleteCommentById(id);
+    },
     async deleteAllComments(): Promise<void> {
         await commentsRepository.deleteAllBlogs();
     },

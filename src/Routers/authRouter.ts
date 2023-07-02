@@ -4,7 +4,6 @@ import {jwtService} from "../application/jwtService";
 import {loginOrEmailAuthValidation, passwordAuthValidation} from "../Middlewares/authValidations";
 import {inputValidator} from "../Middlewares/inputValidator";
 import {authMiddleware} from "../Middlewares/authMiddleware";
-import {User} from "../Repositories/usersRepository";
 
 type UserAuthMeOutput = {
     email: string,

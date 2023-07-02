@@ -20,6 +20,11 @@ export const commentsRepository = {
         return await commentCollection.findOne({id}, {projection: DEFAULT_PROJECTION});
     },
 
+    async deleteCommentById(id: string): boolean {
+        const result = await commentCollection.deleteOne({id});
+        return result.deletedCount === 1;
+    },
+
     async deleteAllBlogs(): Promise<void> {
         await commentCollection.deleteMany({});
     },
