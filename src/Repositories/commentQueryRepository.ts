@@ -7,7 +7,7 @@ type commentQueryParams = {
     sortBy: string,
     sortDirection: 'asc' | 'desc'
 }
-const COMMENT_PROJECTION = {...DEFAULT_PROJECTION, postId: false}
+export const COMMENT_PROJECTION = {...DEFAULT_PROJECTION, postId: false}
 
 type CommentsOutput = {
     pagesCount: number,

@@ -1,4 +1,5 @@
-import {commentCollection, DEFAULT_PROJECTION} from "./db";
+import {commentCollection} from "./db";
+import {COMMENT_PROJECTION} from "./commentQueryRepository";
 
 export type Comment = CommentOutput & {
     postId: string //todo: добавил в модель комента, чтобы была связь с постом. Правильно?
@@ -29,7 +30,7 @@ export const commentsRepository = {
     },
 
     async getCommentById(id: string): Promise<CommentOutput | null> {
-        return await commentCollection.findOne({id}, {projection: DEFAULT_PROJECTION});
+        return await commentCollection.findOne({id}, {projection: COMMENT_PROJECTION});
     },
 
     async deleteCommentById(id: string): Promise<boolean> {
