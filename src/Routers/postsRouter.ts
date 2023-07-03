@@ -17,6 +17,7 @@ import {commentService, InputComment } from "../domain/commentService";
 import {param} from "express-validator";
 import {checkPostExists} from "../Middlewares/checkPostExists";
 import {idFromUrlExistingValidator} from "../Middlewares/idFromUrlExistingValidator";
+import {commentQueryRepository} from "../Repositories/commentQueryRepository";
 
 export const postsRouter = Router();
 
@@ -85,6 +86,22 @@ postsRouter.delete('/:id', [
 ]);
 
 // комментарии
+
+postsRouter.get('/:id/comments', [
+    param('id').custom(checkPostExists).withMessage('post is not found'),
+    idFromUrlExistingValidator,
+    async (req: Request, res: Response) => {
+        const queryParams: PostQueryParams = {
+            pageNumber: parseInt(req.query.pageNumber as string) || 1,
+            pageSize: parseInt(req.query.pageSize as string) || 10,
+            sortBy: req.query.sortBy as string|| 'createdAt',
+            sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
+        }
+        const comments = await commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
+        res.send(comments);
+    }
+]);
+
 postsRouter.post('/:id/comments', [
     authMiddleware,
     param('id').custom(checkPostExists).withMessage('post is not found'),
