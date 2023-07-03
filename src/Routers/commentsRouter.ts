@@ -1,9 +1,7 @@
 import {Request, Response, Router} from "express";
 import {commentService} from "../domain/commentService";
 import {authorization} from "../Middlewares/authorization";
-import {param} from "express-validator";
-import {checkCommentAuthorship} from "../Middlewares/commentValidations";
-import {Comment, commentsRepository} from "../Repositories/commentsRepository";
+import {Comment, CommentOutput, commentsRepository} from "../Repositories/commentsRepository";
 
 export const commentsRouter = Router();
 
@@ -17,7 +15,7 @@ commentsRouter.get('/:id', [
 commentsRouter.delete('/:id', [
     authorization,
     async (req: Request, res: Response) => {
-        const comment: Comment | null = await commentService.getCommentById(req.params.id);
+        const comment: CommentOutput | null = await commentService.getCommentById(req.params.id);
         if (!comment) {
             res.status(404).send('Comment is not found');
         } else if (comment.commentatorInfo.userLogin != req.userId) {

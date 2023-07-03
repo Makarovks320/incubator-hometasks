@@ -1,6 +1,9 @@
 import {commentCollection, DEFAULT_PROJECTION} from "./db";
 
-export type Comment = {
+export type Comment = CommentOutput & {
+    postId: string //todo: добавил в модель комента, чтобы была связь с постом. Правильно?
+}
+export type CommentOutput = {
     id: string,
     content: string,
     commentatorInfo: {
@@ -11,16 +14,25 @@ export type Comment = {
 }
 
 export const commentsRepository = {
-    async createNewComment(comment: Comment): Promise<Comment> {
-        await commentCollection.insertOne({...comment});
-        return comment;
+    async createNewComment(comment: Comment): Promise<CommentOutput> {
+        try {
+            await commentCollection.insertOne({...comment});
+        } catch (e) {
+            console.log(e);
+        }
+        return { //todo: приходится копировать, чтобы не возвращать postId. Это норм?
+            id: comment.id,
+            content: comment.content,
+            commentatorInfo: comment.commentatorInfo,
+            createdAt: comment.createdAt
+        };
     },
 
-    async getCommentById(id: string): Promise<Comment | null> {
+    async getCommentById(id: string): Promise<CommentOutput | null> {
         return await commentCollection.findOne({id}, {projection: DEFAULT_PROJECTION});
     },
 
-    async deleteCommentById(id: string): boolean {
+    async deleteCommentById(id: string): Promise<boolean> {
         const result = await commentCollection.deleteOne({id});
         return result.deletedCount === 1;
     },

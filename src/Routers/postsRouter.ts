@@ -93,7 +93,8 @@ postsRouter.post('/:id/comments', [
     inputValidator,
     async (req: Request, res: Response) => {
         const comment: InputComment = {
-            content: req.body.content
+            content: req.body.content,
+            postId: req.params.id
         }
         const newComment = await commentService.createNewComment(comment, req.userId!);
         res.status(201).send(newComment);

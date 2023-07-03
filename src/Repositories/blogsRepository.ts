@@ -19,8 +19,8 @@ export const blogsRepository = {
         } catch (e) {
             console.log(e);
         }
-        // todo: а если ошибка из БД? как раскукожить ошибку из try catch(e) и обработать
-        // возвращаем b, хотя в базу ничего не записалось из-за ошибки
+        // todo: а если ошибка из БД?
+        //  if (e instanceof MongoAPIError.message) {return e.message}
         return b;
     },
     async updateBlogById(id: string, b: Blog): Promise<boolean> {
