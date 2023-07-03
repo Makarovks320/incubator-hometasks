@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {commentService} from "../domain/commentService";
-import {authorization} from "../Middlewares/authorization";
-import {Comment, CommentOutput, commentsRepository} from "../Repositories/commentsRepository";
+import {CommentOutput} from "../Repositories/commentsRepository";
+import {authMiddleware} from "../Middlewares/authMiddleware";
 
 export const commentsRouter = Router();
 
@@ -13,7 +13,7 @@ commentsRouter.get('/:id', [
 ]);
 
 commentsRouter.delete('/:id', [
-    authorization,
+    authMiddleware,
     async (req: Request, res: Response) => {
         const comment: CommentOutput | null = await commentService.getCommentById(req.params.id);
         if (!comment) {
@@ -21,7 +21,7 @@ commentsRouter.delete('/:id', [
         } else if (comment.commentatorInfo.userLogin != req.userId) {
             res.status(403).send('Comment is not your own');
     } else {
-            const result = await commentService.deleteCommentById(req.params.id);
+            await commentService.deleteCommentById(req.params.id);
             res.sendStatus(204);
         }
     }
