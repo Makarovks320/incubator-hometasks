@@ -1,8 +1,8 @@
-import {commentCollection} from "./db";
+import {commentCollection, DEFAULT_PROJECTION} from "./db";
 import {COMMENT_PROJECTION} from "./commentQueryRepository";
 
 export type Comment = CommentOutput & {
-    postId: string //todo: добавил в модель комента, чтобы была связь с постом. Правильно?
+    postId: string
 }
 export type CommentOutput = {
     id: string,
@@ -29,8 +29,22 @@ export const commentsRepository = {
         };
     },
 
+    async updateComment(commentId: string, comment: Comment): Promise<boolean> {
+        try {
+            const result = await commentCollection.updateOne({id: commentId}, {"$set": {...comment}});
+            return result.modifiedCount === 1;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    },
+
     async getCommentById(id: string): Promise<CommentOutput | null> {
         return await commentCollection.findOne({id}, {projection: COMMENT_PROJECTION});
+    },
+
+    async getCommentByIdWithPostId(id: string): Promise<Comment | null> {
+        return await commentCollection.findOne({id}, {projection: DEFAULT_PROJECTION});
     },
 
     async deleteCommentById(id: string): Promise<boolean> {

@@ -13,7 +13,7 @@ import {postsQueryRepository} from "../Repositories/postsQueryRepository";
 import {PostQueryParams} from "../Repositories/postsQueryRepository";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { commentContentValidation } from "../Middlewares/commentValidations";
-import {commentService, InputComment } from "../domain/commentService";
+import {commentService, InputCommentWithPostId } from "../domain/commentService";
 import {param} from "express-validator";
 import {checkPostExists} from "../Middlewares/checkPostExists";
 import {idFromUrlExistingValidator} from "../Middlewares/idFromUrlExistingValidator";
@@ -109,7 +109,7 @@ postsRouter.post('/:id/comments', [
     commentContentValidation,
     inputValidator,
     async (req: Request, res: Response) => {
-        const comment: InputComment = {
+        const comment: InputCommentWithPostId = {
             content: req.body.content,
             postId: req.params.id
         }
