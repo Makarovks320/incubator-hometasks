@@ -16,10 +16,12 @@ commentsRouter.put('/:id', [
         const oldComment: CommentOutput | null = await commentService.getCommentById(req.params.id);
         if (!oldComment) {
             res.status(404).send('Comment is not found');
+            return;
         }
         const user = await userService.findUserById(req.userId!) as OutputUser;
         if (oldComment!.commentatorInfo.userLogin != user.login) {
             res.status(403).send('Comment is not your own');
+            return;
         }
         const commentForUpdate : InputComment = {
             content: req.body.content,
@@ -42,10 +44,12 @@ commentsRouter.delete('/:id', [
         const comment: CommentOutput | null = await commentService.getCommentById(req.params.id);
         if (!comment) {
             res.status(404).send('Comment is not found');
+            return;
         }
         const user = await userService.findUserById(req.userId!) as OutputUser;
         if (comment!.commentatorInfo.userLogin != user.login) {
             res.status(403).send('Comment is not your own');
+            return;
     } else {
             await commentService.deleteCommentById(req.params.id);
             res.sendStatus(204);
