@@ -1,7 +1,7 @@
 import {blogsRepository} from "../Repositories/blogsRepository";
 import {CustomValidator} from "express-validator";
 
-export const checkBlogIdExists: CustomValidator = async (value, { req}) => {
+export const checkBlogExists: CustomValidator = async (value, { req}) => {
     const blog = await blogsRepository.findBlogById(value);
     if (!blog) {
         throw new Error('Incorrect blog id: blog is not found');

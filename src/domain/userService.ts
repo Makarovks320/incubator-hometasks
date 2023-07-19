@@ -1,7 +1,8 @@
 import {User, usersRepository} from "../Repositories/usersRepository";
 import bcrypt from 'bcrypt';
+import { usersQueryRepository } from "../Repositories/usersQueryRepository";
 
-type OutputUser = {
+export type OutputUser = {
     id: string,
     login: string,
     email: string,
@@ -34,8 +35,8 @@ export const userService = {
             createdAt: result.createdAt
         }
     },
-    async findUserById(id: string) {
-        return await usersRepository.findUserById(id);
+    async findUserById(id: string): Promise<OutputUser | null> {
+        return await usersQueryRepository.getUserById(id);
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<User | null> {
         const user = await usersRepository.findByLoginOrEmail(loginOrEmail);

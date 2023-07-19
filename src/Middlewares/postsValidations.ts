@@ -1,5 +1,5 @@
 import {body} from "express-validator";
-import {checkBlogIdExists} from "./checkBlogIdExists";
+import {checkBlogExists} from "./checkBlogExists";
 
 export const titleValidation =  body('title')
     .trim()
@@ -18,4 +18,4 @@ export const contentValidation =  body('content')
 
 export const blogIdValidation = body('blogId').trim()
     .isString().withMessage('should be string')
-    .custom(checkBlogIdExists).withMessage('blog is not found');
+    .custom(checkBlogExists).withMessage('blog is not found');

@@ -11,6 +11,13 @@ import {inputValidator} from "../Middlewares/inputValidator";
 import {checkIdFromUri} from "../Middlewares/checkIdFromUri";
 import {postsQueryRepository} from "../Repositories/postsQueryRepository";
 import {PostQueryParams} from "../Repositories/postsQueryRepository";
+import { authMiddleware } from "../Middlewares/authMiddleware";
+import { commentContentValidation } from "../Middlewares/commentValidations";
+import {commentService, InputCommentWithPostId } from "../domain/commentService";
+import {param} from "express-validator";
+import {checkPostExists} from "../Middlewares/checkPostExists";
+import {idFromUrlExistingValidator} from "../Middlewares/idFromUrlExistingValidator";
+import {commentQueryRepository} from "../Repositories/commentQueryRepository";
 
 export const postsRouter = Router();
 
@@ -18,7 +25,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     const queryParams: PostQueryParams = {
         pageNumber: parseInt(req.query.pageNumber as string) || 1,
         pageSize: parseInt(req.query.pageSize as string) || 10,
-        sortBy: req.query.sortBy?.toString() || 'createdAt',
+        sortBy: req.query.sortBy as string|| 'createdAt',
         sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
     }
     const posts = await postsQueryRepository.getPosts(queryParams);
@@ -75,5 +82,38 @@ postsRouter.delete('/:id', [
     async (req: Request, res: Response) => {
         const blog = await postService.deletePostById(req.params.id);
         blog ? res.status(204).send() : res.status(404).send();
+    }
+]);
+
+// комментарии
+
+postsRouter.get('/:id/comments', [
+    param('id').custom(checkPostExists).withMessage('post is not found'),
+    idFromUrlExistingValidator,
+    async (req: Request, res: Response) => {
+        const queryParams: PostQueryParams = {
+            pageNumber: parseInt(req.query.pageNumber as string) || 1,
+            pageSize: parseInt(req.query.pageSize as string) || 10,
+            sortBy: req.query.sortBy as string|| 'createdAt',
+            sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
+        }
+        const comments = await commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
+        res.send(comments);
+    }
+]);
+
+postsRouter.post('/:id/comments', [
+    authMiddleware,
+    param('id').custom(checkPostExists).withMessage('post is not found'),
+    idFromUrlExistingValidator,
+    commentContentValidation,
+    inputValidator,
+    async (req: Request, res: Response) => {
+        const comment: InputCommentWithPostId = {
+            content: req.body.content,
+            postId: req.params.id
+        }
+        const newComment = await commentService.createNewComment(comment, req.userId!);
+        res.status(201).send(newComment);
     }
 ]);

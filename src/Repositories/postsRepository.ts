@@ -16,7 +16,7 @@ export const postsRepository = {
         return postCollection.findOne({id}, { projection: DEFAULT_PROJECTION});
     },
     async createNewPost(p: Post): Promise<Post> {
-        await postCollection.insertOne({...p});
+        await postCollection.insertOne({...p}); //todo: нужно ли деструктурировать?
         return p;// todo здесь мы можем получить ошибку из БД? мб стоит возвращать результат из БД?
     },
     async updatePostById(id: string, p: InputPost): Promise<boolean> {

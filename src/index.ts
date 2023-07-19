@@ -9,6 +9,8 @@ import {blogService} from "./domain/blogService";
 import {usersRouter} from "./Routers/usersRouter";
 import {userService} from "./domain/userService";
 import {authRouter} from "./Routers/authRouter";
+import {commentService} from "./domain/commentService";
+import {commentsRouter} from "./Routers/commentsRouter";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();
@@ -17,7 +19,7 @@ const jsonParser = express.json();
 app.use(jsonParser);
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!');
+    res.send('Hello World !!');
 });
 app.delete('/testing/all-data',
     // async (req: Request, res: Response) => {
@@ -43,24 +45,29 @@ app.delete('/testing/all-data',
     //     res.status(500).send(error.message);
     // }
 // }
-        async (req: Request, res: Response, next: NextFunction) => {
-            await postService.deleteAllPosts();
-            next();
-        },
-        async (req: Request, res: Response, next: NextFunction) => {
-            await blogService.deleteAllBlogs();
-            next();
-        },
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response, next: NextFunction) => {
+        await postService.deleteAllPosts();
+        next();
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
+        await blogService.deleteAllBlogs();
+        next();
+    },
+    async (req: Request, res: Response, next: NextFunction) => {
         await userService.deleteAllUsers();
+        next();
+    },
+    async (req: Request, res: Response) => {
+        await commentService.deleteAllComments();
         res.sendStatus(204);
-    }
+    },
 )
 
 app.use('/posts', postsRouter);
 app.use('/blogs', blogsRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/comments', commentsRouter);
 
 async function startApp() {
     app.listen(PORT, async () => {

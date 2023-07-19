@@ -14,10 +14,6 @@ export const usersRepository = {
         await userCollection.insertOne(user);
         return user;
     },
-    async findUserById(id: string) {
-      const user = userCollection.findOne({id: id})
-        return user || null;
-    },
     async findByLoginOrEmail(loginOrEmail: string) {
         const user = userCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]});
         return user;
