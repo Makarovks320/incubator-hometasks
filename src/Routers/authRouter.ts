@@ -39,3 +39,11 @@ authRouter.get('/me', [
             res.status(200).send(userAuthMeOutput);
         }
     }]);
+
+authRouter.post('/registration', (req: Request, res: Response) => {
+    res.send({
+        login: req.body.login,
+        password: req.body.password,
+        email: req.body.email
+    })
+})
