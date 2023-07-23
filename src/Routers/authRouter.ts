@@ -4,6 +4,7 @@ import {jwtService} from "../application/jwtService";
 import {loginOrEmailAuthValidation, passwordAuthValidation} from "../Middlewares/authValidations";
 import {inputValidator} from "../Middlewares/inputValidator";
 import {authMiddleware} from "../Middlewares/authMiddleware";
+import nodemailer from "nodemailer";
 
 type UserAuthMeOutput = {
     email: string,
@@ -40,10 +41,22 @@ authRouter.get('/me', [
         }
     }]);
 
-authRouter.post('/registration', (req: Request, res: Response) => {
-    res.send({
-        login: req.body.login,
-        password: req.body.password,
-        email: req.body.email
-    })
+authRouter.post('/registration', async (req: Request, res: Response) => {
+
+    const transport = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_ADDRESS,
+            pass: process.env.EMAIL_APP_PASS
+        }
+    });
+    const info = await transport.sendMail({
+        from: `INCUBATOR APP 👻 <${process.env.EMAIL_ADDRESS}>`,
+        to: req.body.email,
+        subject: "Registration ✔",
+        html: "confirmation code"
+    });
+    console.log(info);
+
+    res.sendStatus(204);
 })
