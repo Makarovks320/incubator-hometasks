@@ -1,10 +1,10 @@
 import {Request, Response, Router} from "express";
-import {commentService, InputComment} from "../domain/commentService";
-import {CommentOutput} from "../Repositories/commentsRepository";
-import {authMiddleware} from "../Middlewares/authMiddleware";
-import {OutputUser, userService} from "../domain/userService";
-import {commentContentValidation} from "../Middlewares/commentValidations";
-import {inputValidator} from "../Middlewares/inputValidator";
+import {commentService, InputComment} from "../domain/comment-service";
+import {CommentOutput} from "../Repositories/comments-repository";
+import {authMiddleware} from "../Middlewares/auth-middleware";
+import {OutputUser, userService} from "../domain/user-service";
+import {commentContentValidation} from "../Middlewares/comment-validations";
+import {inputValidator} from "../Middlewares/input-validator";
 
 export const commentsRouter = Router();
 

@@ -1,9 +1,9 @@
 import {MongoClient} from "mongodb";
 import dotenv from "dotenv";
-import {Post} from "./postsRepository";
-import {Blog} from "./blogsRepository";
-import {User} from "./usersRepository";
-import {Comment} from "./commentsRepository";
+import {Post} from "./posts-repository";
+import {Blog} from "./blogs-repository";
+import {User} from "./users-repository";
+import {Comment} from "./comments-repository";
 
 dotenv.config();
 

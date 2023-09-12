@@ -1,9 +1,9 @@
 import {Request, Response, Router} from "express";
-import {OutputUser, userService} from "../domain/userService";
-import {jwtService} from "../application/jwtService";
-import {loginOrEmailAuthValidation, passwordAuthValidation} from "../Middlewares/authValidations";
-import {inputValidator} from "../Middlewares/inputValidator";
-import {authMiddleware} from "../Middlewares/authMiddleware";
+import {OutputUser, userService} from "../domain/user-service";
+import {jwtService} from "../application/jwt-service";
+import {loginOrEmailAuthValidation, passwordAuthValidation} from "../Middlewares/auth-validations";
+import {inputValidator} from "../Middlewares/input-validator";
+import {authMiddleware} from "../Middlewares/auth-middleware";
 import nodemailer from "nodemailer";
 
 type UserAuthMeOutput = {

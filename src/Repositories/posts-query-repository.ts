@@ -1,36 +1,39 @@
-import {commentCollection, DEFAULT_PROJECTION} from "./db";
-import {Sort} from "mongodb";
-import {CommentOutput} from "./commentsRepository";
-type commentQueryParams = {
+import {Post} from "./posts-repository";
+import {postCollection, DEFAULT_PROJECTION} from "./db";
+import {Filter, Sort} from "mongodb";
+
+export type PostQueryParams = {
     pageNumber: number,
     pageSize: number,
     sortBy: string,
     sortDirection: 'asc' | 'desc'
 }
-export const COMMENT_PROJECTION = {...DEFAULT_PROJECTION, postId: false}
 
-type CommentsOutput = {
+type PostsOutput = {
     pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
-    items: CommentOutput[]
+    items: Post[]
 }
 
-export const commentQueryRepository = {
-    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<CommentsOutput> {
-
+export const postsQueryRepository = {
+    async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsOutput> {
+        const filter: Filter<Post> = {}
+        if (blogId) {
+            filter.blogId = blogId;
+        }
         const sort: Sort = {};
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const res = await commentCollection.find({postId}, {projection: COMMENT_PROJECTION})
+        const res = await postCollection.find(filter, {projection: DEFAULT_PROJECTION})
             .sort(sort)
             .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
             .limit(queryParams.pageSize)
             .toArray();
-        const totalCount = await commentCollection.countDocuments({postId});
 
+        const totalCount = await postCollection.countDocuments(filter);
         return {
             pagesCount: Math.ceil(totalCount / queryParams.pageSize),
             page: queryParams.pageNumber,

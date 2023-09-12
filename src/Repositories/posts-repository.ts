@@ -1,5 +1,5 @@
 import {DEFAULT_PROJECTION, postCollection} from "./db";
-import {InputPost} from "../domain/postService";
+import {InputPost} from "../domain/post-service";
 
 export type Post = {
     id: string,

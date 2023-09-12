@@ -1,7 +1,7 @@
 import request from 'supertest';
 import {app} from "../../src";
-import {Blog} from "../../src/Repositories/blogsRepository";
-import {Post} from "../../src/Repositories/postsRepository";
+import {Blog} from "../../src/Repositories/blogs-repository";
+import {Post} from "../../src/Repositories/posts-repository";
 
 describe('/blogs', () => {
     beforeAll(async () => {

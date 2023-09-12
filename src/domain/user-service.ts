@@ -1,6 +1,6 @@
-import {User, usersRepository} from "../Repositories/usersRepository";
+import {User, usersRepository} from "../Repositories/users-repository";
 import bcrypt from 'bcrypt';
-import { usersQueryRepository } from "../Repositories/usersQueryRepository";
+import { usersQueryRepository } from "../Repositories/users-query-repository";
 
 export type OutputUser = {
     id: string,

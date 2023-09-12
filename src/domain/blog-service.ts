@@ -1,4 +1,4 @@
-import {Blog, blogsRepository} from "../Repositories/blogsRepository";
+import {Blog, blogsRepository} from "../Repositories/blogs-repository";
 
 type InputBlog = {
     name: string,

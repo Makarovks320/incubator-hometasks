@@ -1,4 +1,4 @@
-import {Post, postsRepository} from "../Repositories/postsRepository";
+import {Post, postsRepository} from "../Repositories/posts-repository";
 
 export type InputPost = {
     title: string,

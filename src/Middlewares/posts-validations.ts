@@ -1,5 +1,5 @@
 import {body} from "express-validator";
-import {checkBlogExists} from "./checkBlogExists";
+import {checkBlogExists} from "./check-blog-exists";
 
 export const titleValidation =  body('title')
     .trim()

@@ -1,16 +1,16 @@
 import express, {NextFunction, Request, Response} from 'express';
 import {runDb} from "./Repositories/db";
-import {postsRouter} from "./Routers/postsRouter";
-import {blogsRouter} from "./Routers/blogsRouter";
+import {postsRouter} from "./Routers/posts-router";
+import {blogsRouter} from "./Routers/blogs-router";
 // import axios from "axios";
 import {authorization} from "./Middlewares/authorization";
-import {postService} from "./domain/postService";
-import {blogService} from "./domain/blogService";
-import {usersRouter} from "./Routers/usersRouter";
-import {userService} from "./domain/userService";
-import {authRouter} from "./Routers/authRouter";
-import {commentService} from "./domain/commentService";
-import {commentsRouter} from "./Routers/commentsRouter";
+import {postService} from "./domain/post-service";
+import {blogService} from "./domain/blog-service";
+import {usersRouter} from "./Routers/users-router";
+import {userService} from "./domain/user-service";
+import {authRouter} from "./Routers/auth-router";
+import {commentService} from "./domain/comment-service";
+import {commentsRouter} from "./Routers/comments-router";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();

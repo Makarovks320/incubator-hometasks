@@ -1,5 +1,5 @@
 import {commentCollection, DEFAULT_PROJECTION} from "./db";
-import {COMMENT_PROJECTION} from "./commentQueryRepository";
+import {COMMENT_PROJECTION} from "./comment-query-repository";
 
 export type Comment = CommentOutput & {
     postId: string

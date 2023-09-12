@@ -1,9 +1,9 @@
 import {Request, Response, Router} from "express";
-import {InputUser, userService} from "../domain/userService";
-import {UserQueryParams, usersQueryRepository} from "../Repositories/usersQueryRepository";
+import {InputUser, userService} from "../domain/user-service";
+import {UserQueryParams, usersQueryRepository} from "../Repositories/users-query-repository";
 import {authorization} from "../Middlewares/authorization";
-import {emailValidation, loginValidation, passwordValidation} from "../Middlewares/usersValidations";
-import {inputValidator} from "../Middlewares/inputValidator";
+import {emailValidation, loginValidation, passwordValidation} from "../Middlewares/users-validations";
+import {inputValidator} from "../Middlewares/input-validator";
 
 export const usersRouter = Router();
 usersRouter.post('/', [

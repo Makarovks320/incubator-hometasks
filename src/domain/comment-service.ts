@@ -1,5 +1,5 @@
-import {Comment, CommentOutput, commentsRepository} from "../Repositories/commentsRepository";
-import { OutputUser, userService } from "./userService";
+import {Comment, CommentOutput, commentsRepository} from "../Repositories/comments-repository";
+import { OutputUser, userService } from "./user-service";
 
 export type InputCommentWithPostId = {
     content: string,

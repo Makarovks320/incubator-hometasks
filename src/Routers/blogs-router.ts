@@ -1,15 +1,15 @@
 import {Request, Response, Router} from "express";
 import {param} from "express-validator";
-import {blogService} from "../domain/blogService";
+import {blogService} from "../domain/blog-service";
 import {authorization} from "../Middlewares/authorization";
-import {descriptionValidation, nameValidation, websiteUrlValidation} from "../Middlewares/blogsValidations";
-import {inputValidator} from "../Middlewares/inputValidator";
-import {BlogQueryParams, blogsQueryRepository} from "../Repositories/blogsQueryRepository";
-import {PostQueryParams, postsQueryRepository} from "../Repositories/postsQueryRepository";
-import {checkBlogExists} from "../Middlewares/checkBlogExists";
-import {idFromUrlExistingValidator} from "../Middlewares/idFromUrlExistingValidator";
-import {contentValidation, shortDescriptionValidation, titleValidation} from "../Middlewares/postsValidations";
-import {InputPost, postService} from "../domain/postService";
+import {descriptionValidation, nameValidation, websiteUrlValidation} from "../Middlewares/blogs-validations";
+import {inputValidator} from "../Middlewares/input-validator";
+import {BlogQueryParams, blogsQueryRepository} from "../Repositories/blogs-query-repository";
+import {PostQueryParams, postsQueryRepository} from "../Repositories/posts-query-repository";
+import {checkBlogExists} from "../Middlewares/check-blog-exists";
+import {idFromUrlExistingValidator} from "../Middlewares/id-from-url-existing-validator";
+import {contentValidation, shortDescriptionValidation, titleValidation} from "../Middlewares/posts-validations";
+import {InputPost, postService} from "../domain/post-service";
 
 export const blogsRouter = Router();
 blogsRouter.get('/', async (req: Request, res: Response) => {

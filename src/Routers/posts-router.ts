@@ -1,23 +1,23 @@
 import {Request, Response, Router} from "express";
-import {InputPost, postService} from "../domain/postService";
+import {InputPost, postService} from "../domain/post-service";
 import {authorization} from "../Middlewares/authorization";
 import {
     blogIdValidation,
     contentValidation,
     shortDescriptionValidation,
     titleValidation
-} from "../Middlewares/postsValidations";
-import {inputValidator} from "../Middlewares/inputValidator";
-import {checkIdFromUri} from "../Middlewares/checkIdFromUri";
-import {postsQueryRepository} from "../Repositories/postsQueryRepository";
-import {PostQueryParams} from "../Repositories/postsQueryRepository";
-import { authMiddleware } from "../Middlewares/authMiddleware";
-import { commentContentValidation } from "../Middlewares/commentValidations";
-import {commentService, InputCommentWithPostId } from "../domain/commentService";
+} from "../Middlewares/posts-validations";
+import {inputValidator} from "../Middlewares/input-validator";
+import {checkIdFromUri} from "../Middlewares/check-id-from-uri";
+import {postsQueryRepository} from "../Repositories/posts-query-repository";
+import {PostQueryParams} from "../Repositories/posts-query-repository";
+import { authMiddleware } from "../Middlewares/auth-middleware";
+import { commentContentValidation } from "../Middlewares/comment-validations";
+import {commentService, InputCommentWithPostId } from "../domain/comment-service";
 import {param} from "express-validator";
-import {checkPostExists} from "../Middlewares/checkPostExists";
-import {idFromUrlExistingValidator} from "../Middlewares/idFromUrlExistingValidator";
-import {commentQueryRepository} from "../Repositories/commentQueryRepository";
+import {checkPostExists} from "../Middlewares/check-post-exists";
+import {idFromUrlExistingValidator} from "../Middlewares/id-from-url-existing-validator";
+import {commentQueryRepository} from "../Repositories/comment-query-repository";
 
 export const postsRouter = Router();
 

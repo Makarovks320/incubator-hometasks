@@ -1,5 +1,5 @@
 import {blogCollection, DEFAULT_PROJECTION} from "./db";
-import {Blog} from "./blogsRepository";
+import {Blog} from "./blogs-repository";
 import {Filter, Sort} from "mongodb";
 
 export type BlogQueryParams = {

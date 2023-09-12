@@ -1,4 +1,4 @@
-import {User} from "../Repositories/usersRepository";
+import {User} from "../Repositories/users-repository";
 import jwt from 'jsonwebtoken';
 
 const secret: string = process.env.JWT_SECRET || '';

@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../application/jwtService";
-import {userService} from "../domain/userService";
+import {jwtService} from "../application/jwt-service";
+import {userService} from "../domain/user-service";
 
 /* миддлвар проверяет заголовок authorization
 достает bearer token
