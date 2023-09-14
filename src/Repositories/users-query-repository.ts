@@ -1,6 +1,6 @@
 import {userCollection} from "./db";
 import {User} from "./users-repository";
-import {Filter, Sort} from "mongodb";
+import {Filter, ObjectId, Sort} from "mongodb";
 import { OutputUser } from "../domain/user-service";
 
 export type UserQueryParams = {
@@ -19,7 +19,7 @@ type UsersOutput = {
     totalCount: number,
     items: OutputUser[]
 }
-const PROJECTION = {_id: false, salt: false, hash: false};
+const PROJECTION = {salt: false, hash: false};
 
 export const usersQueryRepository = {
     async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {
@@ -33,7 +33,7 @@ export const usersQueryRepository = {
             filter.$or!.push({"email": {$regex: queryParams.searchEmailTerm, $options: 'i'}});
         }
         if (queryParams.searchLoginTerm) {
-            filter.$or!.push({"login": {$regex: queryParams.searchLoginTerm, $options: 'i'}});
+            filter.$or!.push({"userName": {$regex: queryParams.searchLoginTerm, $options: 'i'}});
         }
 
         const sort: Sort = {};
@@ -57,7 +57,7 @@ export const usersQueryRepository = {
         }
     },
 
-    async getUserById(id: string): Promise<OutputUser | null> {
-        return await userCollection.findOne({id: id}, {projection: PROJECTION});
+    async getUserById(id: ObjectId): Promise<OutputUser | null> {
+        return await userCollection.findOne({_id: id}, {projection: PROJECTION});
     }
 }

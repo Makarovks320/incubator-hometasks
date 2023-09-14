@@ -5,11 +5,13 @@ import {loginOrEmailAuthValidation, passwordAuthValidation} from "../Middlewares
 import {inputValidator} from "../Middlewares/input-validator";
 import {authMiddleware} from "../Middlewares/auth-middleware";
 import nodemailer from "nodemailer";
+import {authService} from "../domain/auth-service";
+import {ObjectId} from "mongodb";
 
 type UserAuthMeOutput = {
     email: string,
     login: string,
-    userId: string
+    userId: ObjectId
 }
 export const authRouter = Router();
 authRouter.post('/login', [
@@ -28,14 +30,14 @@ authRouter.post('/login', [
 authRouter.get('/me', [
     authMiddleware,
     async (req: Request, res: Response) => {
-        const user: OutputUser | null = await userService.findUserById(req.userId as string)
+        const user: OutputUser | null = await userService.findUserById(req.userId)
         if (!user) {
             res.sendStatus(401)
         } else {
             const userAuthMeOutput: UserAuthMeOutput = {
                 email: user.email,
-                login: user.login,
-                userId: user.id
+                login: user.userName,
+                userId: user._id
             }
             res.status(200).send(userAuthMeOutput);
         }

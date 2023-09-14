@@ -1,5 +1,6 @@
 import {commentCollection, DEFAULT_PROJECTION} from "./db";
 import {COMMENT_PROJECTION} from "./comment-query-repository";
+import {ObjectId} from "mongodb";
 
 export type Comment = CommentOutput & {
     postId: string
@@ -8,7 +9,7 @@ export type CommentOutput = {
     id: string,
     content: string,
     commentatorInfo: {
-        userId: string,
+        userId: ObjectId,
         userLogin: string
     },
     createdAt: string

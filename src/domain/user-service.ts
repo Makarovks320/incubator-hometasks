@@ -1,10 +1,11 @@
 import {User, usersRepository} from "../Repositories/users-repository";
 import bcrypt from 'bcrypt';
 import { usersQueryRepository } from "../Repositories/users-query-repository";
+import {ObjectId} from "mongodb";
 
 export type OutputUser = {
-    id: string,
-    login: string,
+    _id: ObjectId,
+    userName: string,
     email: string,
     createdAt: string
 }
@@ -20,8 +21,8 @@ export const userService = {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
         const newUser: User = {
-            id: new Date().valueOf().toString(),
-            login: u.login,
+            _id: new ObjectId(),
+            userName: u.login,
             email: u.email,
             salt: passwordSalt,
             hash: passwordHash,
@@ -29,13 +30,13 @@ export const userService = {
         }
         const result = await usersRepository.createUser(newUser);
         return {
-            id: result.id,
-            login: result.login,
+            _id: result._id,
+            userName: result.userName,
             email: result.email,
             createdAt: result.createdAt
         }
     },
-    async findUserById(id: string): Promise<OutputUser | null> {
+    async findUserById(id: ObjectId): Promise<OutputUser | null> {
         return await usersQueryRepository.getUserById(id);
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<User | null> {

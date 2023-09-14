@@ -4,6 +4,8 @@ import {UserQueryParams, usersQueryRepository} from "../Repositories/users-query
 import {authorization} from "../Middlewares/authorization";
 import {emailValidation, loginValidation, passwordValidation} from "../Middlewares/users-validations";
 import {inputValidator} from "../Middlewares/input-validator";
+import {ObjectId} from "mongodb";
+import * as mongoose from "mongoose";
 
 export const usersRouter = Router();
 usersRouter.post('/', [
@@ -42,7 +44,9 @@ usersRouter.get('/', [
 usersRouter.get('/:id', [
     authorization,
     async (req: Request, res: Response) => {
-        const user = await userService.findUserById(req.params.id);
+        const stringId = req.params.id;
+        const objectId = new mongoose.Types.ObjectId(stringId);
+        const user = await userService.findUserById(objectId as ObjectId);
         user ? res.send(user) : res.send(404);
     }
 ]);

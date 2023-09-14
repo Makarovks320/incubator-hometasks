@@ -1,8 +1,9 @@
 import {userCollection} from "./db";
+import {ObjectId, WithId} from "mongodb";
 
 export type User = {
-    id: string,
-    login: string,
+    _id: ObjectId,
+    userName: string,
     email: string,
     salt: string,
     hash: string,
@@ -15,7 +16,7 @@ export const usersRepository = {
         return user;
     },
     async findByLoginOrEmail(loginOrEmail: string) {
-        const user = userCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]});
+        const user = userCollection.findOne({$or: [{userName: loginOrEmail}, {email: loginOrEmail}]});
         return user;
     },
     async deleteUserById(id: string): Promise<boolean> {

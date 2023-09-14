@@ -19,7 +19,7 @@ commentsRouter.put('/:id', [
             return;
         }
         const user = await userService.findUserById(req.userId!) as OutputUser;
-        if (oldComment!.commentatorInfo.userLogin != user.login) {
+        if (oldComment!.commentatorInfo.userLogin != user.userName) {
             res.status(403).send('Comment is not your own');
             return;
         }
@@ -47,7 +47,7 @@ commentsRouter.delete('/:id', [
             return;
         }
         const user = await userService.findUserById(req.userId!) as OutputUser;
-        if (comment!.commentatorInfo.userLogin != user.login) {
+        if (comment!.commentatorInfo.userLogin != user.userName) {
             res.status(403).send('Comment is not your own');
             return;
     } else {

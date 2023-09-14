@@ -8,9 +8,9 @@ if (!secret) {
 
 export const jwtService = {
     async createToken(user: User) {
-        return jwt.sign({userId: user.id}, secret, {expiresIn: '1h'});
+        return jwt.sign({userId: user._id}, secret, {expiresIn: '1h'});
     },
-    async getUserIdByToken(token: string) {
+    async getUserIdByToken(token: string): Promise<string | null | undefined> {
         try {
             // делаем в цикле try-catch, т.к. verify() может вернуть ошибку
             const result: any = await jwt.verify(token, secret);

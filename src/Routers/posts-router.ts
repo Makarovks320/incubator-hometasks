@@ -18,6 +18,7 @@ import {param} from "express-validator";
 import {checkPostExists} from "../Middlewares/check-post-exists";
 import {idFromUrlExistingValidator} from "../Middlewares/id-from-url-existing-validator";
 import {commentQueryRepository} from "../Repositories/comment-query-repository";
+import mongoose from "mongoose";
 
 export const postsRouter = Router();
 
@@ -113,7 +114,9 @@ postsRouter.post('/:id/comments', [
             content: req.body.content,
             postId: req.params.id
         }
-        const newComment = await commentService.createNewComment(comment, req.userId!);
+        const stringId = req.params.id;
+        const objectId = new mongoose.Types.ObjectId(stringId);
+        const newComment = await commentService.createNewComment(comment, objectId);
         res.status(201).send(newComment);
     }
 ]);
