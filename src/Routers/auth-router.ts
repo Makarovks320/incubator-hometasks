@@ -1,12 +1,21 @@
 import {Request, Response, Router} from "express";
 import {OutputUser, userService} from "../domain/user-service";
 import {jwtService} from "../application/jwt-service";
-import {loginOrEmailAuthValidation, passwordAuthValidation} from "../Middlewares/auth-validations";
+import {
+    emailAuthValidation,
+    loginAuthValidation,
+    loginOrEmailAuthValidation,
+    passwordAuthValidation
+} from "../Middlewares/auth-validations";
 import {inputValidator} from "../Middlewares/input-validator";
 import {authMiddleware} from "../Middlewares/auth-middleware";
 import nodemailer from "nodemailer";
 import {authService} from "../domain/auth-service";
 import {ObjectId} from "mongodb";
+import {param} from "express-validator";
+import {checkBlogExists} from "../Middlewares/check-blog-exists";
+import {checkEmailExists} from "../Middlewares/check-email-exists";
+import {checkLoginExists} from "../Middlewares/check-login-exists";
 
 type UserAuthMeOutput = {
     email: string,
