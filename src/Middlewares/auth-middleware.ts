@@ -16,7 +16,10 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     }
     const token = req.headers.authorization.split(' ')[1];
     const userId = await jwtService.getUserIdByToken(token);
-    if (!userId) return;
+    if (!userId) {
+        res.sendStatus(401);
+        return;
+    }
     const stringId = userId;
     const objectId = new mongoose.Types.ObjectId(stringId);
     const user = await userService.findUserById(objectId);
