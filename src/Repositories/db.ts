@@ -2,7 +2,7 @@ import {MongoClient} from "mongodb";
 import dotenv from "dotenv";
 import {Post} from "./posts-repository";
 import {Blog} from "./blogs-repository";
-import {User} from "./users-repository";
+import {UserAccountDBType} from "./users-repository";
 import {Comment} from "./comments-repository";
 
 dotenv.config();
@@ -18,7 +18,7 @@ export const client = new MongoClient(mongoUri);
 export const db = client.db('ht_05');
 export const blogCollection = db.collection<Blog>('blogs');
 export const postCollection = db.collection<Post>('posts');
-export const userCollection = db.collection<User>('users');
+export const userCollection = db.collection<UserAccountDBType>('users');
 export const commentCollection = db.collection<Comment>('comments');
 
 export const DEFAULT_PROJECTION = { _id: false };

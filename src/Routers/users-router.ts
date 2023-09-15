@@ -7,6 +7,14 @@ import {inputValidator} from "../Middlewares/input-validator";
 import {ObjectId} from "mongodb";
 import * as mongoose from "mongoose";
 
+
+type UserForResponseType = {
+    id: string,
+    login: string,
+    email: string,
+    createdAt: string
+}
+
 export const usersRouter = Router();
 usersRouter.post('/', [
     authorization,
@@ -20,8 +28,14 @@ usersRouter.post('/', [
             email: req.body.email,
             password: req.body.password
         }
-        const newUser = await userService.createUser(newUserInput);
-        res.status(201).send(newUser);
+        const createdUser = await userService.createUser(newUserInput);
+        const userForResponse: UserForResponseType = {
+            id: createdUser._id.toString(),
+            login: createdUser.accountData.userName,
+            email: createdUser.accountData.email,
+            createdAt: createdUser.accountData.createdAt.toString()
+        }
+        res.status(201).send(userForResponse);
     }
 ]);
 

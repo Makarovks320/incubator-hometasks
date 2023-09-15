@@ -1,13 +1,17 @@
-import {User, usersRepository} from "../Repositories/users-repository";
+import {UserAccountDBType, usersRepository} from "../Repositories/users-repository";
 import bcrypt from 'bcrypt';
 import { usersQueryRepository } from "../Repositories/users-query-repository";
 import {ObjectId} from "mongodb";
+import {v4 as uuidv4} from "uuid";
+import add from "date-fns/add";
 
 export type OutputUser = {
     _id: ObjectId,
-    userName: string,
-    email: string,
-    createdAt: string
+    accountData: {
+        userName: string,
+        email: string,
+        createdAt: Date
+    }
 }
 export type InputUser = {
     login: string,
@@ -16,34 +20,37 @@ export type InputUser = {
 }
 
 export const userService = {
-// @ts-ignore
     async createUser(u: InputUser): Promise<OutputUser> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
-        const newUser: User = {
+        const newUser: UserAccountDBType = {
             _id: new ObjectId(),
-            userName: u.login,
-            email: u.email,
-            salt: passwordSalt,
-            hash: passwordHash,
-            createdAt: (new Date()).toISOString()
+            accountData: {
+                userName: u.login,
+                email: u.email,
+                salt: passwordSalt,
+                hash: passwordHash,
+                createdAt: new Date()
+            },
+            emailConfirmation: {
+                confirmationCode: uuidv4(),
+                expirationDate: add(new Date(), {
+                    minutes: 15
+                }),
+                isConfirmed: false
+            }
         }
         const result = await usersRepository.createUser(newUser);
-        return {
-            _id: result._id,
-            userName: result.userName,
-            email: result.email,
-            createdAt: result.createdAt
-        }
+        return result;
     },
     async findUserById(id: ObjectId): Promise<OutputUser | null> {
         return await usersQueryRepository.getUserById(id);
     },
-    async checkCredentials(loginOrEmail: string, password: string): Promise<User | null> {
-        const user = await usersRepository.findByLoginOrEmail(loginOrEmail);
+    async checkCredentials(loginOrEmail: string, password: string): Promise<UserAccountDBType | null> {
+        const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail);
         if (!user) return null;
-        const passwordHash = await this._generateHash(password, user.salt);
-        if (user.hash !== passwordHash) {
+        const passwordHash = await this._generateHash(password, user.accountData.salt);
+        if (user.accountData.hash !== passwordHash) {
             return null;
         } else {
             return user;

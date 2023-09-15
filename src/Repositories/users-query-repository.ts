@@ -1,5 +1,5 @@
 import {userCollection} from "./db";
-import {User} from "./users-repository";
+import {UserAccountDBType} from "./users-repository";
 import {Filter, ObjectId, Sort} from "mongodb";
 import { OutputUser } from "../domain/user-service";
 
@@ -19,21 +19,21 @@ type UsersOutput = {
     totalCount: number,
     items: OutputUser[]
 }
-const PROJECTION = {salt: false, hash: false};
+const PROJECTION = {emailConfirmation: false};
 
 export const usersQueryRepository = {
     async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {
-        let filter: Filter<User> = {}
+        let filter: Filter<UserAccountDBType> = {}
         if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
             filter = {
                 $or: []
             };
         }
         if (queryParams.searchEmailTerm) {
-            filter.$or!.push({"email": {$regex: queryParams.searchEmailTerm, $options: 'i'}});
+            filter.$or!.push({"accountData.email": {$regex: queryParams.searchEmailTerm, $options: 'i'}});
         }
         if (queryParams.searchLoginTerm) {
-            filter.$or!.push({"userName": {$regex: queryParams.searchLoginTerm, $options: 'i'}});
+            filter.$or!.push({"accountData.userName": {$regex: queryParams.searchLoginTerm, $options: 'i'}});
         }
 
         const sort: Sort = {};

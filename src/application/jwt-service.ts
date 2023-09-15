@@ -1,4 +1,4 @@
-import {User} from "../Repositories/users-repository";
+import {UserAccountDBType} from "../Repositories/users-repository";
 import jwt from 'jsonwebtoken';
 
 const secret: string = process.env.JWT_SECRET || '';
@@ -7,7 +7,7 @@ if (!secret) {
 }
 
 export const jwtService = {
-    async createToken(user: User) {
+    async createToken(user: UserAccountDBType) {
         return jwt.sign({userId: user._id}, secret, {expiresIn: '1h'});
     },
     async getUserIdByToken(token: string): Promise<string | null | undefined> {

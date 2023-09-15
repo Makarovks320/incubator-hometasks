@@ -35,8 +35,8 @@ authRouter.get('/me', [
             res.sendStatus(401)
         } else {
             const userAuthMeOutput: UserAuthMeOutput = {
-                email: user.email,
-                login: user.userName,
+                email: user.accountData.email,
+                login: user.accountData.userName,
                 userId: user._id
             }
             res.status(200).send(userAuthMeOutput);

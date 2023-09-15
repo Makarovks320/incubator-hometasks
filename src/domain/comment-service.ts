@@ -22,7 +22,7 @@ export const commentService = {
             content: c.content,
             commentatorInfo: {
                 userId: userId,
-                userLogin: user.userName
+                userLogin: user.accountData.userName
             },
             createdAt: (new Date()).toISOString()
         }
