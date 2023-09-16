@@ -51,23 +51,21 @@ authRouter.get('/me', [
             res.status(200).send(userAuthMeOutput);
         }
     }]);
-
-authRouter.post('/registration', async (req: Request, res: Response) => {
-
-    const transport = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL_ADDRESS,
-            pass: process.env.EMAIL_APP_PASS
-        }
+authRouter.post('/registration', [
+    loginAuthValidation,
+    emailAuthValidation,
+    passwordAuthValidation,
+    param('login').custom(checkLoginExists).withMessage('login exists'),
+    param('email').custom(checkEmailExists).withMessage('email exists'),
+    inputValidator,
+    async (req: Request, res: Response) => {
+    const user = await authService.createUser(req.body.login, req.body.email, req.body.password)
+    if (user) {
+        res.status(201).send();
+    } else {
+        res.status(500).send();
+    }
+}
+]);
+}
     });
-    const info = await transport.sendMail({
-        from: `INCUBATOR APP 👻 <${process.env.EMAIL_ADDRESS}>`,
-        to: req.body.email,
-        subject: "Registration ✔",
-        html: "confirmation code"
-    });
-    console.log(info);
-
-    res.sendStatus(204);
-})
