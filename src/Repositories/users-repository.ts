@@ -38,8 +38,8 @@ export const usersRepository = {
         const result = await userCollection.updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}});
         return result.modifiedCount === 1;
     },
-    async deleteUserById(id: string): Promise<boolean> {
-        const result = await userCollection.deleteOne({id});
+    async deleteUserById(_id: ObjectId): Promise<boolean> {
+        const result = await userCollection.deleteOne({_id});
         return result.deletedCount === 1
     },
     async deleteAllUsers(): Promise<void> {

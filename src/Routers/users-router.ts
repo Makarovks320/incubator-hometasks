@@ -68,7 +68,9 @@ usersRouter.get('/:id', [
 usersRouter.delete('/:id', [
     authorization,
     async (req: Request, res: Response) => {
-        const user = await userService.deleteUserById(req.params.id);
+        const stringId = req.params.id;
+        const objectId = new mongoose.Types.ObjectId(stringId);
+        const user = await userService.deleteUserById(objectId);
         user ? res.status(204).send() : res.status(404).send();
     }
 ]);
