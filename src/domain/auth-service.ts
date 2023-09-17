@@ -30,7 +30,7 @@ export const authService = {
         }
         const createResult = await usersRepository.createUser(user);
         try {
-            await emailManager.sendConformationCode(email);
+            await emailManager.sendConformationCode(email, user.emailConfirmation.confirmationCode);
         } catch (e) {
             console.log(e);
             await usersRepository.deleteUserById(user._id);

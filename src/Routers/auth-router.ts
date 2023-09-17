@@ -9,11 +9,9 @@ import {
 } from "../Middlewares/auth-validations";
 import {inputValidator} from "../Middlewares/input-validator";
 import {authMiddleware} from "../Middlewares/auth-middleware";
-import nodemailer from "nodemailer";
 import {authService} from "../domain/auth-service";
 import {ObjectId} from "mongodb";
 import {param} from "express-validator";
-import {checkBlogExists} from "../Middlewares/check-blog-exists";
 import {checkEmailExists} from "../Middlewares/check-email-exists";
 import {checkLoginExists} from "../Middlewares/check-login-exists";
 
