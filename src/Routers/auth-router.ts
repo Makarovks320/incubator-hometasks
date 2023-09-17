@@ -11,7 +11,7 @@ import {inputValidator} from "../Middlewares/input-validator";
 import {authMiddleware} from "../Middlewares/auth-middleware";
 import {authService} from "../domain/auth-service";
 import {ObjectId} from "mongodb";
-import {param} from "express-validator";
+import {body} from "express-validator";
 import {checkEmailExists} from "../Middlewares/check-email-exists";
 import {checkLoginExists} from "../Middlewares/check-login-exists";
 
@@ -53,8 +53,8 @@ authRouter.post('/registration', [
     loginAuthValidation,
     emailAuthValidation,
     passwordAuthValidation,
-    param('login').custom(checkLoginExists).withMessage('login exists'),
-    param('email').custom(checkEmailExists).withMessage('email exists'),
+    body('login').custom(checkLoginExists).withMessage('login exists'),
+    body('email').custom(checkEmailExists).withMessage('email exists'),
     inputValidator,
     async (req: Request, res: Response) => {
     const user = await authService.createUser(req.body.login, req.body.email, req.body.password)
