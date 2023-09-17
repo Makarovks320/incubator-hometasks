@@ -61,9 +61,17 @@ authRouter.post('/registration', [
     if (user) {
         res.status(201).send();
     } else {
-        res.status(500).send();
+        res.status(400).send();
     }
 }
 ]);
+authRouter.post('/registration-confirmation',[
+    async (req: Request, res: Response) => {
+        const result = await authService.confirmEmail(req.body.code)
+        if (result) {
+            res.status(201).send();
+        } else {
+            res.status(400).send();
+        }
 }
-    });
+]);
