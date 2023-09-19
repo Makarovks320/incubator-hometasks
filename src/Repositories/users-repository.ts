@@ -34,7 +34,7 @@ export const usersRepository = {
         const user = await userCollection.findOne({'emailConfirmation.confirmationCode': code});
         return user;
     },
-    async updateConfirmation(_id: ObjectId) {
+    async updateConfirmation(_id: ObjectId): Promise<boolean> {
         const result = await userCollection.updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}});
         return result.modifiedCount === 1;
     },

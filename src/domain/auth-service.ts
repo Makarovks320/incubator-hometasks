@@ -41,8 +41,11 @@ export const authService = {
     async confirmEmail(code: string): Promise<boolean> {
         const user = await usersRepository.findUserByConfirmationCode(code);
         if (!user) return false;
-        // usersRepository.confirm
-        return true;
+        if (user.emailConfirmation.isConfirmed) return false;
+        if (user.emailConfirmation.expirationDate < new Date()) return false;
+
+        const result = await usersRepository.updateConfirmation(user._id);
+        return result;
     },
     async _generateHash(password: string, salt: string) {
         return await bcrypt.hash(password, salt);
