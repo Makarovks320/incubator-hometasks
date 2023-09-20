@@ -30,8 +30,8 @@ export const usersRepository = {
         const user = await userCollection.findOne({$or: [{'accountData.userName': loginOrEmail}, {'accountData.email': loginOrEmail}]});
         return user ?  user : null;
     },
-    async findUserByConfirmationCode(code: string): Promise<UserAccountDBType | null> {
-        const user = await userCollection.findOne({'emailConfirmation.confirmationCode': code});
+    async findUserByConfirmationCodeOrEmail(codeOrEmail: string): Promise<UserAccountDBType | null> {
+        const user = await userCollection.findOne({$or: [{'emailConfirmation.confirmationCode': codeOrEmail}, {'accountData.email': codeOrEmail} ]});
         return user;
     },
     async updateConfirmation(_id: ObjectId): Promise<boolean> {
