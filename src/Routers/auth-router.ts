@@ -15,6 +15,7 @@ import {body, oneOf} from "express-validator";
 import {checkEmailExists} from "../Middlewares/check-email-exists";
 import {checkLoginExists} from "../Middlewares/check-login-exists";
 import {checkConfirmationData} from "../Middlewares/check-confirmation-data";
+import {emailValidation} from "../Middlewares/users-validations";
 
 type UserAuthMeOutput = {
     email: string,
@@ -67,18 +68,27 @@ authRouter.post('/registration', [
 }
 ]);
 authRouter.post('/registration-confirmation',[
-    oneOf([body('code').notEmpty(), body('email').notEmpty()], {
-        message: 'At least one confirmation method must be provided: email or code',
-    }),
-    body('code').custom(checkConfirmationData).withMessage('code error'),
-    body('email').custom(checkConfirmationData).withMessage('email error'),
+    body('code').custom(checkConfirmationData).withMessage('wrong code or user is already confirmed'),
     inputValidator,
     async (req: Request, res: Response) => {
-        const result = await authService.confirmEmailByCodeOrEmail(req.body.code || req.body.email)
+        const result = await authService.confirmEmailByCodeOrEmail(req.body.code)
         if (result) {
             res.status(204).send();
         } else {
             res.status(400).send();
         }
 }
+]);
+authRouter.post('/registration-email-resending',[
+    emailValidation,
+    body('email').custom(checkConfirmationData).withMessage('wrong email or user is already confirmed'),
+    inputValidator,
+    async (req: Request, res: Response) => {
+        const result = await authService.sendEmailWithNewCode(req.body.email)
+        if (result) {
+            res.status(204).send();
+        } else {
+            res.status(400).send();
+        }
+    }
 ]);

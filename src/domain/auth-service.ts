@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {usersRepository, UserAccountDBType} from "../Repositories/users-repository";
+import {usersRepository, UserAccountDBType, EmailConfirmationType} from "../Repositories/users-repository";
 import {emailManager} from "../Managers/emailManager";
 
 
@@ -21,10 +21,7 @@ export const authService = {
             },
             emailConfirmation: {
                 confirmationCode: uuidv4(),
-                expirationDate: add(new Date(), {
-                    hours: 1,
-                    minutes: 3
-                }),
+                expirationDate: add(new Date(), { minutes: 15 }),
                 isConfirmed: false
             }
         }
@@ -43,8 +40,22 @@ export const authService = {
         if (!user) return false;
         if (user.emailConfirmation.expirationDate < new Date()) return false;
 
-        const result = await usersRepository.updateConfirmation(user._id);
+        const result = await usersRepository.confirmUserById(user._id);
         return result;
+    },
+    async sendEmailWithNewCode(email: string): Promise<boolean> {
+        const user = await usersRepository.findUserByConfirmationCodeOrEmail(email);
+        if (!user) return false;
+        if (user.emailConfirmation.isConfirmed === true) return false;
+        const emailConfirmation: EmailConfirmationType = {
+                confirmationCode: uuidv4(),
+                expirationDate: add(new Date(), { minutes: 15 }),
+                isConfirmed: false
+        }
+        await usersRepository.updateConfirmationCode(user._id, emailConfirmation);
+        await emailManager.sendConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
+        return true; //todo: как я могу уверенно вернуть true, если я не могу контролировать emailManager?
+
     },
     async _generateHash(password: string, salt: string) {
         return await bcrypt.hash(password, salt);
