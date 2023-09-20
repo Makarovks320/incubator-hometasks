@@ -53,7 +53,7 @@ export const authService = {
                 isConfirmed: false
         }
         await usersRepository.updateConfirmationCode(user._id, emailConfirmation);
-        await emailManager.sendConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
+        await emailManager.sendNewConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
         return true; //todo: как я могу уверенно вернуть true, если я не могу контролировать emailManager?
 
     },
