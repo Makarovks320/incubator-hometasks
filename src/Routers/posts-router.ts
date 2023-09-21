@@ -114,9 +114,7 @@ postsRouter.post('/:id/comments', [
             content: req.body.content,
             postId: req.params.id
         }
-        const stringId = req.params.id;
-        const objectId = new mongoose.Types.ObjectId(stringId);
-        const newComment = await commentService.createNewComment(comment, objectId);
+        const newComment = await commentService.createNewComment(comment, req.userId);
         res.status(201).send(newComment);
     }
 ]);

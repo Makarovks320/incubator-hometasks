@@ -1,6 +1,4 @@
-// todo: почему ошибка?
 import {ObjectId} from "mongodb";
-import {Request} from "express";
 
 declare global {
     namespace Express {

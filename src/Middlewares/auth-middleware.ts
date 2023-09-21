@@ -15,16 +15,15 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         return;
     }
     const token = req.headers.authorization.split(' ')[1];
-    const userId = await jwtService.getUserIdByToken(token);
+    const userId: string | null = await jwtService.getUserIdByToken(token);
     if (!userId) {
         res.sendStatus(401);
         return;
     }
-    const stringId = userId;
-    const objectId = new mongoose.Types.ObjectId(stringId);
-    const user = await userService.findUserById(objectId);
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const user = await userService.findUserById(userObjectId);
     if (user) {
-        req.userId = user!._id;
+        req.userId = userObjectId;
         next();
         return;
     }
