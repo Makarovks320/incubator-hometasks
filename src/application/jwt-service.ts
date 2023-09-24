@@ -12,11 +12,12 @@ if (!refreshSecret) {
 }
 
 export const jwtService = {
-    async createAccessToken(user: UserAccountDBType) {
-        return jwt.sign({userId: user._id}, secret, {expiresIn: 10});
+    async createAccessToken(userId: ObjectId) {
+        return jwt.sign({userId}, secret, {expiresIn: 10});
     },
-    async createRefreshToken(user: UserAccountDBType) {
-        return jwt.sign({userId: user._id}, refreshSecret, {expiresIn: 20});
+    async createRefreshToken(userId: ObjectId) {
+        return jwt.sign({userId}, refreshSecret, {expiresIn: 20});
+    },
     },
     async getUserIdByToken(token: string): Promise<string | null> {
         try {
