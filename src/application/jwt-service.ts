@@ -1,14 +1,22 @@
 import {UserAccountDBType} from "../Repositories/users-repository";
 import jwt from 'jsonwebtoken';
+import {settings} from "../settings";
 
-const secret: string = process.env.JWT_SECRET || '';
+const secret: string = settings.JWT_SECRET;
+const refreshSecret: string = settings.JWT_REFRESH_SECRET;
 if (!secret) {
+    throw new Error('jwt secret is not passed');
+}
+if (!refreshSecret) {
     throw new Error('jwt secret is not passed');
 }
 
 export const jwtService = {
-    async createToken(user: UserAccountDBType) {
-        return jwt.sign({userId: user._id}, secret, {expiresIn: '1h'});
+    async createAccessToken(user: UserAccountDBType) {
+        return jwt.sign({userId: user._id}, secret, {expiresIn: 10});
+    },
+    async createRefreshToken(user: UserAccountDBType) {
+        return jwt.sign({userId: user._id}, refreshSecret, {expiresIn: 20});
     },
     async getUserIdByToken(token: string): Promise<string | null> {
         try {

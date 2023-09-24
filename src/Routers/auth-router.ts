@@ -22,6 +22,8 @@ type UserAuthMeOutput = {
     login: string,
     userId: ObjectId
 }
+const refreshTokenOptions = {httpOnly: true,secure: true}
+
 export const authRouter = Router();
 authRouter.post('/login', [
     loginOrEmailAuthValidation,
@@ -30,8 +32,11 @@ authRouter.post('/login', [
     async (req: Request, res: Response) => {
         const user = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
         if (user) {
-            const token = await jwtService.createToken(user);
-            res.status(200).send({accessToken: token});
+            const accessToken = await jwtService.createAccessToken(user);
+            const refreshToken = await jwtService.createRefreshToken(user);
+            res.status(200)
+                .cookie('refreshToken', refreshToken, refreshTokenOptions)
+                .send({accessToken: accessToken});
         } else {
             res.sendStatus(401);
         }
