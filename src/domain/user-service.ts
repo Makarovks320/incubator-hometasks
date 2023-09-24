@@ -10,7 +10,7 @@ export type OutputUser = {
     accountData: {
         userName: string,
         email: string,
-        createdAt: Date
+        createdAt: string
     }
 }
 export type InputUser = {
@@ -30,7 +30,7 @@ export const userService = {
                 email: u.email,
                 salt: passwordSalt,
                 hash: passwordHash,
-                createdAt: new Date()
+                createdAt: (new Date()).toISOString()
             },
             emailConfirmation: {
                 confirmationCode: uuidv4(),

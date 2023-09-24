@@ -17,7 +17,7 @@ export const authService = {
                 email,
                 salt: passwordSalt,
                 hash: passwordHash,
-                createdAt: new Date()
+                createdAt: (new Date()).toISOString()
             },
             emailConfirmation: {
                 confirmationCode: uuidv4(),

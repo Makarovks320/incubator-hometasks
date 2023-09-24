@@ -8,7 +8,7 @@ export type UserAccountDBType = {
         email: string;
         salt: string;
         hash: string;
-        createdAt: Date;
+        createdAt: string;
     },
     emailConfirmation: EmailConfirmationType
 }
