@@ -8,7 +8,7 @@ import {
     passwordAuthValidation
 } from "../Middlewares/auth-validations";
 import {inputValidator} from "../Middlewares/input-validator";
-import {authMiddleware} from "../Middlewares/auth-middleware";
+import {authMiddleware, refreshTokenCheck} from "../Middlewares/auth-middleware";
 import {authService} from "../domain/auth-service";
 import {ObjectId} from "mongodb";
 import {body, oneOf} from "express-validator";
@@ -41,6 +41,24 @@ authRouter.post('/login', [
             res.sendStatus(401);
         }
     }]);
+authRouter.post('/logout', [
+    refreshTokenCheck,
+    async (req: Request, res: Response) => {
+        await jwtService.addTokenToDb(req.userId, req.cookies.refreshToken);
+        res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(204);
+    }
+])
+authRouter.post('/refresh-token', [
+    refreshTokenCheck,
+    async (req: Request, res: Response) => {
+        // todo: написать методы:
+        const accessToken = await jwtService.createAccessToken(req.userId);
+        const newRefreshToken = await jwtService.updateRefreshToken(req.userId, req.cookies.refreshToken);
+        res.status(200)
+            .cookie('refreshToken', newRefreshToken, refreshTokenOptions)
+            .send({accessToken: accessToken});
+    }
+])
 authRouter.get('/me', [
     authMiddleware,
     async (req: Request, res: Response) => {

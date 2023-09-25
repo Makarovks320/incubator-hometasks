@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {userService} from "../domain/user-service";
 import mongoose from "mongoose";
+import {expiredTokensRepository} from "../Repositories/expired-tokens-repository";
 
 /* миддлвар проверяет заголовок authorization
 достает bearer token
@@ -22,6 +23,34 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     }
     const userObjectId = new mongoose.Types.ObjectId(userId);
     const user = await userService.findUserById(userObjectId);
+    if (user) {
+        req.userId = userObjectId;
+        next();
+        return;
+    }
+    res.sendStatus(401);
+}
+
+export async function refreshTokenCheck(req: Request, res: Response, next: NextFunction) {
+    if(!req.cookies.refreshToken) {
+        res.sendStatus(401);
+        return;
+    }
+    const token = req.cookies.refreshToken;
+    const isTokenExpired = await expiredTokensRepository.findToken(token);
+    if (isTokenExpired) {
+        res.sendStatus(401);
+        return;
+    }
+    // todo: есть дублирование с функцией authMiddleware
+    const userId: string | null = await jwtService.getUserIdByToken(token);
+    if (!userId) {
+        res.sendStatus(401);
+        return;
+    }
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const user = await userService.findUserById(userObjectId);
+    // todo: не лишняя ли это проверка?
     if (user) {
         req.userId = userObjectId;
         next();
