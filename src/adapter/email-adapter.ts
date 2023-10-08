@@ -16,6 +16,8 @@ export const emailAdapter = {
             subject: subject,
             html: message
         });
-        return info;
+        console.log(info);
+        debugger;
+        return info;// todo: посмотреть info
     }
 }
