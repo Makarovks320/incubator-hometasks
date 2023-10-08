@@ -1,7 +1,6 @@
 import request from 'supertest';
 import {app} from "../../src";
 import {Blog} from "../../src/Repositories/blogs-repository";
-import {Post} from "../../src/Repositories/posts-repository";
 
 describe('/blogs', () => {
     beforeAll(async () => {
@@ -134,7 +133,6 @@ describe('/posts', () => {
             });
     });
 
-    let createdPost: Post | null;
     it('should create new post', async () => {
         // сначала создадим блог
         const {body: createdBlog} = await request(app)
@@ -146,7 +144,7 @@ describe('/posts', () => {
                 websiteUrl: "http://test.ru"
             });
         //создадим пост для createdBlog.id
-        const response = await request(app)
+        const {body: createdPost} = await request(app)
             .post('/posts')
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send({
@@ -156,7 +154,6 @@ describe('/posts', () => {
                 "blogId": createdBlog.id
             })
             .expect(201);
-        createdPost = response.body;
         expect(createdPost).toEqual({
             createdAt: expect.any(String),
             id: expect.any(String),
