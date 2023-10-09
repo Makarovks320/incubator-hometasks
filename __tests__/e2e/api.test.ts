@@ -1,11 +1,24 @@
 import request from 'supertest';
 import {app} from "../../src";
 import {Blog} from "../../src/Repositories/blogs-repository";
+import mongoose from "mongoose";
+import {authBasicHeader, connection_string} from "../utils/test_utilities";
+import {STATUSES_HTTP} from "../../src/enums/http-statuses";
 
 describe('/blogs', () => {
     beforeAll(async () => {
-        await request(app).delete('/testing/all-data').set('Authorization', 'Basic YWRtaW46cXdlcnR5');
-    }, 10000);
+        await mongoose.connect(connection_string);
+    })
+
+    afterAll(async () => {
+        await mongoose.disconnect();
+    })
+    it('Delete all data before testing', async () => {
+        await request(app)
+            .delete('/testing/all-data')
+            .set(authBasicHeader)
+            .expect(STATUSES_HTTP.NO_CONTENT_204)
+    })
 
     it('should return an object with 0 totalCount', async () => {
          await request(app)
@@ -16,7 +29,7 @@ describe('/blogs', () => {
     it('should return error (websiteUrl)', async () => {
         await request(app)
             .post('/blogs')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .set(authBasicHeader)
             .send({
                 name: "name test",
                 description: "description test",
@@ -31,7 +44,7 @@ describe('/blogs', () => {
     it('should create new blog', async () => {
         const response = await request(app)
             .post('/blogs')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .set(authBasicHeader)
             .send({
                 name: "name test",
                 description: "description test",
@@ -74,7 +87,7 @@ describe('/blogs', () => {
     it('should return 204', async () => {
         await request(app)
             .put('/blogs/' + createdBlog?.id, )
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .set(authBasicHeader)
             .send({
                 name: "edited name",
                 description: "description test",
@@ -110,7 +123,7 @@ describe('/blogs', () => {
 });
 describe('/posts', () => {
     beforeAll(async () => {
-        await request(app).delete('/testing/all-data').set('Authorization', 'Basic YWRtaW46cXdlcnR5');
+        await request(app).delete('/testing/all-data').set(authBasicHeader);
     }, 10000);
     it('should return an object with 0 totalCount', async () => {
         await request(app)
@@ -121,7 +134,7 @@ describe('/posts', () => {
     it('should return error (blogId)', async () => {
         await request(app)
             .post('/posts')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .set(authBasicHeader)
             .send({
                 "title": "title 1",
                 "content": "content 1",
@@ -137,7 +150,7 @@ describe('/posts', () => {
         // сначала создадим блог
         const {body: createdBlog} = await request(app)
             .post('/blogs')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .set(authBasicHeader)
             .send({
                 name: "name test2 ",
                 description: "description test 2",
@@ -146,7 +159,7 @@ describe('/posts', () => {
         //создадим пост для createdBlog.id
         const {body: createdPost} = await request(app)
             .post('/posts')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .set(authBasicHeader)
             .send({
                 "title": "title 1",
                 "content": "content 1",

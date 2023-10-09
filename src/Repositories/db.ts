@@ -12,11 +12,12 @@ const mongoUri: string = process.env.MONGO_CLOUD_URL || '';
 if (!mongoUri) {
     throw new Error('db uri is not passed');
 }
+const DbName =  process.env.MONGO_DB_NAME || "incubator-project";
 
 // создание клиента кластера монго
 export const client = new MongoClient(mongoUri);
 
-export const db = client.db('ht_05');
+export const db = client.db(DbName);
 export const blogCollection = db.collection<Blog>('blogs');
 export const postCollection = db.collection<Post>('posts');
 export const userCollection = db.collection<UserAccountDBType>('users');
