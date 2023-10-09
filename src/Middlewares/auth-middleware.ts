@@ -3,6 +3,7 @@ import {jwtService} from "../application/jwt-service";
 import {userService} from "../domain/user-service";
 import mongoose from "mongoose";
 import {expiredTokensRepository} from "../Repositories/expired-tokens-repository";
+import {STATUSES_HTTP} from "../enums/http-statuses";
 
 /* миддлвар проверяет заголовок authorization
 достает bearer token
@@ -12,13 +13,13 @@ import {expiredTokensRepository} from "../Repositories/expired-tokens-repository
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     if (!req.headers.authorization) {
-        res.sendStatus(401);
+        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         return;
     }
     const token = req.headers.authorization.split(' ')[1];
     const userId: string | null = await jwtService.getUserIdByToken(token);
     if (!userId) {
-        res.sendStatus(401);
+        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         return;
     }
     const userObjectId = new mongoose.Types.ObjectId(userId);
@@ -28,24 +29,24 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         next();
         return;
     }
-    res.sendStatus(401);
+    res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
 }
 
 export async function refreshTokenCheck(req: Request, res: Response, next: NextFunction) {
     if(!req.cookies.refreshToken) {
-        res.sendStatus(401);
+        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         return;
     }
     const token = req.cookies.refreshToken;
     const isTokenExpired = await expiredTokensRepository.findToken(token);
     if (isTokenExpired) {
-        res.sendStatus(401);
+        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         return;
     }
     // todo: есть дублирование с функцией authMiddleware
     const userId: string | null = await jwtService.getUserIdByToken(token);
     if (!userId) {
-        res.sendStatus(401);
+        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         return;
     }
     const userObjectId = new mongoose.Types.ObjectId(userId);
@@ -56,5 +57,5 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
         next();
         return;
     }
-    res.sendStatus(401);
+    res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
 }

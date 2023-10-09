@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {validationResult} from "express-validator";
+import {STATUSES_HTTP} from "../enums/http-statuses";
 
 // типы для режима без any
 // type Error = {
@@ -40,6 +41,6 @@ export const inputValidator =
             // @ts-ignore
             errorsMessages.push({message: mergedByProperty[obj].message, field: mergedByProperty[obj].field})
         }
-        res.status(400).send({errorsMessages: errorsMessages});
+        res.status(STATUSES_HTTP.BAD_REQUEST_400).send({errorsMessages: errorsMessages});
     }
 };

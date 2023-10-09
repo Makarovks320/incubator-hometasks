@@ -6,6 +6,7 @@ import {emailValidation, loginValidation, passwordValidation} from "../Middlewar
 import {inputValidator} from "../Middlewares/input-validator";
 import {ObjectId} from "mongodb";
 import * as mongoose from "mongoose";
+import {STATUSES_HTTP} from "../enums/http-statuses";
 
 
 type UserForResponseType = {
@@ -35,7 +36,7 @@ usersRouter.post('/', [
             email: createdUser.accountData.email,
             createdAt: createdUser.accountData.createdAt.toString()
         }
-        res.status(201).send(userForResponse);
+        res.status(STATUSES_HTTP.CREATED_201).send(userForResponse);
     }
 ]);
 
@@ -61,7 +62,7 @@ usersRouter.get('/:id', [
         const stringId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(stringId);
         const user = await userService.findUserById(objectId as ObjectId);
-        user ? res.send(user) : res.send(404);
+        user ? res.send(user) : res.send(STATUSES_HTTP.NOT_FOUND_404);
     }
 ]);
 
@@ -71,14 +72,14 @@ usersRouter.delete('/:id', [
         const stringId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(stringId);
         const user = await userService.deleteUserById(objectId);
-        user ? res.status(204).send() : res.status(404).send();
+        user ? res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.status(STATUSES_HTTP.NOT_FOUND_404).send();
     }
 ]);
 
 usersRouter.delete('/', [
     async (req: Request, res: Response) => {
         await userService.deleteAllUsers();
-        res.sendStatus(204);
+        res.sendStatus(STATUSES_HTTP.NO_CONTENT_204);
     }
 ]);
 

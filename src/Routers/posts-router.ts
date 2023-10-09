@@ -19,6 +19,7 @@ import {checkPostExists} from "../Middlewares/check-post-exists";
 import {idFromUrlExistingValidator} from "../Middlewares/id-from-url-existing-validator";
 import {commentQueryRepository} from "../Repositories/comment-query-repository";
 import mongoose from "mongoose";
+import {STATUSES_HTTP} from "../enums/http-statuses";
 
 export const postsRouter = Router();
 
@@ -35,7 +36,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
     const posts = await postService.getPostById(req.params.id);
-    posts ? res.send(posts) : res.send(404);
+    posts ? res.send(posts) : res.send(STATUSES_HTTP.NOT_FOUND_404);
 });
 
 postsRouter.post('/', [
@@ -52,7 +53,7 @@ postsRouter.post('/', [
             blogName: req.blogName
         }
         const newPost = await postService.createNewPost(post);
-        res.status(201).send(newPost);
+        res.status(STATUSES_HTTP.CREATED_201).send(newPost);
     }
 ]);
 
@@ -66,7 +67,7 @@ postsRouter.put('/:id', [
     inputValidator,
     async (req: Request, res: Response) => {
         const newPost = await postService.updatePostById(req.params.id, req.body)
-        newPost ?  res.status(204).send() : res.send(404);
+        newPost ?  res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.send(STATUSES_HTTP.NOT_FOUND_404);
     }
 ]);
 
@@ -74,7 +75,7 @@ postsRouter.delete('/', [
     authorization,
     async (req: Request, res: Response) => {
         await postService.deleteAllPosts();
-        res.sendStatus(204);
+        res.sendStatus(STATUSES_HTTP.NO_CONTENT_204);
     }
 ]);
 
@@ -82,7 +83,7 @@ postsRouter.delete('/:id', [
     authorization,
     async (req: Request, res: Response) => {
         const blog = await postService.deletePostById(req.params.id);
-        blog ? res.status(204).send() : res.status(404).send();
+        blog ? res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.status(STATUSES_HTTP.NOT_FOUND_404).send();
     }
 ]);
 
@@ -115,6 +116,6 @@ postsRouter.post('/:id/comments', [
             postId: req.params.id
         }
         const newComment = await commentService.createNewComment(comment, req.userId);
-        res.status(201).send(newComment);
+        res.status(STATUSES_HTTP.CREATED_201).send(newComment);
     }
 ]);

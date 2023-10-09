@@ -10,6 +10,7 @@ import {authRouter} from "./Routers/auth-router";
 import {commentService} from "./domain/comment-service";
 import {commentsRouter} from "./Routers/comments-router";
 import cookieParser from "cookie-parser";
+import {STATUSES_HTTP} from "./enums/http-statuses";
 
 const PORT = process.env.PORT || 3000;
 export const app = express();
@@ -30,10 +31,10 @@ app.delete('/testing/all-data', async (req: Request, res: Response, next: NextFu
             commentService.deleteAllComments()
         ]).catch((e) => {
             console.log(e.message);
-            return res.sendStatus(500);
+            return res.sendStatus(STATUSES_HTTP.SERVER_ERROR_500);
         })
 
-        return res.sendStatus(204)
+        return res.sendStatus(STATUSES_HTTP.NO_CONTENT_204)
     }
 )
 

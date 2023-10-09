@@ -16,6 +16,7 @@ import {checkEmailExists} from "../Middlewares/check-email-exists";
 import {checkLoginExists} from "../Middlewares/check-login-exists";
 import {checkConfirmationData} from "../Middlewares/check-confirmation-data";
 import {emailValidation} from "../Middlewares/users-validations";
+import {STATUSES_HTTP} from "../enums/http-statuses";
 
 type UserAuthMeOutput = {
     email: string,
@@ -34,18 +35,18 @@ authRouter.post('/login', [
         if (user) {
             const accessToken = await jwtService.createAccessToken(user._id);
             const refreshToken = await jwtService.createRefreshToken(user._id);
-            res.status(200)
+            res.status(STATUSES_HTTP.OK_200)
                 .cookie('refreshToken', refreshToken, refreshTokenOptions)
                 .send({accessToken: accessToken});
         } else {
-            res.sendStatus(401);
+            res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         }
     }]);
 authRouter.post('/logout', [
     refreshTokenCheck,
     async (req: Request, res: Response) => {
         await jwtService.addTokenToDb(req.userId, req.cookies.refreshToken);
-        res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(204);
+        res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(STATUSES_HTTP.NO_CONTENT_204);
     }
 ])
 authRouter.post('/refresh-token', [
@@ -54,7 +55,7 @@ authRouter.post('/refresh-token', [
         // todo: написать методы:
         const accessToken = await jwtService.createAccessToken(req.userId);
         const newRefreshToken = await jwtService.updateRefreshToken(req.userId, req.cookies.refreshToken);
-        res.status(200)
+        res.status(STATUSES_HTTP.OK_200)
             .cookie('refreshToken', newRefreshToken, refreshTokenOptions)
             .send({accessToken: accessToken});
     }
@@ -64,14 +65,14 @@ authRouter.get('/me', [
     async (req: Request, res: Response) => {
         const user: OutputUser | null = await userService.findUserById(req.userId)
         if (!user) {
-            res.sendStatus(401)
+            res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401)
         } else {
             const userAuthMeOutput: UserAuthMeOutput = {
                 email: user.accountData.email,
                 login: user.accountData.userName,
                 userId: user._id
             }
-            res.status(200).send(userAuthMeOutput);
+            res.status(STATUSES_HTTP.OK_200).send(userAuthMeOutput);
         }
     }]);
 authRouter.post('/registration', [
@@ -84,9 +85,9 @@ authRouter.post('/registration', [
     async (req: Request, res: Response) => {
     const user = await authService.createUser(req.body.login, req.body.email, req.body.password)
     if (user) {
-        res.status(204).send();
+        res.status(STATUSES_HTTP.NO_CONTENT_204).send();
     } else {
-        res.status(400).send();
+        res.status(STATUSES_HTTP.BAD_REQUEST_400).send();
     }
 }
 ]);
@@ -96,9 +97,9 @@ authRouter.post('/registration-confirmation',[
     async (req: Request, res: Response) => {
         const result = await authService.confirmEmailByCodeOrEmail(req.body.code)
         if (result) {
-            res.status(204).send();
+            res.status(STATUSES_HTTP.NO_CONTENT_204).send();
         } else {
-            res.status(400).send();
+            res.status(STATUSES_HTTP.BAD_REQUEST_400).send();
         }
 }
 ]);
@@ -109,9 +110,9 @@ authRouter.post('/registration-email-resending',[
     async (req: Request, res: Response) => {
         const result = await authService.sendEmailWithNewCode(req.body.email)
         if (result) {
-            res.status(204).send();
+            res.status(STATUSES_HTTP.NO_CONTENT_204).send();
         } else {
-            res.status(400).send();
+            res.status(STATUSES_HTTP.BAD_REQUEST_400).send();
         }
     }
 ]);
