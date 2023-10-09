@@ -20,24 +20,13 @@ import {idFromUrlExistingValidator} from "../Middlewares/id-from-url-existing-va
 import {commentQueryRepository} from "../Repositories/comment-query-repository";
 import mongoose from "mongoose";
 import {STATUSES_HTTP} from "../enums/http-statuses";
+import {postsController} from "../Controller/posts-controller";
 
 export const postsRouter = Router();
 
-postsRouter.get('/', async (req: Request, res: Response) => {
-    const queryParams: PostQueryParams = {
-        pageNumber: parseInt(req.query.pageNumber as string) || 1,
-        pageSize: parseInt(req.query.pageSize as string) || 10,
-        sortBy: req.query.sortBy as string|| 'createdAt',
-        sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-    }
-    const posts = await postsQueryRepository.getPosts(queryParams);
-    res.send(posts);
-});
+postsRouter.get('/', postsController.getPosts);
 
-postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const posts = await postService.getPostById(req.params.id);
-    posts ? res.send(posts) : res.send(STATUSES_HTTP.NOT_FOUND_404);
-});
+postsRouter.get('/:id', postsController.getPostById);
 
 postsRouter.post('/', [
     authorization,
@@ -46,15 +35,7 @@ postsRouter.post('/', [
     contentValidation,
     blogIdValidation,
     inputValidator,
-    async (req: Request, res: Response) => {
-        const post: InputPost = {
-            ...req.body,
-            blogId: req.body.blogId,
-            blogName: req.blogName
-        }
-        const newPost = await postService.createNewPost(post);
-        res.status(STATUSES_HTTP.CREATED_201).send(newPost);
-    }
+    postsController.createNewPost
 ]);
 
 postsRouter.put('/:id', [
@@ -65,26 +46,17 @@ postsRouter.put('/:id', [
     contentValidation,
     blogIdValidation,
     inputValidator,
-    async (req: Request, res: Response) => {
-        const newPost = await postService.updatePostById(req.params.id, req.body)
-        newPost ?  res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.send(STATUSES_HTTP.NOT_FOUND_404);
-    }
+    postsController.updatePost
 ]);
 
 postsRouter.delete('/', [
     authorization,
-    async (req: Request, res: Response) => {
-        await postService.deleteAllPosts();
-        res.sendStatus(STATUSES_HTTP.NO_CONTENT_204);
-    }
+    postsController.deleteAllPosts
 ]);
 
 postsRouter.delete('/:id', [
     authorization,
-    async (req: Request, res: Response) => {
-        const blog = await postService.deletePostById(req.params.id);
-        blog ? res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.status(STATUSES_HTTP.NOT_FOUND_404).send();
-    }
+    postsController.deletePostById
 ]);
 
 // комментарии
@@ -92,16 +64,7 @@ postsRouter.delete('/:id', [
 postsRouter.get('/:id/comments', [
     param('id').custom(checkPostExists).withMessage('post is not found'),
     idFromUrlExistingValidator,
-    async (req: Request, res: Response) => {
-        const queryParams: PostQueryParams = {
-            pageNumber: parseInt(req.query.pageNumber as string) || 1,
-            pageSize: parseInt(req.query.pageSize as string) || 10,
-            sortBy: req.query.sortBy as string|| 'createdAt',
-            sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-        }
-        const comments = await commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
-        res.send(comments);
-    }
+    postsController.getCommentsForPost
 ]);
 
 postsRouter.post('/:id/comments', [
@@ -110,12 +73,5 @@ postsRouter.post('/:id/comments', [
     idFromUrlExistingValidator,
     commentContentValidation,
     inputValidator,
-    async (req: Request, res: Response) => {
-        const comment: InputCommentWithPostId = {
-            content: req.body.content,
-            postId: req.params.id
-        }
-        const newComment = await commentService.createNewComment(comment, req.userId);
-        res.status(STATUSES_HTTP.CREATED_201).send(newComment);
-    }
+    postsController.createCommentToPost
 ]);
