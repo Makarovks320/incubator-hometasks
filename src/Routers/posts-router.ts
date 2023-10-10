@@ -8,8 +8,8 @@ import {
 } from "../Middlewares/posts-validations";
 import {inputValidator} from "../Middlewares/input-validator";
 import {checkIdFromUri} from "../Middlewares/check-id-from-uri";
-import { authMiddleware } from "../Middlewares/auth-middleware";
-import { commentContentValidation } from "../Middlewares/comment-validations";
+import {authMiddleware} from "../Middlewares/auth-middleware";
+import {commentContentValidation} from "../Middlewares/comment-validations";
 import {param} from "express-validator";
 import {checkPostExists} from "../Middlewares/check-post-exists";
 import {idFromUrlExistingValidator} from "../Middlewares/id-from-url-existing-validator";

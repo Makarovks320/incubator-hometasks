@@ -43,12 +43,12 @@ authRouter.post('/registration', [
     authController.registerNewUser
 
 ]);
-authRouter.post('/registration-confirmation',[
+authRouter.post('/registration-confirmation', [
     body('code').custom(checkConfirmationData).withMessage('wrong code or user is already confirmed'),
     inputValidator,
     authController.confirmRegistration
 ]);
-authRouter.post('/registration-email-resending',[
+authRouter.post('/registration-email-resending', [
     emailValidation,
     body('email').custom(checkConfirmationData).withMessage('wrong email or user is already confirmed'),
     inputValidator,
