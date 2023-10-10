@@ -11,6 +11,7 @@ import {usersRouter} from "./Routers/users-router";
 import {authRouter} from "./Routers/auth-router";
 import {commentsRouter} from "./Routers/comments-router";
 import {RouterPaths} from "./helpers/router-paths";
+import {testingRouter} from "./Routers/testing-router";
 
 export const app = express();
 
@@ -22,25 +23,9 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello World !!');
 });
 
-app.delete('/testing/all-data', async (req: Request, res: Response, next: NextFunction) => {
-        Promise.all([
-            postService.deleteAllPosts(),
-            blogService.deleteAllBlogs(),
-            userService.deleteAllUsers(),
-            commentService.deleteAllComments()
-        ]).catch((e) => {
-            console.log(e.message);
-            res.sendStatus(STATUSES_HTTP.SERVER_ERROR_500);
-            return;
-        })
-
-        res.sendStatus(STATUSES_HTTP.NO_CONTENT_204);
-        return;
-    }
-)
-
 app.use(RouterPaths.posts, postsRouter);
 app.use(RouterPaths.blogs, blogsRouter);
 app.use(RouterPaths.users, usersRouter);
 app.use(RouterPaths.auth, authRouter);
 app.use(RouterPaths.comments, commentsRouter);
+app.use(RouterPaths.testing, testingRouter);
