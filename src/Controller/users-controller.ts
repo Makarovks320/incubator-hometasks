@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {InputUser, userService} from "../domain/user-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
-import {UserQueryParams, usersQueryRepository} from "../Repositories/users-query-repository";
+import {UserQueryParams, usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
 

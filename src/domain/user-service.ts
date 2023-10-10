@@ -1,6 +1,6 @@
 import {UserAccountDBType, usersRepository} from "../Repositories/users-repository";
 import bcrypt from 'bcrypt';
-import { usersQueryRepository } from "../Repositories/users-query-repository";
+import { usersQueryRepository } from "../Repositories/query-repositories/users-query-repository";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";

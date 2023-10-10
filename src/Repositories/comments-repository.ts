@@ -1,5 +1,5 @@
 import {commentCollection, DEFAULT_PROJECTION} from "./db";
-import {COMMENT_PROJECTION} from "./comment-query-repository";
+import {COMMENT_PROJECTION} from "./query-repositories/comment-query-repository";
 import {ObjectId} from "mongodb";
 
 export type Comment = CommentOutput & {

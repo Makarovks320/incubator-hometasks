@@ -1,8 +1,8 @@
 import {Request, Response} from "express";
-import {BlogQueryParams, blogsQueryRepository} from "../Repositories/blogs-query-repository";
+import {BlogQueryParams, blogsQueryRepository} from "../Repositories/query-repositories/blogs-query-repository";
 import {blogService} from "../domain/blog-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
-import {PostQueryParams, postsQueryRepository} from "../Repositories/posts-query-repository";
+import {PostQueryParams, postsQueryRepository} from "../Repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../domain/post-service";
 
 export const blogsController = {

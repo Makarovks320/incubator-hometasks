@@ -1,7 +1,7 @@
-import {userCollection} from "./db";
-import {UserAccountDBType} from "./users-repository";
+import {userCollection} from "../db";
+import {UserAccountDBType} from "../users-repository";
 import {Filter, ObjectId, Sort} from "mongodb";
-import { OutputUser } from "../domain/user-service";
+import { OutputUser } from "../../domain/user-service";
 
 export type UserQueryParams = {
     searchLoginTerm: string | null,

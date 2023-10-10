@@ -1,8 +1,8 @@
 import {Request, Response} from "express";
-import {PostQueryParams, postsQueryRepository} from "../Repositories/posts-query-repository";
+import {PostQueryParams, postsQueryRepository} from "../Repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../domain/post-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
-import {commentQueryRepository} from "../Repositories/comment-query-repository";
+import {commentQueryRepository} from "../Repositories/query-repositories/comment-query-repository";
 import {commentService, InputCommentWithPostId} from "../domain/comment-service";
 
 export const postsController = {
