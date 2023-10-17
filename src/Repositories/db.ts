@@ -6,6 +6,7 @@ import {UserAccountDBType} from "./users-repository";
 import {Comment} from "./comments-repository";
 import {ExpiredTokenType} from "./expired-tokens-repository";
 import {SessionDbType} from "../models/session/session-model";
+import {rateLimitDBModel} from "../models/rate-limiting/rate-limiting-model";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ export const userCollection = db.collection<UserAccountDBType>('users');
 export const commentCollection = db.collection<Comment>('comments');
 export const expiredTokensCollection = db.collection<ExpiredTokenType>('expiredTokens');
 export const sessionsCollection = db.collection<SessionDbType>('sessions');
+export const rateLimitingCollection = db.collection<rateLimitDBModel>("rateLimit");
 
 export const DEFAULT_PROJECTION = { _id: false };
 // создадим асинхронную функцию подключения клиента
