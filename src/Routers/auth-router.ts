@@ -13,8 +13,10 @@ import {checkLoginExists} from "../Middlewares/check-login-exists";
 import {checkConfirmationData} from "../Middlewares/check-confirmation-data";
 import {emailValidation} from "../Middlewares/users-validations";
 import {authController} from "../Controller/auth-controller";
+import {rateLimitMiddleware} from "../Middlewares/rate-limit-middleware";
 
 export const authRouter = Router();
+authRouter.use(rateLimitMiddleware);
 
 authRouter.post('/login', [
     loginOrEmailAuthValidation,
