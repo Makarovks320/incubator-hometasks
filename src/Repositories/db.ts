@@ -5,6 +5,7 @@ import {Blog} from "./blogs-repository";
 import {UserAccountDBType} from "./users-repository";
 import {Comment} from "./comments-repository";
 import {ExpiredTokenType} from "./expired-tokens-repository";
+import {SessionDbType} from "../models/session/session-model";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ export const postCollection = db.collection<Post>('posts');
 export const userCollection = db.collection<UserAccountDBType>('users');
 export const commentCollection = db.collection<Comment>('comments');
 export const expiredTokensCollection = db.collection<ExpiredTokenType>('expiredTokens');
+export const sessionsCollection = db.collection<SessionDbType>('sessions');
 
 export const DEFAULT_PROJECTION = { _id: false };
 // создадим асинхронную функцию подключения клиента
