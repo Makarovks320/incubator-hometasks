@@ -15,6 +15,7 @@ import {emailValidation} from "../Middlewares/users-validations";
 import {authController} from "../Controller/auth-controller";
 
 export const authRouter = Router();
+
 authRouter.post('/login', [
     loginOrEmailAuthValidation,
     passwordAuthValidation,

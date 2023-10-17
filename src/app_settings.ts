@@ -7,12 +7,14 @@ import {authRouter} from "./Routers/auth-router";
 import {commentsRouter} from "./Routers/comments-router";
 import {RouterPaths} from "./helpers/router-paths";
 import {testingRouter} from "./Routers/testing-router";
+import {rateLimitMiddleware} from "./Middlewares/rate-limit-middleware";
 
 export const app = express();
 
 const jsonParser = express.json();
 app.use(jsonParser);
 app.use(cookieParser());
+app.use(rateLimitMiddleware);
 app.set('trust proxy', true);// для получения корректного ip-адреса через прокси
 
 app.get('/', (req: Request, res: Response) => {
