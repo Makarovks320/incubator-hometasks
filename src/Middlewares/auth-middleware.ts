@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 import {userService} from "../domain/user-service";
 import mongoose from "mongoose";
-import {expiredTokensRepository} from "../Repositories/expired-tokens-repository";
 import {STATUSES_HTTP} from "../enums/http-statuses";
 
 /* миддлвар проверяет заголовок authorization
@@ -38,11 +37,7 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
         return;
     }
     const token = req.cookies.refreshToken;
-    const isTokenExpired = await expiredTokensRepository.findToken(token);
-    if (isTokenExpired) {
-        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
-        return;
-    }
+    // здесь надо проверить, не истек ли срок годности токена
     // todo: есть дублирование с функцией authMiddleware
     const userId: string | null = await jwtService.getUserIdByToken(token);
     if (!userId) {

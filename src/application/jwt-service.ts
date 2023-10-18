@@ -1,8 +1,6 @@
-import {UserAccountDBType} from "../Repositories/users-repository";
 import jwt from 'jsonwebtoken';
 import {settings} from "../settings";
 import {ObjectId} from "mongodb";
-import {expiredTokensRepository} from "../Repositories/expired-tokens-repository";
 
 const secret: string = settings.JWT_SECRET;
 const refreshSecret: string = settings.JWT_REFRESH_SECRET;
@@ -21,7 +19,7 @@ export const jwtService = {
         return jwt.sign({userId}, refreshSecret, {expiresIn: 20});
     },
     async updateRefreshToken(userId: ObjectId, refreshToken: string) {
-        await expiredTokensRepository.addTokenToDb(refreshToken, userId);
+        // здесь надо обновить сессию
         return jwt.sign({userId}, refreshSecret, {expiresIn: 20});
     },
     async getUserIdByToken(token: string): Promise<string | null> {
@@ -33,9 +31,5 @@ export const jwtService = {
         } catch (e) {
             return null;
         }
-    },
-    async addTokenToDb(userId: ObjectId, refreshToken: string) {
-        await expiredTokensRepository.addTokenToDb(refreshToken, userId);
-        return;
     }
 }

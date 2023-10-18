@@ -27,7 +27,7 @@ export const authController = {
     },
 
     async logoutUser(req: Request, res: Response) {
-        await jwtService.addTokenToDb(req.userId, req.cookies.refreshToken);
+        //здесь надо убить текущую сессию
         res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(STATUSES_HTTP.NO_CONTENT_204);
     },
 
