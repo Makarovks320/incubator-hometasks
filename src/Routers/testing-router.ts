@@ -4,6 +4,7 @@ import {blogService} from "../domain/blog-service";
 import {userService} from "../domain/user-service";
 import {commentService} from "../domain/comment-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
+import {rateLimitingCollection} from "../Repositories/db";
 
 export const testingRouter = Router();
 
@@ -12,7 +13,8 @@ testingRouter.delete('/all-data', async (req: Request, res: Response, next: Next
             postService.deleteAllPosts(),
             blogService.deleteAllBlogs(),
             userService.deleteAllUsers(),
-            commentService.deleteAllComments()
+            commentService.deleteAllComments(),
+            rateLimitingCollection.deleteMany({}) // не делал ни сервиса, ни репозитория
         ]).catch((e) => {
             console.log(e.message);
             res.sendStatus(STATUSES_HTTP.SERVER_ERROR_500);
