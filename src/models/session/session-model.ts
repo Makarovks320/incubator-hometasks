@@ -1,8 +1,9 @@
 import {ObjectId} from "mongodb";
 
+export type IpType = string | string[];
 export type SessionDbType = {
-    id: ObjectId,
-    ip: string,
+    _id: ObjectId,
+    ip: IpType,
     title: string,
     deviceId: string,
     deviceName: string,
@@ -12,7 +13,7 @@ export type SessionDbType = {
 }
 
 export type SessionViewModel = {
-    ip: string,
+    ip: IpType,
     title: string,
     lastActiveDate: string,
     deviceId: string

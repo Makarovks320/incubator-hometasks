@@ -11,12 +11,19 @@ if (!refreshSecret) {
     throw new Error('jwt secret is not passed');
 }
 
+export type RefreshTokenInfoType = {
+    deviceId: string,
+    userId: ObjectId,
+    iat: number,
+    exp: number
+}
+
 export const jwtService = {
     async createAccessToken(userId: ObjectId) {
-        return jwt.sign({userId}, secret, {expiresIn: 10});
+        return jwt.sign({userId}, secret, {expiresIn: '120s'});
     },
-    async createRefreshToken(userId: ObjectId) {
-        return jwt.sign({userId}, refreshSecret, {expiresIn: 20});
+    async createRefreshToken(userId: ObjectId, deviceId: string) {
+        return jwt.sign({userId: userId, deviceId: deviceId}, secret, {expiresIn: '1200s'})
     },
     async updateRefreshToken(userId: ObjectId, refreshToken: string) {
         // здесь надо обновить сессию
@@ -30,6 +37,20 @@ export const jwtService = {
             return result.userId
         } catch (e) {
             return null;
+        }
+    },
+    getRefreshTokenInfo(refreshToken: string): RefreshTokenInfoType | null {
+        try {
+            const result: any = jwt.verify(refreshToken, secret)
+            debugger;
+            return {
+                deviceId: result.deviceId,
+                iat: result.iat,
+                exp: result.exp,
+                userId: result.userId
+            }
+        } catch (e) {
+            return null
         }
     }
 }

@@ -25,4 +25,5 @@ app.use(RouterPaths.blogs, blogsRouter);
 app.use(RouterPaths.users, usersRouter);
 app.use(RouterPaths.auth, authRouter);
 app.use(RouterPaths.comments, commentsRouter);
+app.use(RouterPaths.securityDevices, securityDevicesRouter);
 app.use(RouterPaths.testing, testingRouter);

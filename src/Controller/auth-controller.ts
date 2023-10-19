@@ -4,6 +4,9 @@ import {jwtService} from "../application/jwt-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
 import {ObjectId} from "mongodb";
 import {authService} from "../domain/auth-service";
+import {sessionService} from "../domain/session-service";
+import {IpType} from "../models/session/session-model";
+import {v4 as uuidv4} from "uuid";
 
 type UserAuthMeOutput = {
     email: string,
@@ -16,8 +19,25 @@ export const authController = {
     async loginUser(req: Request, res: Response) {
         const user = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
         if (user) {
+            //подготавливаем данные для сохранения сессии:
+            let deviceId: string;
+            if (req.cookies.refreshToken) { //если уже есть рефреш-токен, достанем оттуда deviceId
+                const info = jwtService.getRefreshTokenInfo(req.cookies.refreshToken);
+                deviceId = info!.deviceId;
+            } else { //либо генерим новый deviceId
+                deviceId = uuidv4();
+            }
+            //todo: работать сценарий, когда рефреш-токен валиден, сделать перезапись сессии вместо создания новой
+            const ip: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";
+            const deviceName: string = req.headers['user-agent'] || "deviceName undefined";
+
+            // создаем токены
             const accessToken = await jwtService.createAccessToken(user._id);
-            const refreshToken = await jwtService.createRefreshToken(user._id);
+            const refreshToken = await jwtService.createRefreshToken(user._id, deviceId);
+
+            // сохраняем текущую сессию:
+            await sessionService.addSession(ip, deviceId, deviceName, refreshToken);
+
             res.status(STATUSES_HTTP.OK_200)
                 .cookie('refreshToken', refreshToken, refreshTokenOptions)
                 .send({accessToken: accessToken});
