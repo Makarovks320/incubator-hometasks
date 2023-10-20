@@ -1,13 +1,18 @@
 import {userCollection} from "../db";
-import {UserAccountDBType} from "../users-repository";
 import {Filter, ObjectId, Sort} from "mongodb";
-import {UsersWithPaginationModel, UsersQueryParams, OutputUser} from "../../models/user/user-model";
+import {
+    UsersWithPaginationModel,
+    UsersQueryParams,
+    UserDBModel,
+    UserViewModel
+} from "../../models/user/user-model";
+import {getUserViewModel} from "../../helpers/user-view-model-mapper";
 
 const PROJECTION = {emailConfirmation: false};
 
 export const usersQueryRepository = {
     async getUsers(queryParams: UsersQueryParams): Promise<UsersWithPaginationModel> {
-        let filter: Filter<UserAccountDBType> = {}
+        let filter: Filter<UserDBModel> = {}
         if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
             filter = {
                 $or: []
@@ -24,10 +29,11 @@ export const usersQueryRepository = {
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const users = await userCollection.find(filter, {projection: PROJECTION})
+        const users = await userCollection.find(filter)
             .sort(sort)
             .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
             .limit(queryParams.pageSize)
+            .map(u => getUserViewModel(u))
             .toArray();
 
         const totalCount = await userCollection.countDocuments(filter);
@@ -41,7 +47,9 @@ export const usersQueryRepository = {
         }
     },
 
-    async getUserById(id: ObjectId): Promise<OutputUser | null> {
-        return await userCollection.findOne({_id: id}, {projection: PROJECTION});
+    async getUserById(id: ObjectId): Promise<UserViewModel | null> {
+        const result = await userCollection.findOne({_id: id});
+        if (result === null) return null;
+        return getUserViewModel(result);
     }
 }

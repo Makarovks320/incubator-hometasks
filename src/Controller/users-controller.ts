@@ -1,10 +1,10 @@
 import {Request, Response} from "express";
-import {userService} from "../domain/user-service";
+import {InputUser, userService} from "../domain/user-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
 import {usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-import {InputUser, UsersQueryParams, UserViewModel} from "../models/user/user-model";
+import {UsersQueryParams} from "../models/user/user-model";
 import {getQueryParamsForUsers} from "../models/query-params-getter";
 
 export const usersController = {
@@ -16,13 +16,7 @@ export const usersController = {
             password: req.body.password
         }
         const createdUser = await userService.createUser(newUserInput);
-        const userForResponse: UserViewModel = {
-            id: createdUser._id.toString(),
-            login: createdUser.accountData.userName,
-            email: createdUser.accountData.email,
-            createdAt: createdUser.accountData.createdAt.toString()
-        }
-        res.status(STATUSES_HTTP.CREATED_201).send(userForResponse);
+        res.status(STATUSES_HTTP.CREATED_201).send(createdUser);
     },
 
     async getUsers(req: Request, res: Response) {

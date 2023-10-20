@@ -2,15 +2,16 @@ import bcrypt from "bcrypt";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {usersRepository, UserAccountDBType, EmailConfirmationType} from "../Repositories/users-repository";
+import {usersRepository} from "../Repositories/users-repository";
 import {emailManager} from "../Managers/emailManager";
+import {EmailConfirmationType, UserDBModel, UserViewModel} from "../models/user/user-model";
 
 
 export const authService = {
-    async createUser(login: string, email: string, password: string): Promise<UserAccountDBType | null> {
+    async createUser(login: string, email: string, password: string): Promise<UserViewModel | null> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(password, passwordSalt);
-        const user: UserAccountDBType = {
+        const user: UserDBModel = {
             _id: new ObjectId(),
             accountData: {
                 userName: login,

@@ -1,16 +1,21 @@
-import {UserAccountDBType, usersRepository} from "../Repositories/users-repository";
+import {usersRepository} from "../Repositories/users-repository";
 import bcrypt from 'bcrypt';
 import {usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {InputUser, OutputUser} from "../models/user/user-model";
+import {UserDBModel, UserViewModel} from "../models/user/user-model";
 
+export type InputUser = {
+    login: string,
+    email: string,
+    password: string
+}
 export const userService = {
-    async createUser(u: InputUser): Promise<OutputUser> {
+    async createUser(u: InputUser): Promise<UserViewModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
-        const newUser: UserAccountDBType = {
+        const newUser: UserDBModel = {
             _id: new ObjectId(),
             accountData: {
                 userName: u.login,
@@ -30,10 +35,10 @@ export const userService = {
         const result = await usersRepository.createUser(newUser);
         return result;
     },
-    async findUserById(id: ObjectId): Promise<OutputUser | null> {
+    async findUserById(id: ObjectId): Promise<UserViewModel | null> {
         return await usersQueryRepository.getUserById(id);
     },
-    async checkCredentials(loginOrEmail: string, password: string): Promise<UserAccountDBType | null> {
+    async checkCredentials(loginOrEmail: string, password: string): Promise<UserDBModel | null> {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail);
         if (!user) return null;
         const passwordHash = await this._generateHash(password, user.accountData.salt);

@@ -1,7 +1,7 @@
 import {Comment, CommentOutput, commentsRepository} from "../Repositories/comments-repository";
 import { userService } from "./user-service";
 import {ObjectId} from "mongodb";
-import {OutputUser} from "../models/user/user-model";
+import {UserViewModel} from "../models/user/user-model";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -14,7 +14,7 @@ export type InputComment = {
 export const commentService = {
     async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentOutput> {
         // найдем userLogin
-        const user: OutputUser | null = await userService.findUserById(userId);
+        const user: UserViewModel | null = await userService.findUserById(userId);
         if (!user) throw new Error('user is not found');
 
         const comment: Comment = {
@@ -23,7 +23,7 @@ export const commentService = {
             content: c.content,
             commentatorInfo: {
                 userId: userId,
-                userLogin: user.accountData.userName
+                userLogin: user.login
             },
             createdAt: (new Date()).toISOString()
         }

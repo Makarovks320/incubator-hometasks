@@ -1,37 +1,22 @@
 import {userCollection} from "./db";
 import {ObjectId} from "mongodb";
-
-export type UserAccountDBType = {
-    _id: ObjectId,
-    accountData: {
-        userName: string;
-        email: string;
-        salt: string;
-        hash: string;
-        createdAt: string;
-    },
-    emailConfirmation: EmailConfirmationType
-}
-export type EmailConfirmationType = {
-    confirmationCode: string;
-    isConfirmed: boolean;
-    expirationDate: Date;
-}
+import {EmailConfirmationType, UserDBModel, UserViewModel} from "../models/user/user-model";
+import {getUserViewModel} from "../helpers/user-view-model-mapper";
 
 export const usersRepository = {
-    async createUser(user: UserAccountDBType): Promise<UserAccountDBType> {
+    async createUser(user: UserDBModel): Promise<UserViewModel> {
         await userCollection.insertOne(user);
-        return user;
+        return getUserViewModel(user);
     },
-    async findUserById(id: ObjectId): Promise<UserAccountDBType | null> {
+    async findUserById(id: ObjectId): Promise<UserDBModel | null> {
         const user = await userCollection.findOne({_id: id});
         return user ? user : null;
     },
-    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserAccountDBType | null> {
+    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
         const user = await userCollection.findOne({$or: [{'accountData.userName': loginOrEmail}, {'accountData.email': loginOrEmail}]});
         return user ? user : null;
     },
-    async findUserByConfirmationCodeOrEmail(codeOrEmail: string): Promise<UserAccountDBType | null> {
+    async findUserByConfirmationCodeOrEmail(codeOrEmail: string): Promise<UserDBModel | null> {
         const user = await userCollection.findOne({$or: [{'emailConfirmation.confirmationCode': codeOrEmail}, {'accountData.email': codeOrEmail}]});
         return user;
     },
