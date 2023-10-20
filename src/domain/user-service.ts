@@ -1,23 +1,10 @@
 import {UserAccountDBType, usersRepository} from "../Repositories/users-repository";
 import bcrypt from 'bcrypt';
-import { usersQueryRepository } from "../Repositories/query-repositories/users-query-repository";
+import {usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-
-export type OutputUser = {
-    _id: ObjectId,
-    accountData: {
-        userName: string,
-        email: string,
-        createdAt: string
-    }
-}
-export type InputUser = {
-    login: string,
-    email: string,
-    password: string
-}
+import {InputUser, OutputUser} from "../models/user/user-model";
 
 export const userService = {
     async createUser(u: InputUser): Promise<OutputUser> {

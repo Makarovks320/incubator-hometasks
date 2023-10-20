@@ -1,16 +1,11 @@
 import {Request, Response} from "express";
-import {InputUser, userService} from "../domain/user-service";
+import {userService} from "../domain/user-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
-import {UserQueryParams, usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
+import {usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-
-type UserForResponseType = {
-    id: string,
-    login: string,
-    email: string,
-    createdAt: string
-}
+import {InputUser, UsersQueryParams, UserViewModel} from "../models/user/user-model";
+import {getQueryParamsForUsers} from "../models/query-params-getter";
 
 export const usersController = {
 
@@ -21,7 +16,7 @@ export const usersController = {
             password: req.body.password
         }
         const createdUser = await userService.createUser(newUserInput);
-        const userForResponse: UserForResponseType = {
+        const userForResponse: UserViewModel = {
             id: createdUser._id.toString(),
             login: createdUser.accountData.userName,
             email: createdUser.accountData.email,
@@ -31,14 +26,7 @@ export const usersController = {
     },
 
     async getUsers(req: Request, res: Response) {
-        const queryParams: UserQueryParams = {
-            searchLoginTerm: req.query.searchLoginTerm as string || null,
-            searchEmailTerm: req.query.searchEmailTerm as string || null,
-            pageNumber: parseInt(req.query.pageNumber as string) || 1,
-            pageSize: parseInt(req.query.pageSize as string) || 10,
-            sortBy: req.query.sortBy?.toString() || 'createdAt',
-            sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-        }
+        const queryParams: UsersQueryParams = getQueryParamsForUsers(req);
         const users = await usersQueryRepository.getUsers(queryParams);
         res.send(users);
     },

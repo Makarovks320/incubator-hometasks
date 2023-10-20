@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {OutputUser, userService} from "../domain/user-service";
+import {userService} from "../domain/user-service";
 import {jwtService} from "../application/jwt-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
 import {ObjectId} from "mongodb";
@@ -7,6 +7,7 @@ import {authService} from "../domain/auth-service";
 import {sessionService} from "../domain/session-service";
 import {IpType} from "../models/session/session-model";
 import {v4 as uuidv4} from "uuid";
+import {OutputUser} from "../models/user/user-model";
 
 type UserAuthMeOutput = {
     email: string,

@@ -1,28 +1,12 @@
 import {userCollection} from "../db";
 import {UserAccountDBType} from "../users-repository";
 import {Filter, ObjectId, Sort} from "mongodb";
-import { OutputUser } from "../../domain/user-service";
+import {UsersWithPaginationModel, UsersQueryParams, OutputUser} from "../../models/user/user-model";
 
-export type UserQueryParams = {
-    searchLoginTerm: string | null,
-    searchEmailTerm: string | null,
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: 'asc' | 'desc'
-}
-
-type UsersOutput = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: OutputUser[]
-}
 const PROJECTION = {emailConfirmation: false};
 
 export const usersQueryRepository = {
-    async getUsers(queryParams: UserQueryParams): Promise<UsersOutput> {
+    async getUsers(queryParams: UsersQueryParams): Promise<UsersWithPaginationModel> {
         let filter: Filter<UserAccountDBType> = {}
         if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
             filter = {
