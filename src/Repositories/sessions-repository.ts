@@ -1,6 +1,6 @@
 import {sessionsCollection} from "./db";
 import {SessionDbType} from "../models/session/session-model";
-import mongoose from "mongoose";
+import {ObjectId} from "mongodb";
 
 export const sessionsRepository = {
     async addSession(session: SessionDbType): Promise<SessionDbType | null> {
@@ -12,9 +12,8 @@ export const sessionsRepository = {
         }
         return session;
     },
-    async getAllSessionsForUser(userId: string): Promise<SessionDbType[] | null> {
-        const userObjectId = new mongoose.Types.ObjectId(userId);
-        const result = await sessionsCollection.find({userId: userObjectId}).toArray();
+    async getAllSessionsForUser(userId: ObjectId): Promise<SessionDbType[] | null> {
+        const result = await sessionsCollection.find({userId: userId}).toArray();
         return result;
     }
 }

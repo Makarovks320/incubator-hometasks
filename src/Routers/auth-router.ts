@@ -25,7 +25,7 @@ authRouter.post('/login', [
     authController.loginUser
 ]);
 authRouter.post('/logout', [
-    refreshTokenCheck,//todo: возможно ли вылогиниться, если токен увели? Эта проверка будет посылать сразу
+    refreshTokenCheck,
     authController.logoutUser
 ])
 authRouter.post('/refresh-token', [

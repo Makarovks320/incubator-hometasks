@@ -1,22 +1,16 @@
 import {Request, Response} from "express";
 import {sessionsRepository} from "../Repositories/sessions-repository";
-import {jwtService} from "../application/jwt-service";
+import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {STATUSES_HTTP} from "../enums/http-statuses";
 import {sessionService} from "../domain/session-service";
 
 export const securityDevicesController = {
     async getAllSessionsForUser(req: Request, res: Response) {
-        if (!req.headers.authorization) {
-            res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
-            return;
-        }
-        const token = req.headers.authorization.split(' ')[1];
-        const userId: string | null = await jwtService.getUserIdByToken(token);
-        if (!userId) {
-            res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
-            return;
-        }
-        const sessions = await sessionService.getAllSessionsForUser(userId);
-        res.send(sessions);
+        const refreshToken = req.cookies?.refreshToken;
+        if (!refreshToken) res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+        const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
+        if (refreshTokenInfo.userId) res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+        const sessions = await sessionService.getAllSessionsForUser(refreshTokenInfo.userId);
+        res.status(STATUSES_HTTP.OK_200).send(sessions);
     }
 }

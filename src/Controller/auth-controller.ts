@@ -20,14 +20,8 @@ export const authController = {
         const user = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
         if (user) {
             //подготавливаем данные для сохранения сессии:
-            let deviceId: string;
-            if (req.cookies.refreshToken) { //если уже есть рефреш-токен, достанем оттуда deviceId
-                const info = jwtService.getRefreshTokenInfo(req.cookies.refreshToken);
-                deviceId = info!.deviceId;
-            } else { //либо генерим новый deviceId
-                deviceId = uuidv4();
-            }
-            //todo: работать сценарий, когда рефреш-токен валиден, сделать перезапись сессии вместо создания новой
+            //todo: отработать сценарий, когда рефреш-токен валиден, сделать перезапись сессии вместо создания новой
+            const deviceId = uuidv4();
             const ip: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";
             const deviceName: string = req.headers['user-agent'] || "deviceName undefined";
 

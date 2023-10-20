@@ -26,7 +26,7 @@ export const sessionService = {
         await sessionsRepository.addSession(session);
         return session;
     },
-    async getAllSessionsForUser(userId: string): Promise<SessionDbType[] | null>  {
+    async getAllSessionsForUser(userId: ObjectId): Promise<SessionDbType[] | null>  {
         return await sessionsRepository.getAllSessionsForUser(userId);
     }
 }
