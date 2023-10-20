@@ -29,7 +29,7 @@ export type UsersWithPaginationModel = {
 export type UserAuthMeViewModel = {
     email: string,
     login: string,
-    userId: string//todo проверить где юзался
+    userId: string
 }
 
 export type EmailConfirmationType = {
