@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {BlogQueryParams, blogsQueryRepository} from "../Repositories/query-repositories/blogs-query-repository";
 import {blogService} from "../domain/blog-service";
-import {STATUSES_HTTP} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../enums/http-statuses";
 import {PostQueryParams, postsQueryRepository} from "../Repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../domain/post-service";
 
@@ -20,12 +20,12 @@ export const blogsController = {
 
     async getBlogById(req: Request, res: Response) {
         const blog = await blogService.getBlogById(req.params.id);
-        blog ? res.send(blog) : res.send(STATUSES_HTTP.NOT_FOUND_404);
+        blog ? res.send(blog) : res.send(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async createNewBlog(req: Request, res: Response) {
         const blogs = await blogService.createNewBlog(req.body);
-        res.status(STATUSES_HTTP.CREATED_201).send(blogs);
+        res.status(HTTP_STATUSES.CREATED_201).send(blogs);
     },
 
     async getPostsByBlogId(req: Request, res: Response) {
@@ -40,7 +40,7 @@ export const blogsController = {
             const posts = await postsQueryRepository.getPosts(queryParams, req.params.id);
             res.send(posts);
         } else {
-            res.status(STATUSES_HTTP.NOT_FOUND_404).send();
+            res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         }
     },
 
@@ -51,21 +51,21 @@ export const blogsController = {
             blogName: req.blogName
         }
         const newPost = await postService.createNewPost(post);
-        res.status(STATUSES_HTTP.CREATED_201).send(newPost);
+        res.status(HTTP_STATUSES.CREATED_201).send(newPost);
     },
 
     async updateBlog(req: Request, res: Response) {
         const newBlog = await blogService.updateBlogById(req.params.id, req.body);
-        newBlog ? res.status(STATUSES_HTTP.NO_CONTENT_204).send(newBlog) : res.send(STATUSES_HTTP.NOT_FOUND_404);
+        newBlog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send(newBlog) : res.send(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async deleteAllBlogs(req: Request, res: Response) {
         await blogService.deleteAllBlogs();
-        res.sendStatus(STATUSES_HTTP.NO_CONTENT_204);
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     },
 
     async deleteBlogById(req: Request, res: Response) {
         const blog = await blogService.deleteBlogById(req.params.id);
-        blog ? res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.status(STATUSES_HTTP.NOT_FOUND_404).send();
+        blog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
     }
 }

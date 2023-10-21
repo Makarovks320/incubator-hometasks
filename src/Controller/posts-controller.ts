@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {PostQueryParams, postsQueryRepository} from "../Repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../domain/post-service";
-import {STATUSES_HTTP} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../enums/http-statuses";
 import {commentQueryRepository} from "../Repositories/query-repositories/comment-query-repository";
 import {commentService, InputCommentWithPostId} from "../domain/comment-service";
 
@@ -19,7 +19,7 @@ export const postsController = {
 
     async getPostById(req: Request, res: Response) {
         const posts = await postService.getPostById(req.params.id);
-        posts ? res.send(posts) : res.send(STATUSES_HTTP.NOT_FOUND_404);
+        posts ? res.send(posts) : res.send(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async createNewPost(req: Request, res: Response) {
@@ -29,22 +29,22 @@ export const postsController = {
             blogName: req.blogName
         }
         const newPost = await postService.createNewPost(post);
-        res.status(STATUSES_HTTP.CREATED_201).send(newPost);
+        res.status(HTTP_STATUSES.CREATED_201).send(newPost);
     },
 
     async updatePost(req: Request, res: Response) {
         const newPost = await postService.updatePostById(req.params.id, req.body)
-        newPost ? res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.send(STATUSES_HTTP.NOT_FOUND_404);
+        newPost ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.send(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async deleteAllPosts(req: Request, res: Response) {
         await postService.deleteAllPosts();
-        res.sendStatus(STATUSES_HTTP.NO_CONTENT_204);
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     },
 
     async deletePostById(req: Request, res: Response) {
         const blog = await postService.deletePostById(req.params.id);
-        blog ? res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.status(STATUSES_HTTP.NOT_FOUND_404).send();
+        blog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
     },
 
     async getCommentsForPost(req: Request, res: Response) {
@@ -64,6 +64,6 @@ export const postsController = {
             postId: req.params.id
         }
         const newComment = await commentService.createNewComment(comment, req.userId);
-        res.status(STATUSES_HTTP.CREATED_201).send(newComment);
+        res.status(HTTP_STATUSES.CREATED_201).send(newComment);
     }
 }

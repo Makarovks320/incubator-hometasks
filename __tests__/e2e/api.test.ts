@@ -3,7 +3,7 @@ import {app} from "../../src";
 import {Blog} from "../../src/Repositories/blogs-repository";
 import mongoose from "mongoose";
 import {authBasicHeader, connection_string} from "../utils/test_utilities";
-import {STATUSES_HTTP} from "../../src/enums/http-statuses";
+import {HTTP_STATUSES} from "../../src/enums/http-statuses";
 
 describe('/blogs', () => {
     beforeAll(async () => {
@@ -17,7 +17,7 @@ describe('/blogs', () => {
         await request(app)
             .delete('/testing/all-data')
             .set(authBasicHeader)
-            .expect(STATUSES_HTTP.NO_CONTENT_204)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
     })
 
     it('should return an object with 0 totalCount', async () => {

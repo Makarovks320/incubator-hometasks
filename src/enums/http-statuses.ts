@@ -1,4 +1,4 @@
-export enum STATUSES_HTTP  {
+export enum HTTP_STATUSES  {
     OK_200= 200,
     CREATED_201= 201,
     NO_CONTENT_204= 204,
@@ -12,5 +12,5 @@ export enum STATUSES_HTTP  {
     SERVER_ERROR_500= 500
 }
 
-type HttpStatusKeys = keyof typeof STATUSES_HTTP
-export type HttpStatusType = (typeof STATUSES_HTTP)[HttpStatusKeys] //todo ?
+type HttpStatusKeys = keyof typeof HTTP_STATUSES
+export type HttpStatusType = (typeof HTTP_STATUSES)[HttpStatusKeys] //todo ?

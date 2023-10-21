@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {userService} from "../domain/user-service";
 import {jwtService} from "../application/jwt-service";
-import {STATUSES_HTTP} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../enums/http-statuses";
 import {authService} from "../domain/auth-service";
 import {sessionService} from "../domain/session-service";
 import {IpType} from "../models/session/session-model";
@@ -27,23 +27,23 @@ export const authController = {
             // сохраняем текущую сессию:
             await sessionService.addSession(ip, deviceId, deviceName, refreshToken);
 
-            res.status(STATUSES_HTTP.OK_200)
+            res.status(HTTP_STATUSES.OK_200)
                 .cookie('refreshToken', refreshToken, refreshTokenOptions)
                 .send({accessToken: accessToken});
         } else {
-            res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         }
     },
 
     async logoutUser(req: Request, res: Response) {
         //здесь надо убить текущую сессию
-        res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(STATUSES_HTTP.NO_CONTENT_204);
+        res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     },
 
     async refreshToken(req: Request, res: Response) {
         const accessToken = await jwtService.createAccessToken(req.userId);
         const newRefreshToken = await jwtService.updateRefreshToken(req.userId, req.cookies.refreshToken);
-        res.status(STATUSES_HTTP.OK_200)
+        res.status(HTTP_STATUSES.OK_200)
             .cookie('refreshToken', newRefreshToken, refreshTokenOptions)
             .send({accessToken: accessToken});
     },
@@ -51,41 +51,41 @@ export const authController = {
     async getCurrentUserInfo(req: Request, res: Response) {
         const user: UserViewModel | null = await userService.findUserById(req.userId)
         if (!user) {
-            res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401)
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
         } else {
             const userAuthMeOutput: UserAuthMeViewModel = {
                 email: user.email,
                 login: user.login,
                 userId: user.id
             }
-            res.status(STATUSES_HTTP.OK_200).send(userAuthMeOutput);
+            res.status(HTTP_STATUSES.OK_200).send(userAuthMeOutput);
         }
     },
 
     async registerNewUser(req: Request, res: Response) {
         const user = await authService.createUser(req.body.login, req.body.email, req.body.password)
         if (user) {
-            res.status(STATUSES_HTTP.NO_CONTENT_204).send();
+            res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {
-            res.status(STATUSES_HTTP.BAD_REQUEST_400).send();
+            res.status(HTTP_STATUSES.BAD_REQUEST_400).send();
         }
     },
 
     async confirmRegistration(req: Request, res: Response) {
         const result = await authService.confirmEmailByCodeOrEmail(req.body.code)
         if (result) {
-            res.status(STATUSES_HTTP.NO_CONTENT_204).send();
+            res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {
-            res.status(STATUSES_HTTP.BAD_REQUEST_400).send();
+            res.status(HTTP_STATUSES.BAD_REQUEST_400).send();
         }
     },
 
     async resendConfirmationCode(req: Request, res: Response) {
         const result = await authService.sendEmailWithNewCode(req.body.email)
         if (result) {
-            res.status(STATUSES_HTTP.NO_CONTENT_204).send();
+            res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {
-            res.status(STATUSES_HTTP.BAD_REQUEST_400).send();
+            res.status(HTTP_STATUSES.BAD_REQUEST_400).send();
         }
     }
 }

@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {userService} from "../domain/user-service";
 import mongoose from "mongoose";
-import {STATUSES_HTTP} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../enums/http-statuses";
 import {ObjectId} from "mongodb";
 
 /* миддлвар проверяет заголовок authorization
@@ -13,13 +13,13 @@ import {ObjectId} from "mongodb";
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     if (!req.headers.authorization) {
-        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
     const token = req.headers.authorization.split(' ')[1];
     const userId: string | null = await jwtService.getUserIdByToken(token);
     if (!userId) {
-        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
     const userObjectId = new mongoose.Types.ObjectId(userId);
@@ -29,24 +29,24 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         next();
         return;
     }
-    res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+    res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
 }
 
 export async function refreshTokenCheck(req: Request, res: Response, next: NextFunction) {
     if(!req.cookies.refreshToken) {
-        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
     const token = req.cookies.refreshToken;
 
     const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(token);
     if (!refreshTokenInfo) {
-        res.sendStatus(STATUSES_HTTP.SERVER_ERROR_500);
+        res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
         return;
     }
     // проверяем, не истек ли срок годности токена
     if (refreshTokenInfo.exp < +(new Date())) {
-        res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
 
@@ -59,5 +59,5 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
         next();
         return;
     }
-    res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
+    res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
 }

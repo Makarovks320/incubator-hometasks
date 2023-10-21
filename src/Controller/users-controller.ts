@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {InputUser, userService} from "../domain/user-service";
-import {STATUSES_HTTP} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../enums/http-statuses";
 import {usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
@@ -16,7 +16,7 @@ export const usersController = {
             password: req.body.password
         }
         const createdUser = await userService.createUser(newUserInput);
-        res.status(STATUSES_HTTP.CREATED_201).send(createdUser);
+        res.status(HTTP_STATUSES.CREATED_201).send(createdUser);
     },
 
     async getUsers(req: Request, res: Response) {
@@ -29,18 +29,18 @@ export const usersController = {
         const stringId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(stringId);
         const user = await userService.findUserById(objectId as ObjectId);
-        user ? res.send(user) : res.send(STATUSES_HTTP.NOT_FOUND_404);
+        user ? res.send(user) : res.send(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async deleteUserById(req: Request, res: Response) {
         const stringId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(stringId);
         const user = await userService.deleteUserById(objectId);
-        user ? res.status(STATUSES_HTTP.NO_CONTENT_204).send() : res.status(STATUSES_HTTP.NOT_FOUND_404).send();
+        user ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
     },
 
     async deleteAllUsers(req: Request, res: Response) {
         await userService.deleteAllUsers();
-        res.sendStatus(STATUSES_HTTP.NO_CONTENT_204);
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
 }
