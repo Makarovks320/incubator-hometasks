@@ -45,8 +45,8 @@ export const jwtService = {
             debugger;
             return {
                 deviceId: result.deviceId,
-                iat: result.iat,
-                exp: result.exp,
+                iat: result.iat * 1000,
+                exp: result.exp * 1000,
                 userId: result.userId
             }
         } catch (e) {
