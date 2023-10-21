@@ -10,10 +10,10 @@ export const securityDevicesController = {
             res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         }
         const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
-        if (!refreshTokenInfo?.userId) {
+        if (!refreshTokenInfo || !refreshTokenInfo.userId) {
             res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         }
-        const sessions = await sessionService.getAllSessionsForUser(refreshTokenInfo.userId);
+        const sessions = await sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
         res.status(STATUSES_HTTP.OK_200).send(sessions);
     },
 

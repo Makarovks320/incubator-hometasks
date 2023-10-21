@@ -1,13 +1,13 @@
 import {ObjectId} from "mongodb";
 
 export type IpType = string | string[];
-export type SessionDbType = {
+export type SessionDbModel = {
     _id: ObjectId,
     ip: IpType,
     title: string,
     deviceId: string,
     deviceName: string,
-    refreshTokenIssuedAt: Date,//todo: можно ли использовать в качестве даты последней активности?
+    refreshTokenIssuedAt: Date,
     refreshTokenExpiresAt: Date,
     userId: ObjectId
 }

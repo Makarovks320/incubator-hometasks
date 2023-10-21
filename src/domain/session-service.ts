@@ -1,10 +1,10 @@
-import {IpType, SessionDbType} from "../models/session/session-model";
+import {IpType, SessionDbModel, SessionViewModel} from "../models/session/session-model";
 import {sessionsRepository} from "../Repositories/sessions-repository";
 import {ObjectId} from "mongodb";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 
 export const sessionService = {
-    async addSession (ip: IpType, deviceId: string, deviceName: string, refreshToken: string): Promise<SessionDbType | null> {
+    async addSession (ip: IpType, deviceId: string, deviceName: string, refreshToken: string): Promise<SessionDbModel | null> {
         // достанем нужную для сессии инфу из Рефреш-токена:
         const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) return null;
@@ -13,7 +13,7 @@ export const sessionService = {
         const userId: ObjectId = refreshTokenInfo.userId
 
         // сохраним сессию:
-        const session: SessionDbType = {
+        const session: SessionDbModel = {
             _id: new ObjectId(),
             ip,
             title: 'title mock',
@@ -26,7 +26,7 @@ export const sessionService = {
         await sessionsRepository.addSession(session);
         return session;
     },
-    async getAllSessionsForUser(userId: ObjectId): Promise<SessionDbType[] | null>  {
+    async getAllSessionsForUser(userId: ObjectId): Promise<SessionViewModel[] | null>  {
         return await sessionsRepository.getAllSessionsForUser(userId);
     }
 }
