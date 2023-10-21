@@ -39,9 +39,13 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
     }
     const token = req.cookies.refreshToken;
 
-    const refreshTokenInfo: RefreshTokenInfoType = await jwtService.getRefreshTokenInfo(token);
+    const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(token);
+    if (!refreshTokenInfo) {
+        res.sendStatus(STATUSES_HTTP.SERVER_ERROR_500);
+        return;
+    }
     // проверяем, не истек ли срок годности токена
-    if (refreshTokenInfo.exp < new Date()) {
+    if (refreshTokenInfo.exp < +(new Date())) {
         res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         return;
     }
