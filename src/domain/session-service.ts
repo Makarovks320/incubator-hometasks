@@ -29,6 +29,10 @@ export const sessionService = {
     async getAllSessionsForUser(userId: ObjectId): Promise<SessionViewModel[] | null>  {
         return await sessionsRepository.getAllSessionsForUser(userId);
     },
+    async deleteSessionByDeviceId(deviceId: string): Promise<boolean> {
+        const result = await sessionsRepository.deleteSessionByDeviceId(deviceId);
+        return result;
+    },
     async deleteAllSessions(): Promise<void> {
         await sessionsRepository.deleteAllSessions();
     }

@@ -1,4 +1,4 @@
-import {sessionsCollection} from "./db";
+import {sessionsCollection, userCollection} from "./db";
 import {SessionDbModel, SessionViewModel} from "../models/session/session-model";
 import {ObjectId} from "mongodb";
 import {getSessionViewModel} from "../helpers/session-view-model-mapper";
@@ -18,6 +18,10 @@ export const sessionsRepository = {
             .map(s => getSessionViewModel(s))
             .toArray();
         return sessions;
+    },
+    async deleteSessionByDeviceId(deviceId: string): Promise<boolean> {
+        const result = await sessionsCollection.deleteOne({deviceId});
+        return result.deletedCount === 1;
     },
     async deleteAllSessions(): Promise<boolean> {
         try {

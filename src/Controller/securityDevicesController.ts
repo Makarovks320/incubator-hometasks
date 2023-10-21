@@ -2,6 +2,8 @@ import {Request, Response} from "express";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {sessionService} from "../domain/session-service";
+import {SessionViewModel} from "../models/session/session-model";
+import {ObjectId} from "mongodb";
 
 export const securityDevicesController = {
     async getAllSessionsForUser(req: Request, res: Response) {
@@ -13,19 +15,45 @@ export const securityDevicesController = {
         if (!refreshTokenInfo || !refreshTokenInfo.userId) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         }
-        const sessions = await sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
+        const sessions: SessionViewModel[] | null = await sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
         res.status(HTTP_STATUSES.OK_200).send(sessions);
     },
 
     async deleteSessionByDeviceId(req: Request, res: Response) {
-        // should return error if :id from uri param not found; status 404;
         const deviceId = req.params.deviceId;
 
-    },
+        // достанем рефреш-токен:
+        const refreshToken = req.cookies.refreshToken;
 
-    async deleteAllSessions(req: Request, res: Response) {
-        const result: boolean = await sessionService.deleteAllSessions();
-        result ? res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-            : res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+        if (!refreshToken) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+            return;
+        }
+
+        const refreshTokenInfo: RefreshTokenInfoType | null = jwtService.getRefreshTokenInfo(refreshToken);
+        //todo почему без этого не работает подсказка TS для refreshTokenInfo?
+        if (!refreshTokenInfo) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+            return;
+        }
+        const userId: ObjectId = refreshTokenInfo.userId;
+
+        // проверим, что deviceId соответствует данному юзеру:
+        // 1) сначала найдем все сессии этого юзера
+        const sessions: SessionViewModel[] | null = await sessionService.getAllSessionsForUser(req.userId);
+        if (!sessions) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+            return;
+        }
+        // 2) проверка на наличие девайса
+        const sessionForDeleting = sessions.find(s => s.deviceId === deviceId);
+        if (!sessionForDeleting) {
+            res.sendStatus(HTTP_STATUSES.FORBIDDEN_403);
+            return;
+        }
+
+        // удалим сессию по deviceId:
+        const result = sessionService.deleteSessionByDeviceId(deviceId);
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
 }
