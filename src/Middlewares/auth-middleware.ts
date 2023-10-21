@@ -1,8 +1,9 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../application/jwt-service";
+import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {userService} from "../domain/user-service";
 import mongoose from "mongoose";
 import {STATUSES_HTTP} from "../enums/http-statuses";
+import {ObjectId} from "mongodb";
 
 /* миддлвар проверяет заголовок authorization
 достает bearer token
@@ -37,18 +38,20 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
         return;
     }
     const token = req.cookies.refreshToken;
-    // здесь надо проверить, не истек ли срок годности токена
-    // todo: есть дублирование с функцией authMiddleware
-    const userId: string | null = await jwtService.getUserIdByToken(token);
-    if (!userId) {
+
+    const refreshTokenInfo: RefreshTokenInfoType = await jwtService.getRefreshTokenInfo(token);
+    // проверяем, не истек ли срок годности токена
+    if (refreshTokenInfo.exp < new Date()) {
         res.sendStatus(STATUSES_HTTP.UNAUTHORIZED_401);
         return;
     }
-    const userObjectId = new mongoose.Types.ObjectId(userId);
-    const user = await userService.findUserById(userObjectId);
-    // todo: не лишняя ли это проверка?
+
+    const userId: ObjectId = refreshTokenInfo.userId;
+    // const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    const user = await userService.findUserById(userId);
     if (user) {
-        req.userId = userObjectId;
+        req.userId = userId;
         next();
         return;
     }
