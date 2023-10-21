@@ -45,7 +45,9 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
         return;
     }
     // проверяем, не истек ли срок годности токена
-    if (refreshTokenInfo.exp < +(new Date())) {
+    // todo а правильно ли так проверять, если есть способ проверки с помощью метода jwt.verify ?
+    const now: number = +(new Date());
+    if (refreshTokenInfo.exp*1000 < now) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
