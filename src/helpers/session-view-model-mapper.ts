@@ -4,7 +4,7 @@ export const getSessionViewModel = (session: SessionDbModel): SessionViewModel =
     return {
         ip: session.ip,
         title: session.title,
-        lastActiveDate: session.refreshTokenIssuedAt.toString(),
+        lastActiveDate: session.refreshTokenIssuedAt.toISOString(),
         deviceId: session.deviceId
     }
 }
