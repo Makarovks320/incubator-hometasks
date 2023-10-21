@@ -21,5 +21,11 @@ export const securityDevicesController = {
         // should return error if :id from uri param not found; status 404;
         const deviceId = req.params.deviceId;
 
+    },
+
+    async deleteAllSessions(req: Request, res: Response) {
+        const result: boolean = await sessionService.deleteAllSessions();
+        result ? res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+            : res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
     }
 }

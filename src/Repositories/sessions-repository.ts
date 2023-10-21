@@ -18,5 +18,14 @@ export const sessionsRepository = {
             .map(s => getSessionViewModel(s))
             .toArray();
         return sessions;
+    },
+    async deleteAllSessions(): Promise<boolean> {
+        try {
+            await sessionsCollection.deleteMany();
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+        return true;
     }
 }
