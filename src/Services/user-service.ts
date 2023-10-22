@@ -4,7 +4,7 @@ import {usersQueryRepository} from "../Repositories/query-repositories/users-que
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {UserDBModel, UserViewModel} from "../Models/user/user-model";
+import {UserDBModel} from "../Models/user/user-model";
 
 export type InputUser = {
     login: string,
@@ -12,7 +12,7 @@ export type InputUser = {
     password: string
 }
 export const userService = {
-    async createUser(u: InputUser): Promise<UserViewModel> {
+    async createUser(u: InputUser): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
         const newUser: UserDBModel = {
@@ -35,7 +35,7 @@ export const userService = {
         const result = await usersRepository.createUser(newUser);
         return result;
     },
-    async findUserById(id: ObjectId): Promise<UserViewModel | null> {
+    async findUserById(id: ObjectId): Promise<UserDBModel | null> {
         return await usersQueryRepository.getUserById(id);
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<UserDBModel | null> {

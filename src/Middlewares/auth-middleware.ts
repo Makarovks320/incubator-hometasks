@@ -1,7 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {userService} from "../Services/user-service";
-import mongoose from "mongoose";
 import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {ObjectId} from "mongodb";
 
@@ -17,15 +16,14 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         return;
     }
     const token = req.headers.authorization.split(' ')[1];
-    const userId: string | null = await jwtService.getUserIdByToken(token);
+    const userId: ObjectId | null = await jwtService.getUserIdByToken(token);
     if (!userId) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const userObjectId = new mongoose.Types.ObjectId(userId);
-    const user = await userService.findUserById(userObjectId);
+    const user = await userService.findUserById(userId);
     if (user) {
-        req.userId = userObjectId;
+        req.userId = userId;
         next();
         return;
     }
@@ -53,7 +51,6 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
     }
 
     const userId: ObjectId = refreshTokenInfo.userId;
-    // const userObjectId = new mongoose.Types.ObjectId(userId);
 
     const user = await userService.findUserById(userId);
     if (user) {

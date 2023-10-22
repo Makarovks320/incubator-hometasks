@@ -3,12 +3,9 @@ import {Filter, ObjectId, Sort} from "mongodb";
 import {
     UsersWithPaginationModel,
     UsersQueryParams,
-    UserDBModel,
-    UserViewModel
+    UserDBModel
 } from "../../Models/user/user-model";
 import {getUserViewModel} from "../../Helpers/user-view-model-mapper";
-
-const PROJECTION = {emailConfirmation: false};
 
 export const usersQueryRepository = {
     async getUsers(queryParams: UsersQueryParams): Promise<UsersWithPaginationModel> {
@@ -47,9 +44,9 @@ export const usersQueryRepository = {
         }
     },
 
-    async getUserById(id: ObjectId): Promise<UserViewModel | null> {
+    async getUserById(id: ObjectId): Promise<UserDBModel | null> {
         const result = await userCollection.findOne({_id: id});
         if (result === null) return null;
-        return getUserViewModel(result);
+        return result;
     }
 }

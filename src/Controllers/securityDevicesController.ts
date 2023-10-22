@@ -20,10 +20,10 @@ export const securityDevicesController = {
     },
 
     async deleteSessionByDeviceId(req: Request, res: Response) {
-        const deviceId = req.params.deviceId;
+        const deviceId: string = req.params.deviceId;
 
         // достанем рефреш-токен:
-        const refreshToken = req.cookies.refreshToken;
+        const refreshToken: string = req.cookies.refreshToken;
 
         if (!refreshToken) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
@@ -53,7 +53,7 @@ export const securityDevicesController = {
         }
 
         // удалим сессию по deviceId:
-        const result = sessionService.deleteSessionByDeviceId(deviceId);
+        await sessionService.deleteSessionByDeviceId(deviceId);
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
 }

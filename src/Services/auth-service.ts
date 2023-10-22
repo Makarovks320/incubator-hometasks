@@ -4,11 +4,11 @@ import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {usersRepository} from "../Repositories/users-repository";
 import {emailManager} from "../Managers/emailManager";
-import {EmailConfirmationType, UserDBModel, UserViewModel} from "../Models/user/user-model";
+import {EmailConfirmationType, UserDBModel} from "../Models/user/user-model";
 
 
 export const authService = {
-    async createUser(login: string, email: string, password: string): Promise<UserViewModel | null> {
+    async createUser(login: string, email: string, password: string): Promise<UserDBModel | null> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(password, passwordSalt);
         const user: UserDBModel = {

@@ -4,8 +4,9 @@ import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-import {UsersQueryParams} from "../Models/user/user-model";
+import {UserDBModel, UsersQueryParams} from "../Models/user/user-model";
 import {getQueryParamsForUsers} from "../Models/query-params-getter";
+import {getUserViewModel} from "../Helpers/user-view-model-mapper";
 
 export const usersController = {
 
@@ -28,8 +29,8 @@ export const usersController = {
     async getUserById(req: Request, res: Response) {
         const stringId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(stringId);
-        const user = await userService.findUserById(objectId as ObjectId);
-        user ? res.send(user) : res.send(HTTP_STATUSES.NOT_FOUND_404);
+        const userDB: UserDBModel | null = await userService.findUserById(objectId as ObjectId);
+        userDB ? res.send(getUserViewModel(userDB)) : res.send(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async deleteUserById(req: Request, res: Response) {

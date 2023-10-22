@@ -3,7 +3,7 @@ import {CommentOutput} from "../Repositories/comments-repository";
 import {commentService, InputComment} from "../Services/comment-service";
 import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {userService} from "../Services/user-service";
-import {UserViewModel} from "../Models/user/user-model";
+import {UserDBModel} from "../Models/user/user-model";
 
 export const commentController = {
     async updateComment(req: Request, res: Response) {
@@ -12,8 +12,8 @@ export const commentController = {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
             return;
         }
-        const user = await userService.findUserById(req.userId!) as UserViewModel;//todo вместо OutputUser UserViewModel
-        if (oldComment!.commentatorInfo.userLogin != user.login) {
+        const user = await userService.findUserById(req.userId!) as UserDBModel;//todo вместо OutputUser UserViewModel
+        if (oldComment!.commentatorInfo.userLogin != user.accountData.userName) {
             res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
             return;
         }
@@ -35,8 +35,8 @@ export const commentController = {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
             return;
         }
-        const user = await userService.findUserById(req.userId!) as UserViewModel;//todo вместо OutputUser UserViewModel
-        if (comment!.commentatorInfo.userLogin != user.login) {
+        const user = await userService.findUserById(req.userId!) as UserDBModel;//todo вместо OutputUser UserViewModel
+        if (comment!.commentatorInfo.userLogin != user.accountData.userName) {
             res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
             return;
         } else {

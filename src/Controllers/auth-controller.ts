@@ -6,7 +6,7 @@ import {authService} from "../Services/auth-service";
 import {sessionService} from "../Services/session-service";
 import {IpType} from "../Models/session/session-model";
 import {v4 as uuidv4} from "uuid";
-import {UserAuthMeViewModel, UserViewModel} from "../Models/user/user-model";
+import {UserAuthMeViewModel, UserDBModel} from "../Models/user/user-model";
 
 const refreshTokenOptions = {httpOnly: true, secure: true}
 
@@ -49,14 +49,14 @@ export const authController = {
     },
 
     async getCurrentUserInfo(req: Request, res: Response) {
-        const user: UserViewModel | null = await userService.findUserById(req.userId)
+        const user: UserDBModel | null = await userService.findUserById(req.userId)
         if (!user) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
         } else {
             const userAuthMeOutput: UserAuthMeViewModel = {
-                email: user.email,
-                login: user.login,
-                userId: user.id
+                email: user.accountData.email,
+                login: user.accountData.userName,
+                userId: user._id.toString()
             }
             res.status(HTTP_STATUSES.OK_200).send(userAuthMeOutput);
         }
