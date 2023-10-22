@@ -1,7 +1,7 @@
-import {IpType, SessionDbModel, SessionViewModel} from "../models/session/session-model";
+import {IpType, SessionDbModel, SessionViewModel} from "../Models/session/session-model";
 import {sessionsRepository} from "../Repositories/sessions-repository";
 import {ObjectId} from "mongodb";
-import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
+import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 
 export const sessionService = {
     async addSession (ip: IpType, deviceId: string, deviceName: string, refreshToken: string): Promise<SessionDbModel | null> {

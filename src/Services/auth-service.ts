@@ -4,7 +4,7 @@ import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {usersRepository} from "../Repositories/users-repository";
 import {emailManager} from "../Managers/emailManager";
-import {EmailConfirmationType, UserDBModel, UserViewModel} from "../models/user/user-model";
+import {EmailConfirmationType, UserDBModel, UserViewModel} from "../Models/user/user-model";
 
 
 export const authService = {

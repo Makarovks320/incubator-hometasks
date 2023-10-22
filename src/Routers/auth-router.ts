@@ -12,7 +12,7 @@ import {checkEmailExists} from "../Middlewares/check-email-exists";
 import {checkLoginExists} from "../Middlewares/check-login-exists";
 import {checkConfirmationData} from "../Middlewares/check-confirmation-data";
 import {emailValidation} from "../Middlewares/users-validations";
-import {authController} from "../Controller/auth-controller";
+import {authController} from "../Controllers/auth-controller";
 import {rateLimitMiddleware} from "../Middlewares/rate-limit-middleware";
 
 export const authRouter = Router();

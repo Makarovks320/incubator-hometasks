@@ -26,6 +26,7 @@ export type UsersWithPaginationModel = {
     totalCount: number,
     items: UserViewModel[]
 }
+
 export type UserAuthMeViewModel = {
     email: string,
     login: string,

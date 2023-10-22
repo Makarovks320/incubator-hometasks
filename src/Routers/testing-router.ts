@@ -1,11 +1,11 @@
 import {NextFunction, Request, Response, Router} from "express";
-import {postService} from "../domain/post-service";
-import {blogService} from "../domain/blog-service";
-import {userService} from "../domain/user-service";
-import {commentService} from "../domain/comment-service";
+import {postService} from "../Services/post-service";
+import {blogService} from "../Services/blog-service";
+import {userService} from "../Services/user-service";
+import {commentService} from "../Services/comment-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {rateLimitingCollection} from "../Repositories/db";
-import {sessionService} from "../domain/session-service";
+import {sessionService} from "../Services/session-service";
 
 export const testingRouter = Router();
 

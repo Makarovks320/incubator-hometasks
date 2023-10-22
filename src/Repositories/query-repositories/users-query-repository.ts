@@ -5,7 +5,7 @@ import {
     UsersQueryParams,
     UserDBModel,
     UserViewModel
-} from "../../models/user/user-model";
+} from "../../Models/user/user-model";
 import {getUserViewModel} from "../../helpers/user-view-model-mapper";
 
 const PROJECTION = {emailConfirmation: false};

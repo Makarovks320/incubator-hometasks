@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 import {Post} from "./posts-repository";
 import {Blog} from "./blogs-repository";
 import {Comment} from "./comments-repository";
-import {SessionDbModel} from "../models/session/session-model";
-import {rateLimitDBModel} from "../models/rate-limiting/rate-limiting-model";
-import {UserDBModel} from "../models/user/user-model";
+import {SessionDbModel} from "../Models/session/session-model";
+import {rateLimitDBModel} from "../Models/rate-limiting/rate-limiting-model";
+import {UserDBModel} from "../Models/user/user-model";
 
 dotenv.config();
 

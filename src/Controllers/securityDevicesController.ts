@@ -1,8 +1,8 @@
 import {Request, Response} from "express";
-import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
+import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {sessionService} from "../domain/session-service";
-import {SessionViewModel} from "../models/session/session-model";
+import {sessionService} from "../Services/session-service";
+import {SessionViewModel} from "../Models/session/session-model";
 import {ObjectId} from "mongodb";
 
 export const securityDevicesController = {

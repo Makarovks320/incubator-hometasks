@@ -1,9 +1,9 @@
 import {Request, Response} from "express";
 import {CommentOutput} from "../Repositories/comments-repository";
-import {commentService, InputComment} from "../domain/comment-service";
+import {commentService, InputComment} from "../Services/comment-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {userService} from "../domain/user-service";
-import {UserViewModel} from "../models/user/user-model";
+import {userService} from "../Services/user-service";
+import {UserViewModel} from "../Models/user/user-model";
 
 export const commentController = {
     async updateComment(req: Request, res: Response) {

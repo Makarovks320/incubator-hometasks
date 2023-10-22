@@ -1,12 +1,12 @@
 import {Request, Response} from "express";
-import {userService} from "../domain/user-service";
-import {jwtService} from "../application/jwt-service";
+import {userService} from "../Services/user-service";
+import {jwtService} from "../Application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {authService} from "../domain/auth-service";
-import {sessionService} from "../domain/session-service";
-import {IpType} from "../models/session/session-model";
+import {authService} from "../Services/auth-service";
+import {sessionService} from "../Services/session-service";
+import {IpType} from "../Models/session/session-model";
 import {v4 as uuidv4} from "uuid";
-import {UserAuthMeViewModel, UserViewModel} from "../models/user/user-model";
+import {UserAuthMeViewModel, UserViewModel} from "../Models/user/user-model";
 
 const refreshTokenOptions = {httpOnly: true, secure: true}
 

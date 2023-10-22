@@ -13,7 +13,7 @@ import {commentContentValidation} from "../Middlewares/comment-validations";
 import {param} from "express-validator";
 import {checkPostExists} from "../Middlewares/check-post-exists";
 import {idFromUrlExistingValidator} from "../Middlewares/id-from-url-existing-validator";
-import {postsController} from "../Controller/posts-controller";
+import {postsController} from "../Controllers/posts-controller";
 
 export const postsRouter = Router();
 

@@ -1,4 +1,4 @@
-import {SessionDbModel, SessionViewModel} from "../models/session/session-model";
+import {SessionDbModel, SessionViewModel} from "../Models/session/session-model";
 
 export const getSessionViewModel = (session: SessionDbModel): SessionViewModel => {
     return {

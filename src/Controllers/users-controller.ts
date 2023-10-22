@@ -1,11 +1,11 @@
 import {Request, Response} from "express";
-import {InputUser, userService} from "../domain/user-service";
+import {InputUser, userService} from "../Services/user-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {usersQueryRepository} from "../Repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-import {UsersQueryParams} from "../models/user/user-model";
-import {getQueryParamsForUsers} from "../models/query-params-getter";
+import {UsersQueryParams} from "../Models/user/user-model";
+import {getQueryParamsForUsers} from "../Models/query-params-getter";
 
 export const usersController = {
 
