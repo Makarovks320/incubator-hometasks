@@ -6,7 +6,7 @@ import {
     UserDBModel,
     UserViewModel
 } from "../../Models/user/user-model";
-import {getUserViewModel} from "../../helpers/user-view-model-mapper";
+import {getUserViewModel} from "../../Helpers/user-view-model-mapper";
 
 const PROJECTION = {emailConfirmation: false};
 

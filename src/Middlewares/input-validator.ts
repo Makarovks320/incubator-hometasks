@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {validationResult} from "express-validator";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../Enums/http-statuses";
 
 // типы для режима без any
 // type Error = {

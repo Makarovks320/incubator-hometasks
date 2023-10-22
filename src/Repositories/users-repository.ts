@@ -1,7 +1,7 @@
 import {userCollection} from "./db";
 import {ObjectId} from "mongodb";
 import {EmailConfirmationType, UserDBModel, UserViewModel} from "../Models/user/user-model";
-import {getUserViewModel} from "../helpers/user-view-model-mapper";
+import {getUserViewModel} from "../Helpers/user-view-model-mapper";
 
 export const usersRepository = {
     async createUser(user: UserDBModel): Promise<UserViewModel> {

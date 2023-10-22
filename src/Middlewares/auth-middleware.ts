@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {userService} from "../Services/user-service";
 import mongoose from "mongoose";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {ObjectId} from "mongodb";
 
 /* миддлвар проверяет заголовок authorization

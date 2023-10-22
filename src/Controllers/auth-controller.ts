@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {userService} from "../Services/user-service";
 import {jwtService} from "../Application/jwt-service";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {authService} from "../Services/auth-service";
 import {sessionService} from "../Services/session-service";
 import {IpType} from "../Models/session/session-model";

@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {PostQueryParams, postsQueryRepository} from "../Repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../Services/post-service";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {commentQueryRepository} from "../Repositories/query-repositories/comment-query-repository";
 import {commentService, InputCommentWithPostId} from "../Services/comment-service";
 

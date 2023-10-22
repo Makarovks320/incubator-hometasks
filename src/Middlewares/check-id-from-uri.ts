@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {postsRepository} from "../Repositories/posts-repository";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../Enums/http-statuses";
 
 export async function checkIdFromUri (req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;

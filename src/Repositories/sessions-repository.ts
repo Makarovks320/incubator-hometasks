@@ -1,7 +1,7 @@
 import {sessionsCollection, userCollection} from "./db";
 import {SessionDbModel, SessionViewModel} from "../Models/session/session-model";
 import {ObjectId} from "mongodb";
-import {getSessionViewModel} from "../helpers/session-view-model-mapper";
+import {getSessionViewModel} from "../Helpers/session-view-model-mapper";
 
 export const sessionsRepository = {
     async addSession(session: SessionDbModel): Promise<SessionDbModel | null> {

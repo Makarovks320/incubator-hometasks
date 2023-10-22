@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {BlogQueryParams, blogsQueryRepository} from "../Repositories/query-repositories/blogs-query-repository";
 import {blogService} from "../Services/blog-service";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {PostQueryParams, postsQueryRepository} from "../Repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../Services/post-service";
 

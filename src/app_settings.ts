@@ -5,7 +5,7 @@ import {blogsRouter} from "./Routers/blogs-router";
 import {usersRouter} from "./Routers/users-router";
 import {authRouter} from "./Routers/auth-router";
 import {commentsRouter} from "./Routers/comments-router";
-import {RouterPaths} from "./helpers/router-paths";
+import {RouterPaths} from "./Helpers/router-paths";
 import {testingRouter} from "./Routers/testing-router";
 import {securityDevicesRouter} from "./Routers/security-devices-router";
 
