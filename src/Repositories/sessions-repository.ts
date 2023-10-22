@@ -31,5 +31,9 @@ export const sessionsRepository = {
             return false;
         }
         return true;
+    },
+    async getSessionForDevice(deviceId: string): Promise<SessionDbModel | null> {
+        const session: SessionDbModel | null = await sessionsCollection.findOne({deviceId});
+        return session;
     }
 }

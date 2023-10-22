@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {sessionService} from "../Services/session-service";
-import {SessionViewModel} from "../Models/session/session-model";
+import {SessionDbModel, SessionViewModel} from "../Models/session/session-model";
 import {ObjectId} from "mongodb";
 
 export const securityDevicesController = {
@@ -21,22 +21,24 @@ export const securityDevicesController = {
 
     async deleteSessionByDeviceId(req: Request, res: Response) {
         const deviceId: string = req.params.deviceId;
-
+        // проверим, есть ли такой девайс в сессиях
+        const sessionForDevice: SessionDbModel | null = await sessionService.getSessionForDevice(deviceId);
+        if (!sessionForDevice) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+            return;
+        }
         // достанем рефреш-токен:
         const refreshToken: string = req.cookies.refreshToken;
-
         if (!refreshToken) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
         }
 
         const refreshTokenInfo: RefreshTokenInfoType | null = jwtService.getRefreshTokenInfo(refreshToken);
-        //todo почему без этого не работает подсказка TS для refreshTokenInfo?
         if (!refreshTokenInfo) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
         }
-        const userId: ObjectId = refreshTokenInfo.userId;
 
         // проверим, что deviceId соответствует данному юзеру:
         // 1) сначала найдем все сессии этого юзера
