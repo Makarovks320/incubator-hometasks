@@ -17,7 +17,8 @@ export const usersController = {
             password: req.body.password
         }
         const createdUser = await userService.createUser(newUserInput);
-        res.status(HTTP_STATUSES.CREATED_201).send(createdUser);
+        const userViewModel = getUserViewModel(createdUser)
+        res.status(HTTP_STATUSES.CREATED_201).send(userViewModel);
     },
 
     async getUsers(req: Request, res: Response) {
