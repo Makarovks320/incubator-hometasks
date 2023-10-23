@@ -3,17 +3,21 @@ import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {sessionService} from "../Services/session-service";
 import {SessionDbModel, SessionViewModel} from "../Models/session/session-model";
-import {ObjectId} from "mongodb";
 
 export const securityDevicesController = {
     async getAllSessionsForUser(req: Request, res: Response) {
+        if (req.baseUrl === "/security/devices" && req.method === "GET"){
+            console.log('req.headers: ', req.headers);
+        }
         const refreshToken = req.cookies?.refreshToken;
         if (!refreshToken) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+            return;
         }
         const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo || !refreshTokenInfo.userId) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+            return;
         }
         const sessions: SessionViewModel[] | null = await sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
         res.status(HTTP_STATUSES.OK_200).send(sessions);
@@ -72,7 +76,7 @@ export const securityDevicesController = {
         try {
             await sessionService.deleteAllSessionsExcludeCurrent(currentDevice);
         } catch (e) {
-            console.log(e.message);
+            console.log(e);
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
             return;
         }
