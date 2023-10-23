@@ -57,5 +57,26 @@ export const securityDevicesController = {
         // удалим сессию по deviceId:
         await sessionService.deleteSessionByDeviceId(deviceId);
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+    },
+    async deleteAllSessionsForUserExcludeCurrent(req: Request, res: Response) {
+        /*Удаляет все сессии кроме текущей*/
+        // определим текущую сессию по девайсу:
+        const refreshToken: string = req.cookies.refreshToken;
+        const refreshTokenInfo: RefreshTokenInfoType | null = jwtService.getRefreshTokenInfo(refreshToken);
+        if (!refreshTokenInfo) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+            return;
+        }
+        const currentDevice = refreshTokenInfo.deviceId;
+        // дернем в сервисе метод для удаления всех сессий кроме сессии для текущего девайса
+        try {
+            await sessionService.deleteAllSessionsExcludeCurrent(currentDevice);
+        } catch (e) {
+            console.log(e.message);
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+            return;
+        }
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+        return;
     }
 }

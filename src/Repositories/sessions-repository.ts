@@ -35,5 +35,9 @@ export const sessionsRepository = {
     async getSessionForDevice(deviceId: string): Promise<SessionDbModel | null> {
         const session: SessionDbModel | null = await sessionsCollection.findOne({deviceId});
         return session;
+    },
+    async deleteAllSessionsExcludeCurrent(currentDevice: string) {
+        const result = await sessionsCollection.deleteMany({deviceId: {$not: {$eq: currentDevice}}});
+        console.log('deleted count:', result.deletedCount);
     }
 }

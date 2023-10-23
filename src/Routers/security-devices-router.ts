@@ -13,3 +13,8 @@ securityDevicesRouter.delete('/:deviceId', [
     securityDevicesController.deleteSessionByDeviceId
 ]);
 
+securityDevicesRouter.delete('/', [
+    refreshTokenCheck,
+    securityDevicesController.deleteAllSessionsForUserExcludeCurrent
+]);
+

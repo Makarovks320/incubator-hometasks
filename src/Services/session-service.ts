@@ -38,5 +38,8 @@ export const sessionService = {
     },
     async deleteAllSessions(): Promise<void> {
         await sessionsRepository.deleteAllSessions();
+    },
+    async deleteAllSessionsExcludeCurrent(currentDevice: string) {
+        await sessionsRepository.deleteAllSessionsExcludeCurrent(currentDevice);
     }
 }
