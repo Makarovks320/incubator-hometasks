@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {userService} from "../Services/user-service";
-import {jwtService} from "../Application/jwt-service";
+import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {authService} from "../Services/auth-service";
 import {sessionService} from "../Services/session-service";
@@ -36,7 +36,21 @@ export const authController = {
     },
 
     async logoutUser(req: Request, res: Response) {
-        //здесь надо убить текущую сессию
+        //здесь надо убить текущую сессию, для этого
+        // возьмем deviceId:
+        const refreshToken: string = req.cookies.refreshToken;
+        const refreshTokenInfo: RefreshTokenInfoType | null = jwtService.getRefreshTokenInfo(refreshToken);
+        if (!refreshTokenInfo) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
+            return;
+        }
+        const deviceId: string = refreshTokenInfo.deviceId;
+        // теперь убьем текущую сессию
+        const result = await sessionService.deleteSessionByDeviceId(deviceId);
+        if (!result) {
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+            return;
+        }
         res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     },
 
