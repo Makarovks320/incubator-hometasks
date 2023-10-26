@@ -32,6 +32,29 @@ export const sessionService = {
     async getSessionForDevice(deviceId: string): Promise<SessionDbModel | null>  {
         return await sessionsRepository.getSessionForDevice(deviceId);
     },
+    async updateSession(currentIp: IpType, deviceId: string, refreshToken: string, currentSession: SessionDbModel): Promise<SessionDbModel | null> {
+        const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
+        if (!refreshTokenInfo) return null;
+        const refreshTokenIssuedAt: Date = new Date(refreshTokenInfo.iat);
+        const refreshTokenExpiresAt: Date = new Date(refreshTokenInfo.exp);
+
+        // компонуем обновленную сессию:
+        const session: SessionDbModel = {
+            ...currentSession,
+            ip: currentIp,
+            deviceId,
+            refreshTokenIssuedAt,
+            refreshTokenExpiresAt
+        }
+        console.log('current session: ', currentSession);
+        try {
+            await sessionsRepository.updateSession(deviceId, session);
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
+        return session;
+    },
     async deleteSessionByDeviceId(deviceId: string): Promise<boolean> {
         const result = await sessionsRepository.deleteSessionByDeviceId(deviceId);
         return result;
@@ -41,5 +64,5 @@ export const sessionService = {
     },
     async deleteAllSessions(): Promise<void> {
         await sessionsRepository.deleteAllSessions();
-    }
+    },
 }

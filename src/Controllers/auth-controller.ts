@@ -4,7 +4,7 @@ import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {authService} from "../Services/auth-service";
 import {sessionService} from "../Services/session-service";
-import {IpType} from "../Models/session/session-model";
+import {IpType, SessionDbModel} from "../Models/session/session-model";
 import {v4 as uuidv4} from "uuid";
 import {UserAuthMeViewModel, UserDBModel} from "../Models/user/user-model";
 
@@ -16,13 +16,13 @@ export const authController = {
         if (user) {
             //подготавливаем данные для сохранения сессии:
             //todo: отработать сценарий, когда рефреш-токен валиден, сделать перезапись сессии вместо создания новой
-            const deviceId = uuidv4();
+            const deviceId: string = uuidv4();
             const ip: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";
             const deviceName: string = req.headers['user-agent'] || "deviceName undefined";
 
             // создаем токены
-            const accessToken = await jwtService.createAccessToken(user._id);
-            const refreshToken = await jwtService.createRefreshToken(user._id, deviceId);
+            const accessToken: string = await jwtService.createAccessToken(user._id);
+            const refreshToken: string = await jwtService.createRefreshToken(user._id, deviceId);
 
             // сохраняем текущую сессию:
             await sessionService.addSession(ip, deviceId, deviceName, refreshToken);
@@ -55,8 +55,31 @@ export const authController = {
     },
 
     async refreshToken(req: Request, res: Response) {
-        const accessToken = await jwtService.createAccessToken(req.userId);
+        // сначала из старого токена вытащим инфу о текущей сессии (понадобится deviceId):
+        const oldRefreshToken: string = req.cookies.refreshToken;
+        const oldRTInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(oldRefreshToken);
+        const deviceId: string = oldRTInfo!.deviceId;
+
+        // теперь обновим пару токенов:
+        const accessToken: string = await jwtService.createAccessToken(req.userId);
         const newRefreshToken = await jwtService.updateRefreshToken(req.userId, req.cookies.refreshToken);
+
+        // Также может поменяться ip:
+        const currentIp: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";
+
+        // Получим информацию о текущей сессии:
+        const currentSession: SessionDbModel | null = await sessionService.getSessionForDevice(deviceId);
+        if (!currentSession) {
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+            return;
+        }
+
+        const result = await sessionService.updateSession(currentIp, deviceId, newRefreshToken, currentSession);
+        if (!result) {
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+            return;
+        }
+
         res.status(HTTP_STATUSES.OK_200)
             .cookie('refreshToken', newRefreshToken, refreshTokenOptions)
             .send({accessToken: accessToken});

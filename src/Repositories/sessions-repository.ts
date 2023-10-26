@@ -19,6 +19,14 @@ export const sessionsRepository = {
             .toArray();
         return sessions;
     },
+    async getSessionForDevice(deviceId: string): Promise<SessionDbModel | null> {
+        const session: SessionDbModel | null = await sessionsCollection.findOne({deviceId});
+        return session;
+    },
+    async updateSession(deviceId: string, session: SessionDbModel): Promise<boolean> {
+        const result = await sessionsCollection.updateOne({deviceId: deviceId}, {"$set": {...session}});
+        return result.matchedCount === 1;
+    },
     async deleteSessionByDeviceId(deviceId: string): Promise<boolean> {
         const result = await sessionsCollection.deleteOne({deviceId});
         return result.deletedCount === 1;
@@ -31,10 +39,6 @@ export const sessionsRepository = {
             return false;
         }
         return true;
-    },
-    async getSessionForDevice(deviceId: string): Promise<SessionDbModel | null> {
-        const session: SessionDbModel | null = await sessionsCollection.findOne({deviceId});
-        return session;
     },
     async deleteAllSessionsExcludeCurrent(currentDevice: string) {
         const result = await sessionsCollection.deleteMany({deviceId: {$not: {$eq: currentDevice}}});
