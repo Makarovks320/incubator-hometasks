@@ -3,6 +3,7 @@ import {jwtService, RefreshTokenInfoType} from "../Application/jwt-service";
 import {HTTP_STATUSES} from "../Enums/http-statuses";
 import {sessionService} from "../Services/session-service";
 import {SessionDbModel, SessionViewModel} from "../Models/session/session-model";
+import {ObjectId} from "mongodb";
 
 export const securityDevicesController = {
     async getAllSessionsForUser(req: Request, res: Response) {
@@ -68,10 +69,11 @@ export const securityDevicesController = {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
         }
-        const currentDevice = refreshTokenInfo.deviceId;
-        // дернем в сервисе метод для удаления всех сессий кроме сессии для текущего девайса
+        const currentDeviceId: string = refreshTokenInfo.deviceId;
+        const currentUserId: ObjectId = refreshTokenInfo.userId;
+        // дернем в сервисе метод для удаления всех сессий юзера кроме сессии для текущего девайса
         try {
-            await sessionService.deleteAllSessionsExcludeCurrent(currentDevice);
+            await sessionService.deleteAllSessionsExcludeCurrent(currentUserId, currentDeviceId);
         } catch (e) {
             console.log(e);
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);

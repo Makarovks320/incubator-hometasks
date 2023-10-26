@@ -1,4 +1,4 @@
-import {sessionsCollection, userCollection} from "./db";
+import {sessionsCollection} from "./db";
 import {SessionDbModel, SessionViewModel} from "../Models/session/session-model";
 import {ObjectId} from "mongodb";
 import {getSessionViewModel} from "../Helpers/session-view-model-mapper";
@@ -40,8 +40,13 @@ export const sessionsRepository = {
         }
         return true;
     },
-    async deleteAllSessionsExcludeCurrent(currentDevice: string) {
-        const result = await sessionsCollection.deleteMany({deviceId: {$not: {$eq: currentDevice}}});
-        console.log('deleted count:', result.deletedCount);
-    }
+    async deleteAllSessionsExcludeCurrent(currentUserId: ObjectId, currentDeviceId: string) {
+        // удалим все сессии для текущего юзера, кроме сессии с текущим deviceId
+        const result = await sessionsCollection.deleteMany({
+            $and: [
+                {userId: currentUserId},
+                {deviceId: {$not: {$eq: currentDeviceId}}}
+            ]
+        });
+    },
 }

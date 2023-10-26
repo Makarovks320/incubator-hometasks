@@ -46,7 +46,6 @@ export const sessionService = {
             refreshTokenIssuedAt,
             refreshTokenExpiresAt
         }
-        console.log('current session: ', currentSession);
         try {
             await sessionsRepository.updateSession(deviceId, session);
         } catch (e) {
@@ -59,8 +58,8 @@ export const sessionService = {
         const result = await sessionsRepository.deleteSessionByDeviceId(deviceId);
         return result;
     },
-    async deleteAllSessionsExcludeCurrent(currentDevice: string) {
-        await sessionsRepository.deleteAllSessionsExcludeCurrent(currentDevice);
+    async deleteAllSessionsExcludeCurrent(currentUserId: ObjectId, currentDeviceId: string) {
+        await sessionsRepository.deleteAllSessionsExcludeCurrent(currentUserId, currentDeviceId);
     },
     async deleteAllSessions(): Promise<void> {
         await sessionsRepository.deleteAllSessions();
