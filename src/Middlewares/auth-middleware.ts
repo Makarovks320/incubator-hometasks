@@ -30,6 +30,10 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
 }
 
+/* миддлвар проверяет refresh-token из cookies
+достает юзер id
+если юзера нет, то 401
+если юзер есть, то добавляет юзера в реквест в поле user */
 export async function refreshTokenCheck(req: Request, res: Response, next: NextFunction) {
     if(!req.cookies.refreshToken) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
@@ -39,13 +43,6 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
 
     const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(token);
     if (!refreshTokenInfo) {
-        res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
-        return;
-    }
-    // проверяем, не истек ли срок годности токена
-    // todo а правильно ли так проверять, если есть способ проверки с помощью метода jwt.verify ?
-    const now: number = +(new Date());
-    if (refreshTokenInfo.exp*1000 < now) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }

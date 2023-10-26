@@ -6,9 +6,6 @@ import {SessionDbModel, SessionViewModel} from "../Models/session/session-model"
 
 export const securityDevicesController = {
     async getAllSessionsForUser(req: Request, res: Response) {
-        if (req.baseUrl === "/security/devices" && req.method === "GET"){
-            console.log('req.headers: ', req.headers);
-        }
         const refreshToken = req.cookies?.refreshToken;
         if (!refreshToken) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);

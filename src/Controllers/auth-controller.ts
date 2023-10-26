@@ -14,8 +14,8 @@ export const authController = {
     async loginUser(req: Request, res: Response) {
         const user = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
         if (user) {
-            //подготавливаем данные для сохранения сессии:
-            //todo: отработать сценарий, когда рефреш-токен валиден, сделать перезапись сессии вместо создания новой
+            // todo: если есть вылидный рефреш-токен, сделать перезапись сессии вместо создания новой
+            // подготавливаем данные для сохранения сессии:
             const deviceId: string = uuidv4();
             const ip: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";
             const deviceName: string = req.headers['user-agent'] || "deviceName undefined";
