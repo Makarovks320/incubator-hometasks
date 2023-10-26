@@ -56,13 +56,13 @@ export const authController = {
 
     async refreshToken(req: Request, res: Response) {
         // сначала из старого токена вытащим инфу о текущей сессии (понадобится deviceId):
-        const oldRefreshToken: string = req.cookies.refreshToken;
-        const oldRTInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(oldRefreshToken);
-        const deviceId: string = oldRTInfo!.deviceId;
+        const currentRefreshToken: string = req.cookies.refreshToken;
+        const currentRTInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(currentRefreshToken);
+        const deviceId: string = currentRTInfo!.deviceId;
 
-        // теперь обновим пару токенов:
+        // теперь создадим новую пару токенов:
         const accessToken: string = await jwtService.createAccessToken(req.userId);
-        const newRefreshToken = await jwtService.updateRefreshToken(req.userId, req.cookies.refreshToken);
+        const newRefreshToken = await jwtService.createRefreshToken(req.userId, deviceId);
 
         // Также может поменяться ip:
         const currentIp: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";

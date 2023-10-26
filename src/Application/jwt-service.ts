@@ -24,11 +24,7 @@ export const jwtService = {
         return jwt.sign({userId}, secret, {expiresIn: '120s'});
     },
     async createRefreshToken(userId: ObjectId, deviceId: string) {
-        return jwt.sign({userId: userId, deviceId: deviceId}, secret, {expiresIn: '1200s'})
-    },
-    async updateRefreshToken(userId: ObjectId, refreshToken: string) {
-        // здесь надо обновить сессию
-        return jwt.sign({userId}, refreshSecret, {expiresIn: 20});
+        return jwt.sign({userId, deviceId}, refreshSecret, {expiresIn: '1200s'})
     },
     async getUserIdByToken(token: string): Promise<ObjectId | null> {
         try {
@@ -48,8 +44,6 @@ export const jwtService = {
                 deviceId: result.deviceId,
                 iat: result.iat * 1000,
                 exp: result.exp * 1000,
-                // todo: обсудить, почему создаем userId как ObjectId, а возвращается string.
-                // todo: почему verify возвращает id как строку? хотя получал ObjectId
                 userId: new mongoose.Types.ObjectId(result.userId)
             }
         } catch (e) {
