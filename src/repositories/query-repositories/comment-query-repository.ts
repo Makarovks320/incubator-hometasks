@@ -1,4 +1,4 @@
-import {commentCollection, DEFAULT_PROJECTION} from "../db";
+import {commentCollection, DEFAULT_PROJECTION} from "../../db/db";
 import {Sort} from "mongodb";
 import {CommentOutput} from "../comments-repository";
 type commentQueryParams = {

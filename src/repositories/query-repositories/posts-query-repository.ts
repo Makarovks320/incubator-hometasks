@@ -1,5 +1,5 @@
 import {Post} from "../posts-repository";
-import {postCollection, DEFAULT_PROJECTION} from "../db";
+import {postCollection, DEFAULT_PROJECTION} from "../../db/db";
 import {Filter, Sort} from "mongodb";
 
 export type PostQueryParams = {

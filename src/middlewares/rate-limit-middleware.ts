@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {rateLimitingCollection} from "../repositories/db";
+import {rateLimitingCollection} from "../db/db";
 import {rateLimitDBModel, rateLimitViewModel} from "../models/rate-limiting/rate-limiting-model";
 import {Filter, ObjectId} from "mongodb";
 import subSeconds from "date-fns/subSeconds";

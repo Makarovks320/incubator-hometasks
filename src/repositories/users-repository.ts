@@ -1,4 +1,4 @@
-import {userCollection} from "./db";
+import {userCollection} from "../db/db";
 import {ObjectId} from "mongodb";
 import {EmailConfirmationType, UserDBModel} from "../models/user/user-model";
 

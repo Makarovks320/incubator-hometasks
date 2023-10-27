@@ -1,4 +1,4 @@
-import {sessionsCollection} from "./db";
+import {sessionsCollection} from "../db/db";
 import {SessionDbModel, SessionViewModel} from "../models/session/session-model";
 import {ObjectId} from "mongodb";
 import {getSessionViewModel} from "../helpers/session-view-model-mapper";

@@ -1,4 +1,4 @@
-import {blogCollection, DEFAULT_PROJECTION} from "../db";
+import {blogCollection, DEFAULT_PROJECTION} from "../../db/db";
 import {Blog} from "../blogs-repository";
 import {Filter, Sort} from "mongodb";
 

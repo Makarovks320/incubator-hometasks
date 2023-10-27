@@ -1,4 +1,4 @@
-import {blogCollection, DEFAULT_PROJECTION} from "./db";
+import {blogCollection, DEFAULT_PROJECTION} from "../db/db";
 
 export type Blog = {
     id: string,

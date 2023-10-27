@@ -1,4 +1,4 @@
-import {userCollection} from "../db";
+import {userCollection} from "../../db/db";
 import {Filter, ObjectId, Sort} from "mongodb";
 import {
     UsersWithPaginationModel,

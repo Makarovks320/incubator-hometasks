@@ -1,4 +1,4 @@
-import {DEFAULT_PROJECTION, postCollection} from "./db";
+import {DEFAULT_PROJECTION, postCollection} from "../db/db";
 import {InputPost} from "../services/post-service";
 
 export type Post = {
