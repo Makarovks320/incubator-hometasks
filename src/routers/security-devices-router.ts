@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {securityDevicesController} from "../controllers/securityDevicesController";
+import {securityDevicesController} from "../controllers/security-devices-controller";
 import {refreshTokenCheck} from "../middlewares/auth-middleware";
 
 export const securityDevicesRouter = Router();
