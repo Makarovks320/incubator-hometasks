@@ -5,5 +5,5 @@ export const RouterPaths = {
     users:'/users',
     auth:'/auth',
     securityDevices:'/security/devices',
-    testing:'/testing'
+    testing:'/testing/all-data'
 }
