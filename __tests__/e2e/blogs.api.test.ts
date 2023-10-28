@@ -3,6 +3,7 @@ import {app} from "../../src/app_settings";
 import {Blog} from "../../src/repositories/blogs-repository";
 import {RouterPaths} from "../../src/helpers/router-paths";
 import {authBasicHeader} from "../utils/test_utilities";
+import {HTTP_STATUSES} from "../../src/enums/http-statuses";
 
 describe(RouterPaths.blogs, () => {
     beforeAll(async () => {
@@ -12,7 +13,7 @@ describe(RouterPaths.blogs, () => {
     it('should return an object with 0 totalCount', async () => {
          await request(app)
              .get(RouterPaths.blogs)
-             .expect(200,{ pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: [] });
+             .expect(HTTP_STATUSES.OK_200,{ pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: [] });
     });
 
     it('should return error (websiteUrl)', async () => {
@@ -24,14 +25,14 @@ describe(RouterPaths.blogs, () => {
                 description: "description test",
                 websiteUrl: "wrong"
             })
-            .expect(400);
+            .expect(HTTP_STATUSES.BAD_REQUEST_400);
         expect(response.body).toEqual({errorsMessages: [
             { message: expect.any(String), field: 'websiteUrl' }
             ]});
     });
 
     let createdBlog: Blog | null = null;
-    it('should create new blog', async () => {
+    it('should create new entity', async () => {
         const response = await request(app)
             .post(RouterPaths.blogs)
             .set(authBasicHeader)
@@ -40,7 +41,7 @@ describe(RouterPaths.blogs, () => {
                 description: "description test",
                 websiteUrl: "http://test.ru"
             })
-            .expect(201);
+            .expect(HTTP_STATUSES.CREATED_201);
         createdBlog = response.body;
         expect(createdBlog).toEqual({
             createdAt: expect.any(String),
@@ -53,7 +54,7 @@ describe(RouterPaths.blogs, () => {
 
         await request(app)
             .get(RouterPaths.blogs)
-            .expect(200,{
+            .expect(HTTP_STATUSES.OK_200,{
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
@@ -65,13 +66,13 @@ describe(RouterPaths.blogs, () => {
     it('should return correct blog by id', async () => {
         await request(app)
             .get(`${RouterPaths.blogs}/${createdBlog?.id}`)
-            .expect(200,createdBlog);
+            .expect(HTTP_STATUSES.OK_200,createdBlog);
     });
 
     it('should return 404', async () => {
         await request(app)
             .get(`${RouterPaths.blogs}/wrong-id-number`)
-            .expect(404);
+            .expect(HTTP_STATUSES.NOT_FOUND_404);
     });
 
     it('should return 204', async () => {
@@ -83,7 +84,7 @@ describe(RouterPaths.blogs, () => {
                 description: "description test",
                 websiteUrl: "http://test.ru"
             })
-            .expect(204);
+            .expect(HTTP_STATUSES.NO_CONTENT_204);
     });
 
     it('should return edited blog', async () => {
@@ -102,7 +103,7 @@ describe(RouterPaths.blogs, () => {
 
         await request(app)
             .get(RouterPaths.blogs)
-            .expect(200,{
+            .expect(HTTP_STATUSES.OK_200,{
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
