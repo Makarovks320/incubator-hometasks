@@ -66,7 +66,7 @@ export const blogsController = {
     },
 
     async deleteBlogById(req: Request, res: Response) {
-        const blog = await blogService.deleteBlogById(req.params.id);
-        blog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
+        const isBlogDeleted = await blogService.deleteBlogById(req.params.id);
+        isBlogDeleted ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
     }
 }
