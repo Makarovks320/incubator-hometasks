@@ -1,19 +1,11 @@
 import {blogCollection, DEFAULT_PROJECTION} from "../db/db";
-
-export type Blog = {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    isMembership: boolean,
-    createdAt: string
-}
+import {BlogViewModel} from "../models/blog/blog-view-model";
 
 export const blogsRepository = {
-    async findBlogById(id: string): Promise<Blog | null> {
+    async findBlogById(id: string): Promise<BlogViewModel | null> {
         return blogCollection.findOne({id},{ projection: DEFAULT_PROJECTION});
     },
-    async createNewBlog(b: Blog): Promise<Blog> {
+    async createNewBlog(b: BlogViewModel): Promise<BlogViewModel> {
         try {
             await blogCollection.insertOne({...b});
         } catch (e) {
@@ -23,7 +15,7 @@ export const blogsRepository = {
         //  if (e instanceof MongoAPIError.message) {return e.message}
         return b;
     },
-    async updateBlogById(id: string, b: Blog): Promise<boolean> {
+    async updateBlogById(id: string, b: BlogViewModel): Promise<boolean> {
         const result = await blogCollection.updateOne({id}, {"$set": {...b}});
         return result.matchedCount === 1;
     },

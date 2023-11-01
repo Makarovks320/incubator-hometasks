@@ -1,27 +1,13 @@
 import {blogCollection, DEFAULT_PROJECTION} from "../../db/db";
-import {Blog} from "../blogs-repository";
 import {Filter, Sort} from "mongodb";
-
-export type BlogQueryParams = {
-    searchNameTerm: string | null,
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: 'asc' | 'desc'
-}
-
-type BlogsOutput = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: Blog[]
-}
+import {BlogQueryParams} from "../../models/blog/query-blog-model";
+import {BlogsQueryViewModel} from "../../models/blog/blogs-query-view-model";
+import {BlogViewModel} from "../../models/blog/blog-view-model";
 
 export const blogsQueryRepository = {
-    async getBlogs(queryParams: BlogQueryParams): Promise<BlogsOutput> {
+    async getBlogs(queryParams: BlogQueryParams): Promise<BlogsQueryViewModel> {
 
-        const filter: Filter<Blog> = {};
+        const filter: Filter<BlogViewModel> = {};
         if (queryParams.searchNameTerm) {
             filter.name = {$regex: queryParams.searchNameTerm, $options: 'i'};
         }
