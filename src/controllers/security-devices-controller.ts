@@ -60,6 +60,7 @@ export const securityDevicesController = {
         await sessionService.deleteSessionByDeviceId(deviceId);
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     },
+
     async deleteAllSessionsForUserExcludeCurrent(req: Request, res: Response) {
         /*Удаляет все сессии кроме текущей*/
         // определим текущую сессию по девайсу:

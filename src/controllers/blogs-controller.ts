@@ -20,7 +20,7 @@ export const blogsController = {
 
     async getBlogById(req: Request, res: Response) {
         const blog = await blogService.getBlogById(req.params.id);
-        blog ? res.send(blog) : res.send(HTTP_STATUSES.NOT_FOUND_404);
+        blog ? res.send(blog) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async createNewBlog(req: Request, res: Response) {
@@ -56,7 +56,7 @@ export const blogsController = {
 
     async updateBlog(req: Request, res: Response) {
         const newBlog = await blogService.updateBlogById(req.params.id, req.body);
-        newBlog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send(newBlog) : res.send(HTTP_STATUSES.NOT_FOUND_404);
+        newBlog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send(newBlog) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     },
 
     async deleteAllBlogs(req: Request, res: Response) {
