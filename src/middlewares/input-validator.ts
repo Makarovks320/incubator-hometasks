@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {validationResult} from "express-validator";
+import {ValidationError, validationResult} from "express-validator";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 
 // типы для режима без any
@@ -15,11 +15,11 @@ import {HTTP_STATUSES} from "../enums/http-statuses";
 export const inputValidator =
     (req: Request, res: Response, next: NextFunction) => {
     const myValidationResult = validationResult.withDefaults({
-        formatter: error => {
+        formatter: (error: ValidationError) => {
             return {
                 msg: error.msg,
                 // todo: как быть, что правильнее возвращать?
-                param: error.type === "field" ? error.path : null
+                param: error.type === "field" ? error.path : "unknown field"
             };
         },
     });
