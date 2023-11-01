@@ -18,7 +18,8 @@ export const inputValidator =
         formatter: error => {
             return {
                 msg: error.msg,
-                param: error.param
+                // todo: как быть, что правильнее возвращать?
+                param: error.type === "field" ? error.path : null
             };
         },
     });
