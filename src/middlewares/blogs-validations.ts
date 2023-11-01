@@ -7,7 +7,7 @@ export const nameValidation = body('name')
 
 export const descriptionValidation = body('description')
     .trim()
-    .isLength({max: 500}).withMessage('max length is 15')
+    .isLength({max: 500}).withMessage('max length is 500')
     .notEmpty().withMessage('should not be empty');
 
 // todo: не работает без изменений интерфейса IsURLOptions
