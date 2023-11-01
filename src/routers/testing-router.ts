@@ -17,13 +17,13 @@ testingRouter.delete('/', async (req: Request, res: Response, next: NextFunction
             commentService.deleteAllComments(),
             sessionService.deleteAllSessions(),
             rateLimitingCollection.deleteMany({}) // не делал ни сервиса, ни репозитория
-        ]).catch((e) => {
+        ]).then(() => {
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+            return;
+        }).catch((e) => {
             console.log(e.message);
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
             return;
         })
-
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-        return;
     }
 )
