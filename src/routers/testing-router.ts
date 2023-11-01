@@ -9,7 +9,7 @@ import {sessionService} from "../services/session-service";
 
 export const testingRouter = Router();
 
-testingRouter.delete('/all-data', async (req: Request, res: Response, next: NextFunction) => {
+testingRouter.delete('/', async (req: Request, res: Response, next: NextFunction) => {
         Promise.all([
             postService.deleteAllPosts(),
             blogService.deleteAllBlogs(),
