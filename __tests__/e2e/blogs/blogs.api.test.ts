@@ -6,6 +6,7 @@ import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
 import {CreateBlogInputModel} from "../../../src/models/blog/create-input-blog-model";
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {blogsTestManager} from "../../utils/blogsTestManager";
+import {UpdateInputBlogModel} from "../../../src/models/blog/update-input-blog-model";
 
 describe(`CRUD tests for /blogs`, () => {
     beforeAll(async () => {
@@ -89,7 +90,7 @@ describe(`CRUD tests for /blogs`, () => {
             throw new Error('test cannot be performed.');
         }
 
-        const data = {
+        const data: UpdateInputBlogModel = {
             name: "edited name a",
             description: "description test",
             websiteUrl: "http://test.ru"

@@ -1,12 +1,11 @@
-import {CreateBlogInputModel} from "../../src/models/blog/create-input-blog-model";
 import request from "supertest";
 import {app} from "../../src/app_settings";
 import {authBasicHeader} from "./test_utilities";
 import {RouterPaths} from "../../src/helpers/router-paths";
 import {HTTP_STATUSES, HttpStatusType} from "../../src/enums/http-statuses";
-import {BlogViewModel} from "../../src/models/blog/blog-view-model";
 import * as supertest from "supertest";
 import {CreatePostInputModel} from "../../src/models/post/create-post-input-model";
+import {PostViewModel} from "../../src/models/post/post-view-model";
 
 
 export const postsTestManager = {
@@ -15,25 +14,32 @@ export const postsTestManager = {
     * Если ожидаем успешное создание, метод выполнит проверку тела ответа.
     * */
     async createPost(data: CreatePostInputModel, expectedStatusCode: HttpStatusType)
-        : Promise<{ response: supertest.Response; createdPost: BlogViewModel | null }> {
+        : Promise<{ response: supertest.Response; createdPost: PostViewModel | null }> {
         const response: request.Response = await request(app)
-            .post(RouterPaths.blogs)
+            .post(RouterPaths.posts)
             .set(authBasicHeader)
             .send(data)
             .expect(expectedStatusCode);
-        let createdBlog: BlogViewModel | null = null;
+        let createdPost: PostViewModel | null = null;
+
         if (expectedStatusCode === HTTP_STATUSES.CREATED_201) {
-            createdBlog = response.body;
-            expect(createdBlog).toEqual({
+            createdPost = response.body;
+
+            if (!createdPost) {
+                throw new Error('test cannot be performed.');
+            }
+
+            expect(createdPost).toEqual({
                 createdAt: expect.any(String),
                 id: expect.any(String),
-                description: data.description,
-                isMembership: false,
-                name: data.name,
-                websiteUrl: data.websiteUrl
+                title: data.title,
+                content: data.content,
+                shortDescription: data.shortDescription,
+                blogId: createdPost.blogId,
+                blogName: expect.any(String)
             });
         }
 
-        return {response, createdBlog};
+        return {response, createdPost: createdPost};
     }
 }
