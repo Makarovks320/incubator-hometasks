@@ -1,5 +1,5 @@
 import {postsRepository} from "../repositories/posts-repository";
-import {Post} from "../models/post/post-view-model";
+import {PostViewModel} from "../models/post/post-view-model";
 
 export type InputPost = {
     title: string,
@@ -10,10 +10,10 @@ export type InputPost = {
 }
 
 export const postService = {
-    async getPostById(id: string): Promise<Post | null> {
+    async getPostById(id: string): Promise<PostViewModel | null> {
         return postsRepository.findPostById(id);
     },
-    async createNewPost(p: InputPost): Promise<Post> {
+    async createNewPost(p: InputPost): Promise<PostViewModel> {
         const post = {
             id: new Date().valueOf().toString(),
             ...p,

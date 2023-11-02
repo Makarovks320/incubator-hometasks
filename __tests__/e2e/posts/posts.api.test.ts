@@ -6,7 +6,7 @@ import {authBasicHeader} from "../../utils/test_utilities";
 import {blogsTestManager} from "../../utils/blogsTestManager";
 import {CreateBlogInputModel} from "../../../src/models/blog/create-input-blog-model";
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
-import {Post} from "../../../src/models/post/post-view-model";
+import {PostViewModel} from "../../../src/models/post/post-view-model";
 
 describe('CRUD tests for /posts', () => {
     beforeAll(async () => {
@@ -36,8 +36,8 @@ describe('CRUD tests for /posts', () => {
 
     // create blog + create post for blog
     let createdBlogForPost: BlogViewModel | null = null;
-    let createdPost: Post | null = null;
-    it('should create new post', async () => {
+    let createdPost: PostViewModel | null = null;
+    it('should create new post for existing blogId', async () => {
         // сначала создадим блог
         const blogData: CreateBlogInputModel = {
             name: "name test2",

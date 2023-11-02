@@ -5,7 +5,7 @@ import {SessionDbModel} from "../models/session/session-model";
 import {rateLimitDBModel} from "../models/rate-limiting/rate-limiting-model";
 import {UserDBModel} from "../models/user/user-model";
 import {BlogViewModel} from "../models/blog/blog-view-model";
-import {Post} from "../models/post/post-view-model";
+import {PostViewModel} from "../models/post/post-view-model";
 
 dotenv.config();
 
@@ -20,7 +20,7 @@ export const client = new MongoClient(mongoUri);
 
 export const db = client.db(DbName);
 export const blogCollection = db.collection<BlogViewModel>('blogs');
-export const postCollection = db.collection<Post>('posts');
+export const postCollection = db.collection<PostViewModel>('posts');
 export const userCollection = db.collection<UserDBModel>('users');
 export const commentCollection = db.collection<Comment>('comments');
 export const sessionsCollection = db.collection<SessionDbModel>('sessions');
