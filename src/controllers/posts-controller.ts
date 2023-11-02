@@ -1,9 +1,10 @@
 import {Request, Response} from "express";
-import {PostQueryParams, postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
+import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {commentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
 import {commentService, InputCommentWithPostId} from "../services/comment-service";
+import {PostQueryParams} from "../models/post/post-query-params-type";
 
 export const postsController = {
     async getPosts(req: Request, res: Response) {

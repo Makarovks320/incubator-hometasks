@@ -1,24 +1,11 @@
-import {Post} from "../posts-repository";
-import {postCollection, DEFAULT_PROJECTION} from "../../db/db";
+import {DEFAULT_PROJECTION, postCollection} from "../../db/db";
 import {Filter, Sort} from "mongodb";
-
-export type PostQueryParams = {
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: 'asc' | 'desc'
-}
-
-type PostsOutput = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: Post[]
-}
+import {PostQueryParams} from "../../models/post/post-query-params-type";
+import {Post} from "../../models/post/post-view-model";
+import {PostsQueryViewModel} from "../../models/post/posts-query-view-model";
 
 export const postsQueryRepository = {
-    async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsOutput> {
+    async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsQueryViewModel> {
         const filter: Filter<Post> = {}
         if (blogId) {
             filter.blogId = blogId;

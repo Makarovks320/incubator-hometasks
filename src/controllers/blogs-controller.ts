@@ -2,9 +2,10 @@ import {Request, Response} from "express";
 import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
 import {blogService} from "../services/blog-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {PostQueryParams, postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
+import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {InputPost, postService} from "../services/post-service";
-import {BlogQueryParams} from "../models/blog/query-blog-model";
+import {BlogQueryParams} from "../models/blog/blog-query-params-type";
+import {PostQueryParams} from "../models/post/post-query-params-type";
 
 export const blogsController = {
     async getBlogs(req: Request, res: Response) {

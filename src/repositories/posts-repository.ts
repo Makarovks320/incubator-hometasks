@@ -1,15 +1,6 @@
 import {DEFAULT_PROJECTION, postCollection} from "../db/db";
 import {InputPost} from "../services/post-service";
-
-export type Post = {
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string
-}
+import {Post} from "../models/post/post-view-model";
 
 export const postsRepository = {
     async findPostById(id: string): Promise<Post | null> {

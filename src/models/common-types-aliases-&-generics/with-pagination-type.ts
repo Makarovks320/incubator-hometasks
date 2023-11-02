@@ -5,3 +5,4 @@ export type WithPagination<T> = {
     totalCount: number,
     items: T[]
 }
+

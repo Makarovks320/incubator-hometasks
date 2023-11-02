@@ -1,5 +1,4 @@
-export type BlogQueryParams = {
-    searchNameTerm: string | null,
+export type CommonQueryParams = {
     pageNumber: number,
     pageSize: number,
     sortBy: string,

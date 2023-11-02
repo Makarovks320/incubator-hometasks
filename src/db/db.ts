@@ -1,11 +1,11 @@
 import {MongoClient} from "mongodb";
 import dotenv from "dotenv";
-import {Post} from "../repositories/posts-repository";
 import {Comment} from "../repositories/comments-repository";
 import {SessionDbModel} from "../models/session/session-model";
 import {rateLimitDBModel} from "../models/rate-limiting/rate-limiting-model";
 import {UserDBModel} from "../models/user/user-model";
 import {BlogViewModel} from "../models/blog/blog-view-model";
+import {Post} from "../models/post/post-view-model";
 
 dotenv.config();
 

@@ -1,6 +1,6 @@
 import {blogCollection, DEFAULT_PROJECTION} from "../../db/db";
 import {Filter, Sort} from "mongodb";
-import {BlogQueryParams} from "../../models/blog/query-blog-model";
+import {BlogQueryParams} from "../../models/blog/blog-query-params-type";
 import {BlogsQueryViewModel} from "../../models/blog/blogs-query-view-model";
 import {BlogViewModel} from "../../models/blog/blog-view-model";
 

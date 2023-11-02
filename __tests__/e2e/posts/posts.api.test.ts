@@ -1,12 +1,12 @@
 import request from "supertest";
 import {app} from "../../../src/app_settings";
-import {Post} from "../../../src/repositories/posts-repository";
 import {RouterPaths} from "../../../src/helpers/router-paths";
 import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
 import {authBasicHeader} from "../../utils/test_utilities";
 import {blogsTestManager} from "../../utils/blogsTestManager";
 import {CreateBlogInputModel} from "../../../src/models/blog/create-input-blog-model";
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
+import {Post} from "../../../src/models/post/post-view-model";
 
 describe('CRUD tests for /posts', () => {
     beforeAll(async () => {
