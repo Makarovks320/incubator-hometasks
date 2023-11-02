@@ -1,9 +1,9 @@
 import request from "supertest";
-import {app} from "../../src/app_settings";
-import {Post} from "../../src/repositories/posts-repository";
-import {RouterPaths} from "../../src/helpers/router-paths";
-import {HTTP_STATUSES} from "../../src/enums/http-statuses";
-import {authBasicHeader} from "../utils/test_utilities";
+import {app} from "../../../src/app_settings";
+import {Post} from "../../../src/repositories/posts-repository";
+import {RouterPaths} from "../../../src/helpers/router-paths";
+import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
+import {authBasicHeader} from "../../utils/test_utilities";
 
 describe('/posts', () => {
     beforeAll(async () => {
