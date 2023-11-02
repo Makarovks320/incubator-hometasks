@@ -4,18 +4,22 @@ import {Post} from "../../../src/repositories/posts-repository";
 import {RouterPaths} from "../../../src/helpers/router-paths";
 import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
 import {authBasicHeader} from "../../utils/test_utilities";
+import {blogsTestManager} from "../../utils/blogsTestManager";
+import {CreateBlogInputModel} from "../../../src/models/blog/create-input-blog-model";
+import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 
-describe('/posts', () => {
+describe('CRUD tests for /posts', () => {
     beforeAll(async () => {
-        await request(app).delete('/testing/all-data').set(authBasicHeader);
-    }, 10000);
+        await request(app).delete(RouterPaths.testing).set(authBasicHeader);
+    },);
+
     it('should return an object with 0 totalCount', async () => {
         await request(app)
             .get('/posts')
             .expect(HTTP_STATUSES.OK_200,{ pagesCount: 0, page: 1, pageSize: 10, totalCount: 0, items: [] });
     });
 
-    it('should return error (blogId)', async () => {
+    it(`shouldn't create post for unexisting blogId`, async () => {
         await request(app)
             .post('/posts')
             .set(authBasicHeader)
@@ -30,17 +34,21 @@ describe('/posts', () => {
             });
     });
 
-    let createdPost: Post | null;
+    // create blog + create post for blog
+    let createdBlogForPost: BlogViewModel | null = null;
+    let createdPost: Post | null = null;
     it('should create new post', async () => {
         // сначала создадим блог
-        const {body: createdBlog} = await request(app)
-            .post(RouterPaths.blogs)
-            .set(authBasicHeader)
-            .send({
-                name: "name test2 ",
-                description: "description test 2",
-                websiteUrl: "http://test.ru"
-            });
+        const blogData: CreateBlogInputModel = {
+            name: "name test2",
+            description: "description test 2",
+            websiteUrl: "http://test.ru"
+        };
+        const {createdBlog} = await blogsTestManager.createBlog(blogData, HTTP_STATUSES.CREATED_201);
+        createdBlogForPost = createdBlog;
+        if (!createdBlogForPost) {
+            throw new Error('test cannot be performed.');
+        }
         //создадим пост для createdBlog.id
         const response = await request(app)
             .post('/posts')
@@ -49,7 +57,7 @@ describe('/posts', () => {
                 "title": "title 1",
                 "content": "content 1",
                 "shortDescription": "some short description",
-                "blogId": createdBlog.id
+                "blogId": createdBlogForPost.id
             })
             .expect(HTTP_STATUSES.CREATED_201);
         createdPost = response.body;
@@ -59,7 +67,7 @@ describe('/posts', () => {
             title: "title 1",
             content: "content 1",
             shortDescription: "some short description",
-            blogId: createdBlog?.id,
+            blogId: createdBlogForPost.id,
             blogName: expect.any(String)
         });
     });
