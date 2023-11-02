@@ -1,11 +1,11 @@
 import {userCollection} from "../../db/db";
 import {Filter, ObjectId, Sort} from "mongodb";
 import {
-    UsersWithPaginationModel,
-    UsersQueryParams,
     UserDBModel
-} from "../../models/user/user-model";
+} from "../../models/user/user-db-model";
 import {getUserViewModel} from "../../helpers/user-view-model-mapper";
+import {UsersWithPaginationModel} from "../../models/user/users-with-pagination-model";
+import {UsersQueryParams} from "../../models/user/users-query-params";
 
 export const usersQueryRepository = {
     async getUsers(queryParams: UsersQueryParams): Promise<UsersWithPaginationModel> {

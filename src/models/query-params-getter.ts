@@ -1,5 +1,5 @@
 import {Request} from "express";
-import {UsersQueryParams} from "./user/user-model";
+import {UsersQueryParams} from "./user/users-query-params";
 
 export function getQueryParamsForUsers(req: Request): UsersQueryParams {
     return {

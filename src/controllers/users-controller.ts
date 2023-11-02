@@ -4,9 +4,10 @@ import {HTTP_STATUSES} from "../enums/http-statuses";
 import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-import {UserDBModel, UsersQueryParams} from "../models/user/user-model";
+import {UserDBModel} from "../models/user/user-db-model";
 import {getQueryParamsForUsers} from "../models/query-params-getter";
 import {getUserViewModel} from "../helpers/user-view-model-mapper";
+import {UsersQueryParams} from "../models/user/users-query-params";
 
 export const usersController = {
 

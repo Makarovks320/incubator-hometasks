@@ -4,7 +4,7 @@ import {usersQueryRepository} from "../repositories/query-repositories/users-que
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {UserDBModel} from "../models/user/user-model";
+import {UserDBModel} from "../models/user/user-db-model";
 
 export type InputUser = {
     login: string,

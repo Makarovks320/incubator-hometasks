@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import {Comment} from "../repositories/comments-repository";
 import {SessionDbModel} from "../models/session/session-model";
 import {rateLimitDBModel} from "../models/rate-limiting/rate-limiting-model";
-import {UserDBModel} from "../models/user/user-model";
+import {UserDBModel} from "../models/user/user-db-model";
 import {BlogViewModel} from "../models/blog/blog-view-model";
 import {PostViewModel} from "../models/post/post-view-model";
 

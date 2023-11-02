@@ -1,6 +1,6 @@
 import {userCollection} from "../db/db";
 import {ObjectId} from "mongodb";
-import {EmailConfirmationType, UserDBModel} from "../models/user/user-model";
+import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
 
 export const usersRepository = {
     async createUser(user: UserDBModel): Promise<UserDBModel> {

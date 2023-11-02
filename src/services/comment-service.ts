@@ -1,7 +1,7 @@
 import {Comment, CommentOutput, commentsRepository} from "../repositories/comments-repository";
 import { userService } from "./user-service";
 import {ObjectId} from "mongodb";
-import {UserDBModel} from "../models/user/user-model";
+import {UserDBModel} from "../models/user/user-db-model";
 
 export type InputCommentWithPostId = {
     content: string,

@@ -6,7 +6,8 @@ import {authService} from "../services/auth-service";
 import {sessionService} from "../services/session-service";
 import {IpType, SessionDbModel} from "../models/session/session-model";
 import {v4 as uuidv4} from "uuid";
-import {UserAuthMeViewModel, UserDBModel} from "../models/user/user-model";
+import {UserDBModel} from "../models/user/user-db-model";
+import {UserAuthMeViewModel} from "../models/user/user-auth-me-view-model";
 
 const refreshTokenOptions = {httpOnly: true, secure: true}
 
