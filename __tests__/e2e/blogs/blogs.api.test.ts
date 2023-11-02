@@ -27,9 +27,9 @@ describe(`CRUD tests for /blogs`, () => {
             websiteUrl: "http://test.ru"
         }
 
-        const createdResponse = await blogsTestManager.createBlog(data, HTTP_STATUSES.CREATED_201);
+        const {createdBlog} = await blogsTestManager.createBlog(data, HTTP_STATUSES.CREATED_201);
 
-        createdEntity1 = createdResponse.body;
+        createdEntity1 = createdBlog;
 
         await request(app)
             .get(RouterPaths.blogs)
@@ -50,9 +50,9 @@ describe(`CRUD tests for /blogs`, () => {
             description: "description test2",
             websiteUrl: "http://test2.ru"
         }
-        const createdResponse = await blogsTestManager.createBlog(data, HTTP_STATUSES.CREATED_201);
+        const {createdBlog} = await blogsTestManager.createBlog(data, HTTP_STATUSES.CREATED_201);
 
-        createdEntity2 = createdResponse.body;
+        createdEntity2 = createdBlog;
 
         await request(app)
             .get(RouterPaths.blogs)
