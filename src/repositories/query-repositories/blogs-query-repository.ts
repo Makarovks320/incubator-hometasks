@@ -1,11 +1,11 @@
 import {blogCollection, DEFAULT_PROJECTION} from "../../db/db";
 import {Filter, Sort} from "mongodb";
 import {BlogQueryParams} from "../../models/blog/blog-query-params-type";
-import {BlogsQueryViewModel} from "../../models/blog/blogs-query-view-model";
+import {BlogsWithPaginationModel} from "../../models/blog/blogs-with-pagination-model";
 import {BlogViewModel} from "../../models/blog/blog-view-model";
 
 export const blogsQueryRepository = {
-    async getBlogs(queryParams: BlogQueryParams): Promise<BlogsQueryViewModel> {
+    async getBlogs(queryParams: BlogQueryParams): Promise<BlogsWithPaginationModel> {
 
         const filter: Filter<BlogViewModel> = {};
         if (queryParams.searchNameTerm) {

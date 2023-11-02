@@ -2,10 +2,10 @@ import {DEFAULT_PROJECTION, postCollection} from "../../db/db";
 import {Filter, Sort} from "mongodb";
 import {PostQueryParams} from "../../models/post/post-query-params-type";
 import {PostViewModel} from "../../models/post/post-view-model";
-import {PostsQueryViewModel} from "../../models/post/posts-query-view-model";
+import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-model";
 
 export const postsQueryRepository = {
-    async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsQueryViewModel> {
+    async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsWithPaginationModel> {
         const filter: Filter<PostViewModel> = {}
         if (blogId) {
             filter.blogId = blogId;
