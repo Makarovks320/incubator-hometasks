@@ -3,13 +3,13 @@ import {app} from "../../../src/app_settings";
 import {RouterPaths} from "../../../src/helpers/router-paths";
 import {authBasicHeader} from "../../utils/test_utilities";
 import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
-import {createBlogInputModel} from "../../../src/models/blog/create-input-blog-model";
+import {CreateBlogInputModel} from "../../../src/models/blog/create-input-blog-model";
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
+import {blogsTestManager} from "../../utils/blogsTestManager";
 
 describe(`CRUD tests for /blogs`, () => {
     beforeAll(async () => {
         await request(app).delete(RouterPaths.testing).set(authBasicHeader);
-        console.log('beforeAll completed');
     });
 
     it(`should return an object with 0 totalCount`, async () => {
@@ -21,25 +21,15 @@ describe(`CRUD tests for /blogs`, () => {
     // create + read:
     let createdEntity1: BlogViewModel | null = null;
     it(`should create new entity with correct input data`, async () => {
-        const data: createBlogInputModel = {
+        const data: CreateBlogInputModel = {
             name: "name test",
             description: "description test",
             websiteUrl: "http://test.ru"
         }
-        const response = await request(app)
-            .post(RouterPaths.blogs)
-            .set(authBasicHeader)
-            .send(data)
-            .expect(HTTP_STATUSES.CREATED_201);
-        createdEntity1 = response.body;
-        expect(createdEntity1).toEqual({
-            createdAt: expect.any(String),
-            id: expect.any(String),
-            description: data.description,
-            isMembership: false,
-            name: data.name,
-            websiteUrl: data.websiteUrl
-        });
+
+        const createdResponse = await blogsTestManager.createBlog(data, HTTP_STATUSES.CREATED_201);
+
+        createdEntity1 = createdResponse.body;
 
         await request(app)
             .get(RouterPaths.blogs)
@@ -55,25 +45,14 @@ describe(`CRUD tests for /blogs`, () => {
     // create + read another entity:
     let createdEntity2: BlogViewModel | null = null;
     it(`should create another new entity with correct input data`, async () => {
-        const data: createBlogInputModel = {
+        const data: CreateBlogInputModel = {
             name: "name test2",
             description: "description test2",
             websiteUrl: "http://test2.ru"
         }
-        const response = await request(app)
-            .post(RouterPaths.blogs)
-            .set(authBasicHeader)
-            .send(data)
-            .expect(HTTP_STATUSES.CREATED_201);
-        createdEntity2 = response.body;
-        expect(createdEntity2).toEqual({
-            createdAt: expect.any(String),
-            id: expect.any(String),
-            description: data.description,
-            isMembership: false,
-            name: data.name,
-            websiteUrl: data.websiteUrl
-        });
+        const createdResponse = await blogsTestManager.createBlog(data, HTTP_STATUSES.CREATED_201);
+
+        createdEntity2 = createdResponse.body;
 
         await request(app)
             .get(RouterPaths.blogs)
@@ -156,6 +135,3 @@ describe(`CRUD tests for /blogs`, () => {
     })
 });
 
-    //todo проверить GET -> /blogs/:id/posts
-    //todo проверить GET -> /users
-    //todo проверить POST -> /users

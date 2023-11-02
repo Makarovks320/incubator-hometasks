@@ -65,3 +65,7 @@ describe('/posts', () => {
     });
 
 });
+
+//todo проверить GET -> /blogs/:id/posts
+//todo проверить GET -> /users
+//todo проверить POST -> /users

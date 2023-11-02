@@ -1,12 +1,12 @@
 import {blogsRepository} from "../repositories/blogs-repository";
 import {BlogViewModel} from "../models/blog/blog-view-model";
-import {createBlogInputModel} from "../models/blog/create-input-blog-model";
+import {CreateBlogInputModel} from "../models/blog/create-input-blog-model";
 
 export const blogService = {
     async getBlogById(id: string): Promise<BlogViewModel | null> {
         return blogsRepository.findBlogById(id);
     },
-    async createNewBlog(p: createBlogInputModel): Promise<BlogViewModel> {
+    async createNewBlog(p: CreateBlogInputModel): Promise<BlogViewModel> {
         const blog = {
             id: new Date().valueOf().toString(),
             ...p,
