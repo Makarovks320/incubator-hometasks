@@ -99,6 +99,3 @@ describe('CRUD tests for /posts', () => {
     })
 });
 
-//todo проверить GET -> /blogs/:id/posts
-//todo проверить GET -> /users
-//todo проверить POST -> /users
