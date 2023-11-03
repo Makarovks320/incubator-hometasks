@@ -1,18 +1,18 @@
 import {BlogModel, DEFAULT_PROJECTION} from "../../db/db";
-import {Filter, Sort} from "mongodb";
 import {BlogQueryParams} from "../../models/blog/blog-query-params-type";
 import {BlogsWithPaginationModel} from "../../models/blog/blogs-with-pagination-model";
 import {BlogViewModel} from "../../models/blog/blog-view-model";
+import mongoose from "mongoose";
 
 export const blogsQueryRepository = {
     async getBlogs(queryParams: BlogQueryParams): Promise<BlogsWithPaginationModel> {
 
-        const filter: Filter<BlogViewModel> = {};
+        const filter: mongoose.FilterQuery<BlogViewModel> = {};
         if (queryParams.searchNameTerm) {
             filter.name = {$regex: queryParams.searchNameTerm, $options: 'i'};
         }
 
-        const sort: Sort = {};
+        let sort: any;//todo: как типизировать?
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
