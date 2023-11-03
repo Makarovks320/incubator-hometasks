@@ -9,11 +9,26 @@ import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {PostViewModel} from "../../../src/models/post/post-view-model";
 import {CreatePostInputModel} from "../../../src/models/post/create-post-input-model";
 import {postsTestManager} from "../../utils/postsTestManager";
+import {runDb, runMongooseClient, stopDb, stopMongooseClient} from "../../../src/db/db";
+
 
 describe('CRUD tests for /posts', () => {
     beforeAll(async () => {
+        /* Connecting to the database. */
+        await Promise.all([
+            runDb(),
+            runMongooseClient()
+        ]);
+        /* Clear database data. */
         await request(app).delete(RouterPaths.testing).set(authBasicHeader);
-    },);
+    });
+
+    afterAll(async () => {
+        /* Closing database connection after each test. */
+        await stopDb();
+        await stopMongooseClient();
+    });
+
 
     it('should return an object with 0 totalCount', async () => {
         await request(app)
