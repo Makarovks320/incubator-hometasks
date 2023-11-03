@@ -36,14 +36,27 @@ export async function runDb() {
        db.command({ping: 1});
        console.log('Successfully connected to db');
 
-        await mongoose.connect(mongoUri);
-        console.log('mongoose connected')
     } catch {
         console.log("couldn't connect to db");
         await client.close();
-        await mongoose.disconnect();
     }
 }
-
+export async function stopDb() {
+        await client.close();
+        console.log("Successfully disconnected");
+}
+export async function runMongooseClient() {
+    try {
+        await mongoose.connect(mongoUri);
+        console.log('mongoose connected');
+    } catch {
+        await mongoose.disconnect();
+        console.log("couldn't connect mongoose client to db");
+    }
+}
+export async function stopMongooseClient() {
+        await mongoose.disconnect();
+        console.log("mongoose disconnected");
+}
 
 
