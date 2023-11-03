@@ -1,4 +1,4 @@
-import {blogCollection, DEFAULT_PROJECTION} from "../../db/db";
+import {BlogModel, DEFAULT_PROJECTION} from "../../db/db";
 import {Filter, Sort} from "mongodb";
 import {BlogQueryParams} from "../../models/blog/blog-query-params-type";
 import {BlogsWithPaginationModel} from "../../models/blog/blogs-with-pagination-model";
@@ -17,12 +17,14 @@ export const blogsQueryRepository = {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
 
-        const res = await blogCollection.find(filter, { projection: DEFAULT_PROJECTION})
+        const res = await BlogModel
+            .find(filter, { projection: DEFAULT_PROJECTION})
+            .lean()
             .sort(sort)
             .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
-            .limit(queryParams.pageSize)
-            .toArray();
-        const totalCount = await blogCollection.countDocuments(filter);
+            .limit(queryParams.pageSize);
+
+        const totalCount = await BlogModel.countDocuments(filter);
         return {
             pagesCount: Math.ceil(totalCount / queryParams.pageSize),
             page: queryParams.pageNumber,

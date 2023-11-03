@@ -5,8 +5,8 @@ const PORT = process.env.PORT || 3000;
 
 
 async function startApp() {
+    await runDb();
     app.listen(PORT, async () => {
-        await runDb();
         console.log(`Server is running at http://localhost:${PORT}/`);
     });
 }
