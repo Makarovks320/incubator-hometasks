@@ -1,6 +1,6 @@
 import {commentCollection, DEFAULT_PROJECTION} from "../../db/db";
 import {Sort} from "mongodb";
-import {CommentOutput} from "../comments-repository";
+import {CommentViewModel} from "../../models/comment/comment-view-model";
 type commentQueryParams = {
     pageNumber: number,
     pageSize: number,
@@ -14,7 +14,7 @@ type CommentsOutput = {
     page: number,
     pageSize: number,
     totalCount: number,
-    items: CommentOutput[]
+    items: CommentViewModel[]
 }
 
 export const commentQueryRepository = {

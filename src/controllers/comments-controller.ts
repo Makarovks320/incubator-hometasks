@@ -1,13 +1,13 @@
 import {Request, Response} from "express";
-import {CommentOutput} from "../repositories/comments-repository";
 import {commentService, InputComment} from "../services/comment-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {userService} from "../services/user-service";
 import {UserDBModel} from "../models/user/user-db-model";
+import {CommentViewModel} from "../models/comment/comment-view-model";
 
 export const commentController = {
     async updateComment(req: Request, res: Response) {
-        const oldComment: CommentOutput | null = await commentService.getCommentById(req.params.id);
+        const oldComment: CommentViewModel | null = await commentService.getCommentById(req.params.id);
         if (!oldComment) {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
             return;
@@ -30,7 +30,7 @@ export const commentController = {
     },
 
     async deleteCommentById(req: Request, res: Response) {
-        const comment: CommentOutput | null = await commentService.getCommentById(req.params.id);
+        const comment: CommentViewModel | null = await commentService.getCommentById(req.params.id);
         if (!comment) {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
             return;

@@ -1,22 +1,10 @@
 import {commentCollection, DEFAULT_PROJECTION} from "../db/db";
 import {COMMENT_PROJECTION} from "./query-repositories/comment-query-repository";
-import {ObjectId} from "mongodb";
-
-export type Comment = CommentOutput & {
-    postId: string
-}
-export type CommentOutput = {
-    id: string,
-    content: string,
-    commentatorInfo: {
-        userId: ObjectId,
-        userLogin: string
-    },
-    createdAt: string
-}
+import {CommentDBModel} from "../models/comment/comment-db-model";
+import {CommentViewModel} from "../models/comment/comment-view-model";
 
 export const commentsRepository = {
-    async createNewComment(comment: Comment): Promise<CommentOutput> {
+    async createNewComment(comment: CommentDBModel): Promise<CommentViewModel> {
         try {
             await commentCollection.insertOne({...comment});
         } catch (e) {
@@ -30,7 +18,7 @@ export const commentsRepository = {
         };
     },
 
-    async updateComment(commentId: string, comment: Comment): Promise<boolean> {
+    async updateComment(commentId: string, comment: CommentDBModel): Promise<boolean> {
         try {
             const result = await commentCollection.updateOne({id: commentId}, {"$set": {...comment}});
             return result.modifiedCount === 1;
@@ -40,11 +28,11 @@ export const commentsRepository = {
         }
     },
 
-    async getCommentById(id: string): Promise<CommentOutput | null> {
+    async getCommentById(id: string): Promise<CommentViewModel | null> {
         return await commentCollection.findOne({id}, {projection: COMMENT_PROJECTION});
     },
 
-    async getCommentByIdWithPostId(id: string): Promise<Comment | null> {
+    async getCommentByIdWithPostId(id: string): Promise<CommentDBModel | null> {
         return await commentCollection.findOne({id}, {projection: DEFAULT_PROJECTION});
     },
 
