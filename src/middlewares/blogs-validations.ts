@@ -11,6 +11,7 @@ export const descriptionValidation = body('description')
     .notEmpty().withMessage('should not be empty');
 
 // todo: не работает без изменений интерфейса IsURLOptions
+// noinspection TypeScriptValidateTypes
 export const websiteUrlValidation = body('websiteUrl')
     .trim()
     .isLength({max: 100}).withMessage('max length is 100')
