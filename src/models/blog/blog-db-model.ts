@@ -10,10 +10,10 @@ export type BlogDBModel = {
 }
 
 export const blogMongoSchema = new mongoose.Schema<BlogDBModel>({
-    id: { type: String, require: true },
-    name: { type: String, require: true },
-    description: { type: String, require: true },
-    websiteUrl: { type: String, require: true },
-    isMembership: { type: Boolean, require: true },
-    createdAt: { type: String, require: true }
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    websiteUrl: { type: String, required: true },
+    isMembership: { type: Boolean, required: true },
+    createdAt: { type: String, required: true }
 })
