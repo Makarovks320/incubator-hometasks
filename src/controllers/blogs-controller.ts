@@ -6,6 +6,7 @@ import {postsQueryRepository} from "../repositories/query-repositories/posts-que
 import {InputPost, postService} from "../services/post-service";
 import {BlogQueryParams} from "../models/blog/blog-query-params-type";
 import {PostQueryParams} from "../models/post/post-query-params-type";
+import {BlogViewModel} from "../models/blog/blog-view-model";
 
 export const blogsController = {
     async getBlogs(req: Request, res: Response) {
@@ -26,7 +27,7 @@ export const blogsController = {
     },
 
     async createNewBlog(req: Request, res: Response) {
-        const blogs = await blogService.createNewBlog(req.body);
+        const blogs: BlogViewModel | string = await blogService.createNewBlog(req.body);
         res.status(HTTP_STATUSES.CREATED_201).send(blogs);
     },
 
