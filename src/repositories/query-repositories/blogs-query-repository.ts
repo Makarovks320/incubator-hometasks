@@ -12,7 +12,7 @@ export const blogsQueryRepository = {
             filter.name = {$regex: queryParams.searchNameTerm, $options: 'i'};
         }
 
-        let sort: any;//todo: как типизировать?
+        let sort: Record<string, 1 | -1> = {};//todo: как типизировать?
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
