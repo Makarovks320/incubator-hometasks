@@ -48,7 +48,7 @@ export async function stopDb() {
 }
 export async function runMongooseClient() {
     try {
-        await mongoose.connect(mongoUri);
+        await mongoose.connect(`${mongoUri}/${DbName}`);
         console.log('mongoose connected');
     } catch {
         await mongoose.disconnect();
