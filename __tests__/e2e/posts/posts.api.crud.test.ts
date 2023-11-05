@@ -25,8 +25,10 @@ describe('CRUD tests for /posts', () => {
 
     afterAll(async () => {
         /* Closing database connection after each test. */
-        await stopDb();
-        await stopMongooseClient();
+        await Promise.all([
+            stopDb(),
+            stopMongooseClient()
+        ])
     });
 
 

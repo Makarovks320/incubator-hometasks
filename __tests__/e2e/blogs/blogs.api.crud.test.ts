@@ -7,10 +7,26 @@ import {CreateBlogInputModel} from "../../../src/models/blog/create-input-blog-m
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {blogsTestManager} from "../../utils/blogsTestManager";
 import {UpdateInputBlogModel} from "../../../src/models/blog/update-input-blog-model";
+import {runDb, runMongooseClient, stopDb, stopMongooseClient} from "../../../src/db/db";
 
 describe(`CRUD tests for /blogs`, () => {
+    
     beforeAll(async () => {
+        /* Connecting to the database. */
+        await Promise.all([
+            runDb(),
+            runMongooseClient()
+        ]);
+        /* Clear database data. */
         await request(app).delete(RouterPaths.testing).set(authBasicHeader);
+    });
+
+    afterAll(async () => {
+        /* Closing database connection after each test. */
+        await Promise.all([
+            stopDb(),
+            stopMongooseClient()
+        ])
     });
 
     it(`should return an object with 0 totalCount`, async () => {
