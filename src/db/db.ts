@@ -28,6 +28,7 @@ export const rateLimitingCollection = db.collection<rateLimitDBModel>("rateLimit
 export const BlogModel = mongoose.model('blogs', blogMongoSchema);
 
 export const DEFAULT_PROJECTION = { _id: false };
+export const DEFAULT_MONGOOSE_PROJECTION = { _id: 0, __v: 0 };
 
 export async function runDb() {
     try {

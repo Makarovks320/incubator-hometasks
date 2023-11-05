@@ -1,9 +1,9 @@
-import {BlogModel, DEFAULT_PROJECTION} from "../db/db";
+import {BlogModel, DEFAULT_MONGOOSE_PROJECTION, DEFAULT_PROJECTION} from "../db/db";
 import {BlogViewModel} from "../models/blog/blog-view-model";
 
 export const blogsRepository = {
     async findBlogById(id: string): Promise<BlogViewModel | null> {
-        return BlogModel.findOne({id},{ projection: DEFAULT_PROJECTION}).lean();
+        return BlogModel.findOne({id}).select(DEFAULT_MONGOOSE_PROJECTION).lean();
     },
     async createNewBlog(b: BlogViewModel): Promise<BlogViewModel> {
         try {
