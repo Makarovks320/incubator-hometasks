@@ -8,11 +8,12 @@ export const blogsRepository = {
     },
     async createNewBlog(b: BlogViewModel): Promise<BlogViewModel | string> {
         try {
-            await BlogModel.insertMany([{...b}]);
+            await BlogModel.insertMany(b);
             return b;
         } catch (e) {
             console.log(e);
-            if (e instanceof MongooseError) {return e.message}
+            if (e instanceof MongooseError) return e.message;
+            return 'Mongoose Error';
         }
     },
     async updateBlogById(id: string, blog: BlogViewModel): Promise<boolean> {

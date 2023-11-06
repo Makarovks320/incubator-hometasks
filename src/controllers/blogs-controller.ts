@@ -27,8 +27,9 @@ export const blogsController = {
     },
 
     async createNewBlog(req: Request, res: Response) {
-        const blogs: BlogViewModel | string = await blogService.createNewBlog(req.body);
-        res.status(HTTP_STATUSES.CREATED_201).send(blogs);
+        const result: BlogViewModel | string = await blogService.createNewBlog(req.body);
+        if (result === 'string') res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
+        res.status(HTTP_STATUSES.CREATED_201).send(result);
     },
 
     async getPostsByBlogId(req: Request, res: Response) {
