@@ -2,35 +2,22 @@ import request from "supertest";
 import {app} from "../../../src/app_settings";
 import {RouterPaths} from "../../../src/helpers/router-paths";
 import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
-import {authBasicHeader} from "../../utils/test_utilities";
+import {authBasicHeader, clearDatabase, connectToDataBases, disconnectFromDataBases} from "../../utils/test_utilities";
 import {blogsTestManager} from "../../utils/blogsTestManager";
 import {CreateBlogInputModel} from "../../../src/models/blog/create-input-blog-model";
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {PostViewModel} from "../../../src/models/post/post-view-model";
 import {CreatePostInputModel} from "../../../src/models/post/create-post-input-model";
 import {postsTestManager} from "../../utils/postsTestManager";
-import {runDb, runMongooseClient, stopDb, stopMongooseClient} from "../../../src/db/db";
 
 
 describe('CRUD tests for /posts', () => {
-    beforeAll(async () => {
-        /* Connecting to the database. */
-        await Promise.all([
-            runDb(),
-            runMongooseClient()
-        ]);
-        /* Clear database data. */
-        await request(app).delete(RouterPaths.testing).set(authBasicHeader);
-    });
 
-    afterAll(async () => {
-        /* Closing database connection after each test. */
-        await Promise.all([
-            stopDb(),
-            stopMongooseClient()
-        ])
-    });
+    beforeAll(connectToDataBases);
 
+    beforeAll(clearDatabase);
+
+    afterAll(disconnectFromDataBases);
 
     it('should return an object with 0 totalCount', async () => {
         await request(app)
