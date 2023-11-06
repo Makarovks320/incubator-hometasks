@@ -4,6 +4,7 @@ import {HTTP_STATUSES} from "../enums/http-statuses";
 import {sessionService} from "../services/session-service";
 import {SessionDbModel, SessionViewModel} from "../models/session/session-model";
 import {ObjectId} from "mongodb";
+import {getSessionViewModel} from "../helpers/session-view-model-mapper";
 
 export const securityDevicesController = {
     async getAllSessionsForUser(req: Request, res: Response) {
@@ -17,8 +18,13 @@ export const securityDevicesController = {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
         }
-        const sessions: SessionViewModel[] | null = await sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
-        res.status(HTTP_STATUSES.OK_200).send(sessions);
+        const result: SessionDbModel[] | string = await sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
+        if (Array.isArray(result)) {
+            const sessions = result.map(s => getSessionViewModel(s));
+            res.status(HTTP_STATUSES.OK_200).send(sessions);
+            return;
+        }
+        res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
     },
 
     async deleteSessionByDeviceId(req: Request, res: Response) {
@@ -44,8 +50,8 @@ export const securityDevicesController = {
 
         // проверим, что deviceId соответствует данному юзеру:
         // 1) сначала найдем все сессии этого юзера
-        const sessions: SessionViewModel[] | null = await sessionService.getAllSessionsForUser(req.userId);
-        if (!sessions) {
+        const sessions: SessionDbModel[] | string = await sessionService.getAllSessionsForUser(req.userId);
+        if (typeof sessions === 'string') {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
         }

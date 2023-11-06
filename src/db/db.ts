@@ -1,12 +1,11 @@
 import mongoose from 'mongoose'
 import {MongoClient} from "mongodb";
 import dotenv from "dotenv";
-import {SessionDbModel} from "../models/session/session-model";
+import {sessionMongoSchema} from "../models/session/session-model";
 import {rateLimitDBModel} from "../models/rate-limiting/rate-limiting-model";
-import {UserDBModel, userMongoSchema} from "../models/user/user-db-model";
-import {PostViewModel} from "../models/post/post-view-model";
+import {userMongoSchema} from "../models/user/user-db-model";
 import {blogMongoSchema} from "../models/blog/blog-db-model";
-import {CommentDBModel, commentMongoSchema} from "../models/comment/comment-db-model";
+import {commentMongoSchema} from "../models/comment/comment-db-model";
 import {postMongoSchema} from "../models/post/post-db-model";
 
 dotenv.config();
@@ -24,7 +23,7 @@ export const db = client.db(DbName);
 export const PostModel = mongoose.model('posts', postMongoSchema);
 export const UserModel = mongoose.model('users', userMongoSchema);
 export const CommentModel = mongoose.model('comments', commentMongoSchema);
-export const sessionsCollection = db.collection<SessionDbModel>('sessions');
+export const SessionModel = mongoose.model('sessions', sessionMongoSchema);
 export const rateLimitingCollection = db.collection<rateLimitDBModel>("rateLimit");
 export const BlogModel = mongoose.model('blogs', blogMongoSchema);
 
