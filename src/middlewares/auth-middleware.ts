@@ -8,7 +8,7 @@ import {ObjectId} from "mongodb";
 достает bearer token
 дергает getUserIdByToken из jwtService
 если юзера нет, то 401
-если юзер есть, то добавляет юзера в реквест в поле user */
+если юзер есть, то добавляет юзер id в реквест в поле userId */
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     if (!req.headers.authorization) {
@@ -33,7 +33,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
 /* миддлвар проверяет refresh-token из cookies
 достает юзер id
 если юзера нет, то 401
-если юзер есть, то добавляет юзера в реквест в поле user */
+если юзер есть, то добавляет юзер id в реквест в поле userId */
 export async function refreshTokenCheck(req: Request, res: Response, next: NextFunction) {
     if(!req.cookies.refreshToken) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
