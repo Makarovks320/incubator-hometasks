@@ -1,25 +1,32 @@
-import {DEFAULT_PROJECTION, postCollection} from "../db/db";
+import {DEFAULT_PROJECTION, PostModel} from "../db/db";
 import {InputPost} from "../services/post-service";
-import {PostViewModel} from "../models/post/post-view-model";
+import {MongooseError} from "mongoose";
+import {PostDBModel} from "../models/post/post-db-model";
 
 export const postsRepository = {
-    async findPostById(id: string): Promise<PostViewModel | null> {
-        return postCollection.findOne({id}, { projection: DEFAULT_PROJECTION});
+    async findPostById(id: string): Promise<PostDBModel | null> {
+        return PostModel.findOne({id}, { projection: DEFAULT_PROJECTION});
     },
-    async createNewPost(p: PostViewModel): Promise<PostViewModel> {
-        await postCollection.insertOne({...p}); //todo: нужно ли деструктурировать?
-        return p;// todo здесь мы можем получить ошибку из БД? мб стоит возвращать результат из БД?
+    async createNewPost(p: PostDBModel): Promise<PostDBModel | string> {
+        try {
+            await PostModel.insertMany(p);
+            return p;
+        } catch (e) {
+            console.log(e);
+            if (e instanceof MongooseError) return e.message;
+            return 'Mongoose Error';
+        }
     },
-    async updatePostById(id: string, p: InputPost): Promise<boolean> {
-        const result = await postCollection.updateOne({id}, {"$set":{...p}});
+    async updatePostById(id: string, post: InputPost): Promise<boolean> {
+        const result = await PostModel.updateOne({id}, post);
         return result.matchedCount === 1;
 
     },
     async deleteAllPosts(): Promise<void> {
-        await postCollection.deleteMany({});
+        await PostModel.deleteMany({});
     },
     async deletePostById(id: string): Promise<boolean> {
-        const result = await postCollection.deleteOne({id});
+        const result = await PostModel.deleteOne({id});
         return result.deletedCount === 1
     }
 }

@@ -1,12 +1,12 @@
-import {BlogModel, DEFAULT_MONGOOSE_PROJECTION, DEFAULT_PROJECTION} from "../db/db";
-import {BlogViewModel} from "../models/blog/blog-view-model";
+import {BlogModel, DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
 import {MongooseError} from "mongoose";
+import {BlogDBModel} from "../models/blog/blog-db-model";
 
 export const blogsRepository = {
-    async findBlogById(id: string): Promise<BlogViewModel | null> {
+    async findBlogById(id: string): Promise<BlogDBModel | null> {
         return BlogModel.findOne({id}).select(DEFAULT_MONGOOSE_PROJECTION).lean();
     },
-    async createNewBlog(b: BlogViewModel): Promise<BlogViewModel | string> {
+    async createNewBlog(b: BlogDBModel): Promise<BlogDBModel | string> {
         try {
             await BlogModel.insertMany(b);
             return b;
@@ -16,7 +16,7 @@ export const blogsRepository = {
             return 'Mongoose Error';
         }
     },
-    async updateBlogById(id: string, blog: BlogViewModel): Promise<boolean> {
+    async updateBlogById(id: string, blog: BlogDBModel): Promise<boolean> {
         const result = await BlogModel.updateOne({id}, blog);
         return result.matchedCount === 1;
     },

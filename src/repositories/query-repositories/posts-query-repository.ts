@@ -1,26 +1,27 @@
-import {DEFAULT_PROJECTION, postCollection} from "../../db/db";
-import {Filter, Sort} from "mongodb";
+import {DEFAULT_MONGOOSE_PROJECTION, PostModel} from "../../db/db";
 import {PostQueryParams} from "../../models/post/post-query-params-type";
-import {PostViewModel} from "../../models/post/post-view-model";
 import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-model";
+import {PostDBModel} from "../../models/post/post-db-model";
+import mongoose from "mongoose";
 
 export const postsQueryRepository = {
     async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsWithPaginationModel> {
-        const filter: Filter<PostViewModel> = {}
+        const filter: mongoose.FilterQuery<PostDBModel> = {}
         if (blogId) {
             filter.blogId = blogId;
         }
-        const sort: Sort = {};
+        const sort: Record<string, 1 | -1> = {};
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const res = await postCollection.find(filter, {projection: DEFAULT_PROJECTION})
+        const res = await PostModel.find(filter)
+            .select(DEFAULT_MONGOOSE_PROJECTION)
+            .lean()
             .sort(sort)
             .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
-            .limit(queryParams.pageSize)
-            .toArray();
+            .limit(queryParams.pageSize);
 
-        const totalCount = await postCollection.countDocuments(filter);
+        const totalCount = await PostModel.countDocuments(filter);
         return {
             pagesCount: Math.ceil(totalCount / queryParams.pageSize),
             page: queryParams.pageNumber,

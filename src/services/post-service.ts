@@ -13,14 +13,13 @@ export const postService = {
     async getPostById(id: string): Promise<PostViewModel | null> {
         return postsRepository.findPostById(id);
     },
-    async createNewPost(p: InputPost): Promise<PostViewModel> {
+    async createNewPost(p: InputPost): Promise<PostViewModel | string> {
         const post = {
             id: new Date().valueOf().toString(),
             ...p,
             createdAt: (new Date()).toISOString()
         }
         return await postsRepository.createNewPost(post);
-        // todo здесь мы можем получить ошибку из БД? мб стоит возвращать результат из БД?
     },
     async updatePostById(id: string, p: InputPost): Promise<boolean> {
         return await postsRepository.updatePostById(id, p);

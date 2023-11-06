@@ -5,6 +5,7 @@ import {HTTP_STATUSES} from "../enums/http-statuses";
 import {commentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
 import {commentService, InputCommentWithPostId} from "../services/comment-service";
 import {PostQueryParams} from "../models/post/post-query-params-type";
+import {PostViewModel} from "../models/post/post-view-model";
 
 export const postsController = {
     async getPosts(req: Request, res: Response) {
@@ -29,8 +30,12 @@ export const postsController = {
             blogId: req.body.blogId,
             blogName: req.blogName
         }
-        const newPost = await postService.createNewPost(post);
-        res.status(HTTP_STATUSES.CREATED_201).send(newPost);
+        const result: PostViewModel | string = await postService.createNewPost(post);
+        if (typeof result === 'string') {
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
+            return;
+        }
+        res.status(HTTP_STATUSES.CREATED_201).send(result);
     },
 
     async updatePost(req: Request, res: Response) {
