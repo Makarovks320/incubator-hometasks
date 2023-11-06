@@ -1,4 +1,4 @@
-import {BlogModel, DEFAULT_MONGOOSE_PROJECTION, DEFAULT_PROJECTION} from "../../db/db";
+import {BlogModel, DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
 import {BlogQueryParams} from "../../models/blog/blog-query-params-type";
 import {BlogsWithPaginationModel} from "../../models/blog/blogs-with-pagination-model";
 import {BlogViewModel} from "../../models/blog/blog-view-model";
@@ -18,7 +18,7 @@ export const blogsQueryRepository = {
         }
 
         const res = await BlogModel
-            .find(filter, { projection: DEFAULT_PROJECTION})
+            .find(filter)
             .select(DEFAULT_MONGOOSE_PROJECTION)
             .lean()
             .sort(sort)

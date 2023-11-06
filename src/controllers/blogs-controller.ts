@@ -7,6 +7,7 @@ import {InputPost, postService} from "../services/post-service";
 import {BlogQueryParams} from "../models/blog/blog-query-params-type";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {BlogViewModel} from "../models/blog/blog-view-model";
+import {PostViewModel} from "../models/post/post-view-model";
 
 export const blogsController = {
     async getBlogs(req: Request, res: Response) {
@@ -28,7 +29,10 @@ export const blogsController = {
 
     async createNewBlog(req: Request, res: Response) {
         const result: BlogViewModel | string = await blogService.createNewBlog(req.body);
-        if (result === 'string') res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
+        if (result === 'string') {
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
+            return;
+        }
         res.status(HTTP_STATUSES.CREATED_201).send(result);
     },
 
@@ -54,8 +58,12 @@ export const blogsController = {
             blogId: req.params.id,
             blogName: req.blogName
         }
-        const newPost = await postService.createNewPost(post);
-        res.status(HTTP_STATUSES.CREATED_201).send(newPost);
+        const result: PostViewModel | string = await postService.createNewPost(post);
+        if (typeof result === 'string') {
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
+            return;
+        }
+        res.status(HTTP_STATUSES.CREATED_201).send(result);
     },
 
     async updateBlog(req: Request, res: Response) {
