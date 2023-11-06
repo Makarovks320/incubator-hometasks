@@ -1,10 +1,8 @@
 import request from 'supertest'
-
 import {HTTP_STATUSES} from "../../src/enums/http-statuses";
 import {app} from "../../src/app_settings";
 import {Response} from "supertest";
-import mongoose from "mongoose";
-import {clearDatabase, connection_string, connectToDataBases, disconnectFromDataBases} from "../utils/test_utilities";
+import {clearDatabase, connectToDataBases, disconnectFromDataBases} from "../utils/test_utilities";
 import {RouterPaths} from "../../src/helpers/router-paths";
 
 describe('testing ip restriction for registration', () => {
@@ -18,7 +16,7 @@ describe('testing ip restriction for registration', () => {
     it("should return 429 error ", async () => {
 
         const res1: Response = await request(app)
-            .post(`/auth/registration`)
+            .post(`${RouterPaths.auth}/registration`)
             .set('Content-Type', 'application/json')
             .send({
                 login: "User16666",
@@ -28,7 +26,7 @@ describe('testing ip restriction for registration', () => {
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
         const res2: Response = await request(app)
-            .post(`/auth/registration`)
+            .post(`${RouterPaths.auth}/registration`)
             .set('Content-Type', 'application/json')
             .send({
                 login: "User2666",
@@ -38,7 +36,7 @@ describe('testing ip restriction for registration', () => {
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
         const res3: Response = await request(app)
-            .post(`/auth/registration`)
+            .post(`${RouterPaths.auth}/registration`)
             .set('Content-Type', 'application/json')
             .send({
                 login: "User3666",
@@ -48,7 +46,7 @@ describe('testing ip restriction for registration', () => {
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
         const res4: Response = await request(app)
-            .post(`/auth/registration`)
+            .post(`${RouterPaths.auth}/registration`)
             .set('Content-Type', 'application/json')
             .send({
                 login: "User4666",
@@ -58,7 +56,7 @@ describe('testing ip restriction for registration', () => {
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
         const res5: Response = await request(app)
-            .post(`/auth/registration`)
+            .post(`${RouterPaths.auth}/registration`)
             .set('Content-Type', 'application/json')
             .send({
                 login: "User5666",
@@ -68,7 +66,7 @@ describe('testing ip restriction for registration', () => {
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
         const res6: Response = await request(app)
-            .post(`/auth/registration`)
+            .post(`${RouterPaths.auth}/registration`)
             .set('Content-Type', 'application/json')
             .send({
                 login: "User6666",

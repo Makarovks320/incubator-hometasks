@@ -4,7 +4,7 @@ import {blogService} from "../services/blog-service";
 import {userService} from "../services/user-service";
 import {commentService} from "../services/comment-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {rateLimitingCollection} from "../db/db";
+import {RateLimitModel} from "../db/db";
 import {sessionService} from "../services/session-service";
 
 export const testingRouter = Router();
@@ -16,7 +16,7 @@ testingRouter.delete('/', async (req: Request, res: Response, next: NextFunction
             userService.deleteAllUsers(),
             commentService.deleteAllComments(),
             sessionService.deleteAllSessions(),
-            rateLimitingCollection.deleteMany({}) // не делал ни сервиса, ни репозитория
+            RateLimitModel.deleteMany({}) // не делал ни сервиса, ни репозитория
         ]).then(() => {
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
             return;

@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import {MongoClient} from "mongodb";
 import dotenv from "dotenv";
 import {sessionMongoSchema} from "../models/session/session-model";
-import {rateLimitDBModel} from "../models/rate-limiting/rate-limiting-model";
+import {rateLimitDBModel, rateLimitMongoSchema} from "../models/rate-limiting/rate-limiting-model";
 import {userMongoSchema} from "../models/user/user-db-model";
 import {blogMongoSchema} from "../models/blog/blog-db-model";
 import {commentMongoSchema} from "../models/comment/comment-db-model";
@@ -24,7 +24,7 @@ export const PostModel = mongoose.model('posts', postMongoSchema);
 export const UserModel = mongoose.model('users', userMongoSchema);
 export const CommentModel = mongoose.model('comments', commentMongoSchema);
 export const SessionModel = mongoose.model('sessions', sessionMongoSchema);
-export const rateLimitingCollection = db.collection<rateLimitDBModel>("rateLimit");
+export const RateLimitModel = mongoose.model('rateLimit', rateLimitMongoSchema);
 export const BlogModel = mongoose.model('blogs', blogMongoSchema);
 
 export const DEFAULT_PROJECTION = { _id: false };
