@@ -17,13 +17,8 @@ export const commentsRepository = {
     },
 
     async updateComment(commentId: string, comment: CommentDBModel): Promise<boolean> {
-        try {
-            const result = await CommentModel.updateOne({id: commentId}, {"$set": {...comment}});
+            const result = await CommentModel.updateOne({id: commentId}, comment);
             return result.modifiedCount === 1;
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
     },
 
     async getCommentById(id: string): Promise<CommentViewModel | null> {

@@ -78,7 +78,7 @@ describe('tests for comments', () => {
         if (!user1) throw new Error('test cannot be performed.');
 
         const user1ObjectId = new mongoose.Types.ObjectId(user1.id);
-        
+
         const AccessToken1 = await jwtService.createAccessToken(user1ObjectId)
         authJWTHeader1 = {Authorization: `Bearer ${AccessToken1}`}
 
@@ -158,7 +158,7 @@ describe('tests for comments', () => {
     let comment_1: CommentViewModel | null = null;
 
     it('should create comment 1', async () => {
-        if (!post)  throw new Error('test cannot be performed.');
+        if (!post) throw new Error('test cannot be performed.');
 
         const data: CreateCommentInputModel = {
             content: "I just called to say I love you"
@@ -314,7 +314,7 @@ describe('tests for comments', () => {
         comment_1.content = data.content
     })
 
-    it('"DELETE/PUT should return 404 if :id from uri param not found', async () => {
+    it('DELETE/PUT should return 404 if :id from uri param not found', async () => {
         if (!comment_1) throw new Error('test cannot be performed.');
         const data: CreateCommentInputModel = {
             content: "NEW OUTSTANDING UPDATED COMMENT 222"
@@ -326,7 +326,7 @@ describe('tests for comments', () => {
             .send(data)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
 
-        const response2 = await request(app)
+        await request(app)
             .delete(`${RouterPaths.comments}/-223232323`)
             .set(authJWTHeader1)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
