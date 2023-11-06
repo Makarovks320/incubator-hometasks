@@ -20,9 +20,13 @@ export const blogsTestManager = {
             .set(authBasicHeader)
             .send(data)
             .expect(expectedStatusCode);
+
         let createdBlog: BlogViewModel | null = null;
+
         if (expectedStatusCode === HTTP_STATUSES.CREATED_201) {
+
             createdBlog = response.body;
+
             expect(createdBlog).toEqual({
                 createdAt: expect.any(String),
                 id: expect.any(String),

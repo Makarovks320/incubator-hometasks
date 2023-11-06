@@ -1,29 +1,22 @@
 import request from "supertest";
 import {app} from "../../../src/app_settings";
 import {RouterPaths} from "../../../src/helpers/router-paths";
-import {authBasicHeader, generateString} from "../../utils/test_utilities";
+import {
+    authBasicHeader,
+    clearDatabase,
+    connectToDataBases,
+    disconnectFromDataBases,
+    generateString
+} from "../../utils/test_utilities";
 import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
-import {runDb, runMongooseClient, stopDb, stopMongooseClient} from "../../../src/db/db";
 
 describe(`websiteUrl input validation tests`, () => {
-    beforeAll(async () => {
-        /* Connecting to the database. */
-        await Promise.all([
-            runDb(),
-            runMongooseClient()
-        ]);
-        /* Clear database data. */
-        await request(app).delete(RouterPaths.testing).set(authBasicHeader);
-    });
 
-    afterAll(async () => {
-        /* Closing database connection after each test. */
-        await Promise.all([
-            stopDb(),
-            stopMongooseClient()
-        ])
-    });
+    beforeAll(connectToDataBases);
 
+    beforeAll(clearDatabase);
+
+    afterAll(disconnectFromDataBases);
 
     it(`shouldn't create entity with incorrect input data (websiteUrl is empty)`, async () => {
         const response = await request(app)
