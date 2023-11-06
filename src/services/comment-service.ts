@@ -14,7 +14,7 @@ export type InputComment = {
 }
 
 export const commentService = {
-    async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentViewModel> {
+    async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentDBModel | string> {
         // найдем userLogin
         const user: UserDBModel | null = await userService.findUserById(userId);
         if (!user) throw new Error('user is not found');

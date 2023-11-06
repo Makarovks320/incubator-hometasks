@@ -6,6 +6,8 @@ import {commentQueryRepository} from "../repositories/query-repositories/comment
 import {commentService, InputCommentWithPostId} from "../services/comment-service";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
+import {CommentViewModel} from "../models/comment/comment-view-model";
+import {CommentDBModel} from "../models/comment/comment-db-model";
 
 export const postsController = {
     async getPosts(req: Request, res: Response) {
@@ -69,7 +71,17 @@ export const postsController = {
             content: req.body.content,
             postId: req.params.id
         }
-        const newComment = await commentService.createNewComment(comment, req.userId);
-        res.status(HTTP_STATUSES.CREATED_201).send(newComment);
+        const result: CommentDBModel | string = await commentService.createNewComment(comment, req.userId);
+        if (typeof result === 'string') {
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
+            return;
+        }
+        const createdComment: CommentViewModel = {
+                id: result.id,
+                content: result.content,
+                commentatorInfo: result.commentatorInfo,
+                createdAt: result.createdAt
+        }
+        res.status(HTTP_STATUSES.CREATED_201).send(createdComment);
     }
 }

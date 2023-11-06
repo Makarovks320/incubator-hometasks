@@ -12,16 +12,20 @@ export const commentController = {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
             return;
         }
-        const user = await userService.findUserById(req.userId!) as UserDBModel;//todo вместо OutputUser UserViewModel
-        if (oldComment!.commentatorInfo.userLogin != user.accountData.userName) {
+        const user: UserDBModel | null = await userService.findUserById(req.userId!);
+        if (oldComment!.commentatorInfo.userLogin != user!.accountData.userName) {
             res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
             return;
         }
         const commentForUpdate: InputComment = {
             content: req.body.content,
         }
-        const isUpdated = await commentService.updateComment(commentForUpdate, req.params.id);
-        isUpdated ? res.send(HTTP_STATUSES.NO_CONTENT_204) : res.send(HTTP_STATUSES.NOT_FOUND_404);
+        const result = await commentService.updateComment(commentForUpdate, req.params.id);
+        if (typeof result === 'string') {
+            res.status(HTTP_STATUSES.NOT_FOUND_404).send(result);
+            return;
+        }
+        res.status(HTTP_STATUSES.NO_CONTENT_204).send(result);
     },
 
     async getCommentById(req: Request, res: Response) {

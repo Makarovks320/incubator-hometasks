@@ -1,5 +1,4 @@
-import {commentCollection, DEFAULT_PROJECTION} from "../../db/db";
-import {Sort} from "mongodb";
+import {CommentModel, DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
 import {CommentViewModel} from "../../models/comment/comment-view-model";
 type commentQueryParams = {
     pageNumber: number,
@@ -7,7 +6,7 @@ type commentQueryParams = {
     sortBy: string,
     sortDirection: 'asc' | 'desc'
 }
-export const COMMENT_PROJECTION = {...DEFAULT_PROJECTION, postId: false}
+export const COMMENT_PROJECTION = {...DEFAULT_MONGOOSE_PROJECTION, postId: false}
 
 type CommentsOutput = {
     pagesCount: number,
@@ -20,16 +19,17 @@ type CommentsOutput = {
 export const commentQueryRepository = {
     async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<CommentsOutput> {
 
-        const sort: Sort = {};
+        const sort: Record<string, -1 | 1> = {};
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const res = await commentCollection.find({postId}, {projection: COMMENT_PROJECTION})
+        const res = await CommentModel.find({postId})
+            .select(COMMENT_PROJECTION)
+            .lean()
             .sort(sort)
             .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
             .limit(queryParams.pageSize)
-            .toArray();
-        const totalCount = await commentCollection.countDocuments({postId});
+        const totalCount = await CommentModel.countDocuments({postId});
 
         return {
             pagesCount: Math.ceil(totalCount / queryParams.pageSize),
