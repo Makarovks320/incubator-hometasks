@@ -52,20 +52,6 @@ export const blogsController = {
         }
     },
 
-    async createPostForBlog(req: Request, res: Response) {
-        const post: InputPost = {
-            ...req.body,
-            blogId: req.params.id,
-            blogName: req.blogName
-        }
-        const result: PostViewModel | string = await postService.createNewPost(post);
-        if (typeof result === 'string') {
-            res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
-            return;
-        }
-        res.status(HTTP_STATUSES.CREATED_201).send(result);
-    },
-
     async updateBlog(req: Request, res: Response) {
         const newBlog = await blogService.updateBlogById(req.params.id, req.body);
         newBlog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send(newBlog) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);

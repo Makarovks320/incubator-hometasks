@@ -27,7 +27,7 @@ export const postsController = {
     async createNewPost(req: Request, res: Response) {
         const post: InputPost = {
             ...req.body,
-            blogId: req.body.blogId,
+            blogId: req.body.blogId ? req.body.blogId : req.params.id,// смотря какой эндпоинт: /posts или /blogs
             blogName: req.blogName
         }
         const result: PostViewModel | string = await postService.createNewPost(post);
