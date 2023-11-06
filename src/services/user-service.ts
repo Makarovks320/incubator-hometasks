@@ -36,7 +36,7 @@ export const userService = {
         return result;
     },
     async findUserById(id: ObjectId): Promise<UserDBModel | null> {
-        return await usersQueryRepository.getUserById(id);
+        return await usersRepository.getUserById(id);
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<UserDBModel | null> {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail);

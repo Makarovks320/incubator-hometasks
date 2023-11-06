@@ -1,7 +1,7 @@
-import {ObjectId} from "mongodb";
+import mongoose from "mongoose";
+import {WithId} from "mongodb";
 
-export type UserDBModel = {
-    _id: ObjectId,
+export type UserDBModel = WithId<{
     accountData: {
         userName: string;
         email: string;
@@ -10,7 +10,7 @@ export type UserDBModel = {
         createdAt: string;
     },
     emailConfirmation: EmailConfirmationType
-}
+}>
 
 export type EmailConfirmationType = {
     confirmationCode: string;
@@ -18,3 +18,17 @@ export type EmailConfirmationType = {
     expirationDate: Date;
 }
 
+export const userMongoSchema = new mongoose.Schema<UserDBModel>({
+    accountData: {
+        userName: {type: String, required: true},
+        email: {type: String, required: true},
+        salt: {type: String, required: true},
+        hash: {type: String, required: true},
+        createdAt: {type: String, required: true},
+    },
+    emailConfirmation: {
+        confirmationCode: {type: String, required: true},
+        isConfirmed: {type: Boolean, required: true},
+        expirationDate: {type: Date, required: true}
+    }
+})

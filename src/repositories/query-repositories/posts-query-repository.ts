@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 export const postsQueryRepository = {
     async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsWithPaginationModel> {
-        const filter: mongoose.FilterQuery<PostDBModel> = {}
+        const filter: mongoose.FilterQuery<PostDBModel> = {};
         if (blogId) {
             filter.blogId = blogId;
         }

@@ -8,6 +8,8 @@ import {UserDBModel} from "../models/user/user-db-model";
 import {getQueryParamsForUsers} from "../models/query-params-getter";
 import {getUserViewModel} from "../helpers/user-view-model-mapper";
 import {UsersQueryParams} from "../models/user/users-query-params";
+import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
+import {UserViewModel} from "../models/user/user-view-model";
 
 export const usersController = {
 
@@ -24,7 +26,11 @@ export const usersController = {
 
     async getUsers(req: Request, res: Response) {
         const queryParams: UsersQueryParams = getQueryParamsForUsers(req);
-        const users = await usersQueryRepository.getUsers(queryParams);
+        const usersFromRepo: WithPagination<UserDBModel> = await usersQueryRepository.getUsers(queryParams);
+        const users: WithPagination<UserViewModel> = {
+            ...usersFromRepo,
+            items: usersFromRepo.items.map(u => getUserViewModel(u))
+        }
         res.send(users);
     },
 
