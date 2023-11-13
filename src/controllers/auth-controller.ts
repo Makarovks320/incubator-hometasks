@@ -128,7 +128,7 @@ export const authController = {
     },
 
     async recoverPassword(req: Request, res: Response) {
-        const isPasswordRecovered: boolean = await authService.recoveryPassword(req.body.email);
+        const isPasswordRecovered: boolean = await authService.sendEmailWithRecoveryPasswordCode(req.body.email);
         if (isPasswordRecovered) {
             res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {

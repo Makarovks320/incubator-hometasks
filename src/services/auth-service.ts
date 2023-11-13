@@ -52,7 +52,7 @@ export const authService = {
     async sendEmailWithNewCode(email: string): Promise<boolean> {
         const user = await usersRepository.findUserByConfirmationCodeOrEmail(email);
         if (!user) return false;
-        if (user.emailConfirmation.isConfirmed === true) return false;
+        if (user.emailConfirmation.isConfirmed) return false;
         const emailConfirmation: EmailConfirmationType = {
                 confirmationCode: uuidv4(),
                 expirationDate: add(new Date(), { minutes: 15 }),
@@ -66,7 +66,7 @@ export const authService = {
     async _generateHash(password: string, salt: string) {
         return await bcrypt.hash(password, salt);
     },
-    async recoveryPassword(email: string): Promise<boolean> {
+    async sendEmailWithRecoveryPasswordCode(email: string): Promise<boolean> {
         const userDB: UserDBModel | null = await usersRepository.findUserByLoginOrEmail(email)
         // Return true even if current email is not registered (for prevent user's email detection)
         if (!userDB) return true;
@@ -83,7 +83,10 @@ export const authService = {
 
     },
     async updatePassword(newPassword: string, userId: ObjectId): Promise<boolean> {
-        const passwordHash = await bcrypt.hash(newPassword, 10) //Соль генерируется автоматически за 10 кругов - второй параметр
-        return await usersRepository.updatePassword(passwordHash, userId)
+        const user: UserDBModel | null = await usersRepository.getUserById(userId);
+        if (!user) return false;
+        const passwordSalt: string = user.accountData.salt;
+        const newPasswordHash = await this._generateHash(newPassword, passwordSalt);
+        return await usersRepository.updatePassword(newPasswordHash, userId);
     }
 }

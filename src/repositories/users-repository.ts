@@ -41,10 +41,10 @@ export const usersRepository = {
         });
         return result.modifiedCount === 1;
     },
-    async updatePassword(newPassword: string, userId: ObjectId): Promise<boolean> {
+    async updatePassword(newPasswordHash: string, userId: ObjectId): Promise<boolean> {
         const result = await UserModel.updateOne({'_id': userId}, {
             $set: {
-                "accountData.password": newPassword,
+                "accountData.hash": newPasswordHash,
                 "passwordRecovery.active": false
             }
         });
