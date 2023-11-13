@@ -19,7 +19,7 @@ export const isRecoveryCodeCorrect: CustomValidator = async (value, {req}) => {
 
     // Check that the token is not expired
     try {
-        await jwt.verify(req.body.code, process.env.JWT_SECRET!)
+        await jwt.verify(req.body.recoveryCode, process.env.JWT_SECRET!)
     } catch (e) {
         throw new Error('Token is expired');
     }
