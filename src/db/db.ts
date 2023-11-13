@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import {MongoClient} from "mongodb";
 import dotenv from "dotenv";
 import {sessionMongoSchema} from "../models/session/session-model";
-import {rateLimitDBModel, rateLimitMongoSchema} from "../models/rate-limiting/rate-limiting-model";
+import {rateLimitMongoSchema} from "../models/rate-limiting/rate-limiting-model";
 import {userMongoSchema} from "../models/user/user-db-model";
 import {blogMongoSchema} from "../models/blog/blog-db-model";
 import {commentMongoSchema} from "../models/comment/comment-db-model";
