@@ -41,10 +41,9 @@ describe('testing password recovery', () => {
         expect(user).not.toBeNull();
     })
 
-    it("should send email with code", async () => {
-        if (!user) throw new Error("test cannot be performed.")
+    it('should send email with code', async () => {
         const data = {
-            "email": "email123@mail.com"
+            'email': 'email123@mail.com'
         }
 
         await request(app)
@@ -52,9 +51,9 @@ describe('testing password recovery', () => {
             .send(data)
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
-    })
+    });
 
-    it("should return error if password is incorrect; status 400;", async () => {
+    it('should return error if password is incorrect; status 400;', async () => {
         if (!user) throw new Error('test cannot be performed.');
 
         const userDB: UserDBModel | null = await usersRepository.findUserByLoginOrEmail(user.email);
@@ -62,14 +61,32 @@ describe('testing password recovery', () => {
         if (!userDB) throw new Error('test cannot be performed.');
 
         const data = {
-            "newPassword": "short",
-            "recoveryCode": userDB.passwordRecovery.passwordRecoveryCode
+            'newPassword': 'short',
+            'recoveryCode': userDB.passwordRecovery.passwordRecoveryCode
+        }
+
+        const response = await request(app)
+            .post(`${RouterPaths.auth}/new-password`)
+            .send(data)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+        expect(response.body).toEqual({errorsMessages: [
+                { message: expect.any(String), field: 'newPassword' }
+            ]});
+    });
+
+    it('should return status 204 even if such email doesnt exist; status 204;', async() => {
+
+        const data = {
+            'email': 'unexistingEmailAddress@jopa.com'
         }
 
         await request(app)
             .post(`${RouterPaths.auth}/password-recovery`)
             .send(data)
-            .expect(HTTP_STATUSES.BAD_REQUEST_400)
-
-    })
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+    });
 })
+// POST -> "auth/password-recovery": should send email with recovery code; status 204;
+// POST -> "auth/new-password": should confirm password recovery; status 204;
+// POST -> "auth/password-recovery": should return status 401 if try to login with old password; status 204;
+// POST -> "/auth/login": should sign in user with new password; status 200; content: JWT token;
