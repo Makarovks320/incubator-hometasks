@@ -57,3 +57,8 @@ authRouter.post('/registration-email-resending', [
     inputValidator,
     authController.resendConfirmationCode
 ]);
+authRouter.post('/password-recovery', [
+    emailValidation,
+    inputValidator,
+    authController.passwordRecovery
+]);

@@ -5,6 +5,7 @@ import add from "date-fns/add";
 import {usersRepository} from "../repositories/users-repository";
 import {emailManager} from "../managers/emailManager";
 import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
+import {jwtService} from "../application/jwt-service";
 
 
 export const authService = {
@@ -24,6 +25,10 @@ export const authService = {
                 confirmationCode: uuidv4(),
                 expirationDate: add(new Date(), { minutes: 15 }),
                 isConfirmed: false
+            },
+            passwordRecovery: {
+                passwordRecoveryCode: "",
+                active: false
             }
         }
         const createResult = await usersRepository.createUser(user);
@@ -60,5 +65,21 @@ export const authService = {
     },
     async _generateHash(password: string, salt: string) {
         return await bcrypt.hash(password, salt);
-    }
+    },
+    async recoveryPassword(email: string): Promise<boolean> {
+        const userDB: UserDBModel | null = await usersRepository.findUserByLoginOrEmail(email)
+        // Return true even if current email is not registered (for prevent user's email detection)
+        if (!userDB) return true;
+        const passwordRecoveryCode = await jwtService.createAccessToken(userDB._id);
+        await usersRepository.addPassRecoveryCode(userDB._id, passwordRecoveryCode);
+
+        try {
+            await emailManager.sendPasswordRecoveryMessage(userDB.accountData.email, passwordRecoveryCode);
+            return true;
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
+
+    },
 }

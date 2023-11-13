@@ -9,7 +9,11 @@ export type UserDBModel = WithId<{
         hash: string;
         createdAt: string;
     },
-    emailConfirmation: EmailConfirmationType
+    emailConfirmation: EmailConfirmationType,
+    passwordRecovery: {
+        passwordRecoveryCode: "",
+        active: false
+    }
 }>
 
 export type EmailConfirmationType = {
@@ -30,5 +34,9 @@ export const userMongoSchema = new mongoose.Schema<UserDBModel>({
         confirmationCode: {type: String, required: true},
         isConfirmed: {type: Boolean, required: true},
         expirationDate: {type: Date, required: true}
+    },
+    passwordRecovery: {
+        passwordRecoveryCode: {type: String, required: true},
+        active: {type: Boolean, required: true}
     }
 })

@@ -43,5 +43,14 @@ export const usersRepository = {
         const result = await UserModel.findOne({_id: id});
         if (result === null) return null;
         return result;
+    },
+    async addPassRecoveryCode(_id: ObjectId, passwordRecoveryCode: string): Promise<boolean> {
+        const result = await UserModel.updateOne({_id: _id}, {
+            $set: {
+                'passwordRecovery.passwordRecoveryCode': passwordRecoveryCode,
+                'passwordRecoveryCode.active': true
+            }
+        });
+        return result.modifiedCount === 1;
     }
 }

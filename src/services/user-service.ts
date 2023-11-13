@@ -1,6 +1,5 @@
 import {usersRepository} from "../repositories/users-repository";
 import bcrypt from 'bcrypt';
-import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
@@ -30,6 +29,10 @@ export const userService = {
                     minutes: 15
                 }),
                 isConfirmed: false
+            },
+            passwordRecovery: {
+                passwordRecoveryCode: "",
+                active: false
             }
         }
         const result = await usersRepository.createUser(newUser);

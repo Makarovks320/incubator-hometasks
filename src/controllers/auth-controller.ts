@@ -125,5 +125,14 @@ export const authController = {
         } else {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send();
         }
-    }
+    },
+
+    async passwordRecovery(req: Request, res: Response) {
+        const isPasswordRecovered: boolean = await authService.recoveryPassword(req.body.email);
+        if (isPasswordRecovered) {
+            res.status(HTTP_STATUSES.NO_CONTENT_204).send();
+        } else {
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send();
+        }
+    },
 }
