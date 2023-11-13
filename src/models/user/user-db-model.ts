@@ -11,7 +11,7 @@ export type UserDBModel = WithId<{
     },
     emailConfirmation: EmailConfirmationType,
     passwordRecovery: {
-        passwordRecoveryCode: "",
+        passwordRecoveryCode: string,
         active: false
     }
 }>
@@ -36,7 +36,7 @@ export const userMongoSchema = new mongoose.Schema<UserDBModel>({
         expirationDate: {type: Date, required: true}
     },
     passwordRecovery: {
-        passwordRecoveryCode: {type: String, required: true},
+        passwordRecoveryCode: {type: String, required: false},
         active: {type: Boolean, required: true}
     }
 })
