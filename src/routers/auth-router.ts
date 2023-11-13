@@ -11,7 +11,7 @@ import {body} from "express-validator";
 import {checkEmailExists} from "../middlewares/check-email-exists";
 import {checkLoginExists} from "../middlewares/check-login-exists";
 import {checkConfirmationData} from "../middlewares/check-confirmation-data";
-import {emailValidation, updatePasswordValidation} from "../middlewares/users-validations";
+import {emailValidation, newPasswordValidation} from "../middlewares/users-validations";
 import {authController} from "../controllers/auth-controller";
 import {rateLimitMiddleware} from "../middlewares/rate-limit-middleware";
 import {isRecoveryCodeCorrect} from "../middlewares/is-recovery-code-correct";
@@ -64,9 +64,10 @@ authRouter.post('/password-recovery', [
     authController.recoverPassword
 ]);
 authRouter.post('/new-password', [
+    newPasswordValidation,
+    inputValidator,
     body('recoveryCode').notEmpty().withMessage('should not be empty'),
     body('recoveryCode').custom(isRecoveryCodeCorrect).withMessage('incorrect confirmation code'),
-    updatePasswordValidation,
     inputValidator,
     authController.updatePassword
 ]);

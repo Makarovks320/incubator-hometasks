@@ -13,7 +13,7 @@ export const passwordValidation =  body('password')
     .isString().withMessage('should be string')
     .isLength({max: 20, min: 6}).withMessage('max length: 20, min length: 6');
 
-export const updatePasswordValidation =  body('password')
+export const newPasswordValidation =  body('newPassword')
     .trim()
     .isString().withMessage('should be string')
     .isLength({max: 20, min: 6}).withMessage('max length: 20, min length: 6');
