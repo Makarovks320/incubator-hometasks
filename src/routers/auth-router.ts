@@ -61,7 +61,7 @@ authRouter.post('/registration-email-resending', [
 authRouter.post('/password-recovery', [
     emailValidation,
     inputValidator,
-    authController.passwordRecovery
+    authController.recoverPassword
 ]);
 authRouter.post('/new-password', [
     body('recoveryCode').notEmpty().withMessage('should not be empty'),
