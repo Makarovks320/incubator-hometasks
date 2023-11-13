@@ -13,6 +13,11 @@ export const passwordValidation =  body('password')
     .isString().withMessage('should be string')
     .isLength({max: 20, min: 6}).withMessage('max length: 20, min length: 6');
 
+export const updatePasswordValidation =  body('password')
+    .trim()
+    .isString().withMessage('should be string')
+    .isLength({max: 20, min: 6}).withMessage('max length: 20, min length: 6');
+
 export const emailValidation =  body('email')
     .trim()
     .isString().withMessage('should be string')

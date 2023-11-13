@@ -11,9 +11,10 @@ import {body} from "express-validator";
 import {checkEmailExists} from "../middlewares/check-email-exists";
 import {checkLoginExists} from "../middlewares/check-login-exists";
 import {checkConfirmationData} from "../middlewares/check-confirmation-data";
-import {emailValidation} from "../middlewares/users-validations";
+import {emailValidation, updatePasswordValidation} from "../middlewares/users-validations";
 import {authController} from "../controllers/auth-controller";
 import {rateLimitMiddleware} from "../middlewares/rate-limit-middleware";
+import {isRecoveryCodeCorrect} from "../middlewares/is-recovery-code-correct";
 
 export const authRouter = Router();
 authRouter.use(rateLimitMiddleware);
@@ -61,4 +62,11 @@ authRouter.post('/password-recovery', [
     emailValidation,
     inputValidator,
     authController.passwordRecovery
+]);
+authRouter.post('/new-password', [
+    body('recoveryCode').notEmpty().withMessage('should not be empty'),
+    body('recoveryCode').custom(isRecoveryCodeCorrect).withMessage('incorrect confirmation code'),
+    updatePasswordValidation,
+    inputValidator,
+    authController.updatePassword
 ]);

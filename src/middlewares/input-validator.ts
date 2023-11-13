@@ -2,18 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {ValidationError, validationResult} from "express-validator";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 
-// типы для режима без any
-// type Error = {
-//     message: string,
-//     field: string
-// }
-// type InitError = {
-//     msg: string,
-//     param: string,
-//     location: string
-// }
-export const inputValidator =
-    (req: Request, res: Response, next: NextFunction) => {
+export const inputValidator = (req: Request, res: Response, next: NextFunction) => {
     const myValidationResult = validationResult.withDefaults({
         formatter: (error: ValidationError) => {
             return {

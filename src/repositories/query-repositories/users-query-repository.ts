@@ -40,5 +40,9 @@ export const usersQueryRepository = {
             totalCount: totalCount,
             items: users
         }
+    },
+
+    async findUserByPassRecoveryCode(code: string): Promise<UserDBModel | null> {
+        return UserModel.findOne({"passwordRecovery.passwordRecoveryCode": code});
     }
 }

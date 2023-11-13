@@ -82,4 +82,8 @@ export const authService = {
         }
 
     },
+    async updatePassword(newPassword: string, userId: ObjectId): Promise<boolean> {
+        const passwordHash = await bcrypt.hash(newPassword, 10) //Соль генерируется автоматически за 10 кругов - второй параметр
+        return await usersRepository.updatePassword(passwordHash, userId)
+    }
 }

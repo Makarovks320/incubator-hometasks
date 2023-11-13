@@ -135,4 +135,13 @@ export const authController = {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send();
         }
     },
+
+    async updatePassword(req: Request, res: Response) {
+        const result = await authService.updatePassword(req.body.newPassword, req.userId)
+        if (result) {
+            res.status(HTTP_STATUSES.NO_CONTENT_204).send()
+        } else {
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send()
+        }
+    }
 }

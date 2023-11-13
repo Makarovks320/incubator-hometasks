@@ -19,3 +19,4 @@ export const passwordAuthValidation =  body('password')
     .isLength({max: 20}).withMessage('max length is 20')
     .notEmpty().withMessage('should not be empty');
 
+

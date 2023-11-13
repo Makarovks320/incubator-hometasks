@@ -57,3 +57,4 @@ export async function refreshTokenCheck(req: Request, res: Response, next: NextF
     }
     res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
 }
+
