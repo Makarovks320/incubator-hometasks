@@ -1,25 +1,30 @@
 import mongoose from "mongoose";
-import {WithId} from "mongodb";
+import {ObjectId} from "mongodb";
 
-export type UserDBModel = WithId<{
-    accountData: {
-        userName: string;
-        email: string;
-        salt: string;
-        hash: string;
-        createdAt: string;
-    },
-    emailConfirmation: EmailConfirmationType,
-    passwordRecovery: {
-        passwordRecoveryCode: string,
-        active: false
-    }
-}>
+export class UserDBModel {
+    constructor(
+        public _id: ObjectId,
+        public accountData: AccountDataType,
+        public emailConfirmation: EmailConfirmationType,
+        public passwordRecovery: PasswordRecoveryType
+    ) { }
+}
 
+type AccountDataType = {
+    userName: string;
+    email: string;
+    salt: string;
+    hash: string;
+    createdAt: string;
+};
 export type EmailConfirmationType = {
     confirmationCode: string;
     isConfirmed: boolean;
     expirationDate: Date;
+};
+type PasswordRecoveryType = {
+    passwordRecoveryCode: string,
+    active: false
 }
 
 export const userMongoSchema = new mongoose.Schema<UserDBModel>({

@@ -12,25 +12,24 @@ export const authService = {
     async createUser(login: string, email: string, password: string): Promise<UserDBModel | null> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(password, passwordSalt);
-        const user: UserDBModel = {
-            _id: new ObjectId(),
-            accountData: {
+        const user = new UserDBModel(
+            new ObjectId(),
+            {
                 userName: login,
                 email,
                 salt: passwordSalt,
                 hash: passwordHash,
                 createdAt: (new Date()).toISOString()
             },
-            emailConfirmation: {
+            {
                 confirmationCode: uuidv4(),
-                expirationDate: add(new Date(), { minutes: 15 }),
+                expirationDate: add(new Date(), {minutes: 15}),
                 isConfirmed: false
             },
-            passwordRecovery: {
+            {
                 passwordRecoveryCode: "",
                 active: false
-            }
-        }
+            });
         const createResult = await usersRepository.createUser(user);
         try {
             await emailManager.sendConformationCode(email, user.emailConfirmation.confirmationCode);
@@ -54,9 +53,9 @@ export const authService = {
         if (!user) return false;
         if (user.emailConfirmation.isConfirmed) return false;
         const emailConfirmation: EmailConfirmationType = {
-                confirmationCode: uuidv4(),
-                expirationDate: add(new Date(), { minutes: 15 }),
-                isConfirmed: false
+            confirmationCode: uuidv4(),
+            expirationDate: add(new Date(), {minutes: 15}),
+            isConfirmed: false
         }
         await usersRepository.updateConfirmationCode(user._id, emailConfirmation);
         await emailManager.sendNewConformationCode(user.accountData.email, emailConfirmation.confirmationCode)

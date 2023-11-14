@@ -14,27 +14,28 @@ export const userService = {
     async createUser(u: InputUser): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
-        const newUser: UserDBModel = {
-            _id: new ObjectId(),
-            accountData: {
+        const newUser = new UserDBModel (
+            new ObjectId(),
+            {
                 userName: u.login,
                 email: u.email,
                 salt: passwordSalt,
                 hash: passwordHash,
                 createdAt: (new Date()).toISOString()
             },
-            emailConfirmation: {
+            {
                 confirmationCode: uuidv4(),
                 expirationDate: add(new Date(), {
                     minutes: 15
                 }),
                 isConfirmed: false
             },
-            passwordRecovery: {
+            {
                 passwordRecoveryCode: "",
                 active: false
             }
-        }
+        );
+
         const result = await usersRepository.createUser(newUser);
         return result;
     },
