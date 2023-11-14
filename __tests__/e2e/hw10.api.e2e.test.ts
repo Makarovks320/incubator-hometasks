@@ -12,7 +12,7 @@ import {RouterPaths} from "../../src/helpers/router-paths";
 import {UserCreateModel} from "../../src/models/user/create-input-user-model";
 import {UserViewModel} from "../../src/models/user/user-view-model";
 import {usersTestManager} from "../utils/usersTestManager";
-import {usersRepository} from "../../src/repositories/users-repository";
+import {usersRepositoryInstance} from "../../src/repositories/users-repository";
 import {UserDBModel} from "../../src/models/user/user-db-model";
 
 describe('testing password recovery', () => {
@@ -56,7 +56,7 @@ describe('testing password recovery', () => {
     it('should return error if password is incorrect; status 400;', async () => {
         if (!user) throw new Error('test cannot be performed.');
 
-        const userDB: UserDBModel | null = await usersRepository.findUserByLoginOrEmail(user.email);
+        const userDB: UserDBModel | null = await usersRepositoryInstance.findUserByLoginOrEmail(user.email);
 
         if (!userDB) throw new Error('test cannot be performed.');
 

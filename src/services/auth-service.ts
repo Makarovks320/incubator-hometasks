@@ -2,13 +2,17 @@ import bcrypt from "bcrypt";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
-import {usersRepository} from "../repositories/users-repository";
+import {UsersRepository} from "../repositories/users-repository";
 import {emailManager} from "../managers/emailManager";
 import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
 import {jwtService} from "../application/jwt-service";
 
 
-export const authService = {
+class AuthService {
+    public usersRepository: UsersRepository
+    constructor() {
+        this.usersRepository = new UsersRepository();
+    }
     async createUser(login: string, email: string, password: string): Promise<UserDBModel | null> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(password, passwordSalt);
@@ -30,26 +34,26 @@ export const authService = {
                 passwordRecoveryCode: "",
                 active: false
             });
-        const createResult = await usersRepository.createUser(user);
+        const createResult = await this.usersRepository.createUser(user);
         try {
             await emailManager.sendConformationCode(email, user.emailConfirmation.confirmationCode);
         } catch (e) {
             console.log(e);
-            await usersRepository.deleteUserById(user._id);
+            await this.usersRepository.deleteUserById(user._id);
             return null;
         }
         return createResult;
-    },
+    }
     async confirmEmailByCodeOrEmail(codeOrEmail: string): Promise<boolean> {
-        const user = await usersRepository.findUserByConfirmationCodeOrEmail(codeOrEmail);
+        const user = await this.usersRepository.findUserByConfirmationCodeOrEmail(codeOrEmail);
         if (!user) return false;
         if (user.emailConfirmation.expirationDate < new Date()) return false;
 
-        const result = await usersRepository.confirmUserById(user._id);
+        const result = await this.usersRepository.confirmUserById(user._id);
         return result;
-    },
+    }
     async sendEmailWithNewCode(email: string): Promise<boolean> {
-        const user = await usersRepository.findUserByConfirmationCodeOrEmail(email);
+        const user = await this.usersRepository.findUserByConfirmationCodeOrEmail(email);
         if (!user) return false;
         if (user.emailConfirmation.isConfirmed) return false;
         const emailConfirmation: EmailConfirmationType = {
@@ -57,20 +61,20 @@ export const authService = {
             expirationDate: add(new Date(), {minutes: 15}),
             isConfirmed: false
         }
-        await usersRepository.updateConfirmationCode(user._id, emailConfirmation);
+        await this.usersRepository.updateConfirmationCode(user._id, emailConfirmation);
         await emailManager.sendNewConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
         return true; //todo: как я могу уверенно вернуть true, если я не могу контролировать emailManager?
 
-    },
+    }
     async _generateHash(password: string, salt: string) {
         return await bcrypt.hash(password, salt);
-    },
+    }
     async sendEmailWithRecoveryPasswordCode(email: string): Promise<boolean> {
-        const userDB: UserDBModel | null = await usersRepository.findUserByLoginOrEmail(email)
+        const userDB: UserDBModel | null = await this.usersRepository.findUserByLoginOrEmail(email)
         // Return true even if current email is not registered (for prevent user's email detection)
         if (!userDB) return true;
         const passwordRecoveryCode = await jwtService.createAccessToken(userDB._id);
-        await usersRepository.addPassRecoveryCode(userDB._id, passwordRecoveryCode);
+        await this.usersRepository.addPassRecoveryCode(userDB._id, passwordRecoveryCode);
 
         try {
             await emailManager.sendPasswordRecoveryMessage(userDB.accountData.email, passwordRecoveryCode);
@@ -80,12 +84,13 @@ export const authService = {
             return false;
         }
 
-    },
+    }
     async updatePassword(newPassword: string, userId: ObjectId): Promise<boolean> {
-        const user: UserDBModel | null = await usersRepository.getUserById(userId);
+        const user: UserDBModel | null = await this.usersRepository.getUserById(userId);
         if (!user) return false;
         const passwordSalt: string = user.accountData.salt;
         const newPasswordHash = await this._generateHash(newPassword, passwordSalt);
-        return await usersRepository.updatePassword(newPasswordHash, userId);
+        return await this.usersRepository.updatePassword(newPasswordHash, userId);
     }
 }
+export const authService = new AuthService;

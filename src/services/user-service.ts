@@ -1,4 +1,4 @@
-import {usersRepository} from "../repositories/users-repository";
+import {UsersRepository} from "../repositories/users-repository";
 import bcrypt from 'bcrypt';
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
@@ -10,7 +10,11 @@ export type InputUser = {
     email: string,
     password: string
 }
-class UserService {
+export class UserService {
+    usersRepository: UsersRepository
+    constructor() {
+        this.usersRepository = new UsersRepository();
+    }
     async createUser(u: InputUser): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
@@ -36,14 +40,14 @@ class UserService {
             }
         );
 
-        const result = await usersRepository.createUser(newUser);
+        const result = await this.usersRepository.createUser(newUser);
         return result;
     }
     async findUserById(id: ObjectId): Promise<UserDBModel | null> {
-        return await usersRepository.getUserById(id);
+        return await this.usersRepository.getUserById(id);
     }
     async checkCredentials(loginOrEmail: string, password: string): Promise<UserDBModel | null> {
-        const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail);
+        const user = await this.usersRepository.findUserByLoginOrEmail(loginOrEmail);
         if (!user) return null;
         const passwordHash = await this._generateHash(password, user.accountData.salt);
         if (user.accountData.hash !== passwordHash) {
@@ -56,10 +60,10 @@ class UserService {
         return await bcrypt.hash(password, salt);
     }
     async deleteUserById(_id:ObjectId): Promise<boolean> {
-        return await usersRepository.deleteUserById(_id);
+        return await this.usersRepository.deleteUserById(_id);
     }
     async deleteAllUsers(): Promise<void> {
-        return await usersRepository.deleteAllUsers();
+        return await this.usersRepository.deleteAllUsers();
     }
 }
 export const userService = new UserService();

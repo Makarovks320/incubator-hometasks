@@ -2,7 +2,7 @@ import {Router} from "express";
 import {authorization} from "../middlewares/authorization";
 import {emailValidation, loginValidation, passwordValidation} from "../middlewares/users-validations";
 import {inputValidator} from "../middlewares/input-validator";
-import {usersController} from "../controllers/users-controller";
+import {usersControllerInstance} from "../controllers/users-controller";
 
 
 export const usersRouter = Router();
@@ -12,25 +12,25 @@ usersRouter.post('/', [
     passwordValidation,
     emailValidation,
     inputValidator,
-    usersController.createNewUser
+    usersControllerInstance.createNewUser.bind(usersControllerInstance)
 ]);
 
 usersRouter.get('/', [
     authorization,
-    usersController.getUsers
+    usersControllerInstance.getUsers.bind(usersControllerInstance)
 ]);
 
 usersRouter.get('/:id', [
     authorization,
-    usersController.getUserById
+    usersControllerInstance.getUserById.bind(usersControllerInstance)
 ]);
 
 usersRouter.delete('/:id', [
     authorization,
-    usersController.deleteUserById
+    usersControllerInstance.deleteUserById.bind(usersControllerInstance)
 ]);
 
 usersRouter.delete('/', [
-    usersController.deleteAllUsers
+    usersControllerInstance.deleteAllUsers.bind(usersControllerInstance)
 ]);
 

@@ -2,7 +2,7 @@ import {UserModel} from "../db/db";
 import {ObjectId} from "mongodb";
 import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
 
-class UsersRepository {
+export class UsersRepository {
     async createUser(user: UserDBModel): Promise<UserDBModel> {
         await UserModel.insertMany(user);
         return user;
@@ -58,4 +58,5 @@ class UsersRepository {
         const result = await UserModel.deleteMany({});
     }
 }
-export const usersRepository = new UsersRepository();
+
+export const usersRepositoryInstance = new UsersRepository();

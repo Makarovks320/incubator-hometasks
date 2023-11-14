@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {InputUser, userService} from "../services/user-service";
+import {InputUser, UserService, userService} from "../services/user-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
@@ -11,6 +11,10 @@ import {UsersQueryParams} from "../models/user/users-query-params";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 import {UserViewModel} from "../models/user/user-view-model";
 class UsersController {
+    private userService: UserService;
+    constructor() {
+        this.userService = new UserService();
+    }
 
     async createNewUser(req: Request, res: Response) {
         const newUserInput: InputUser = {
@@ -52,4 +56,5 @@ class UsersController {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
 }
-export const usersController = new UsersController();
+export const usersControllerInstance = new UsersController();
+

@@ -1,9 +1,9 @@
 import {CustomValidator} from "express-validator";
-import {usersRepository} from "../repositories/users-repository";
+import {usersRepositoryInstance} from "../repositories/users-repository";
 
 export const checkConfirmationData: CustomValidator = async (value, { req}) => {
     if (!value) return true;
-    const user = await usersRepository.findUserByConfirmationCodeOrEmail(value);
+    const user = await usersRepositoryInstance.findUserByConfirmationCodeOrEmail(value);
     //todo: Дублирование обращения к БД здесь и в auth-service
     if (!user) {
         throw new Error('code or email doesnt exist');
