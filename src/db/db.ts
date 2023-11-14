@@ -1,5 +1,4 @@
-import mongoose from 'mongoose'
-import {MongoClient} from "mongodb";
+import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import {sessionMongoSchema} from "../models/session/session-model";
 import {rateLimitMongoSchema} from "../models/rate-limiting/rate-limiting-model";
@@ -16,10 +15,6 @@ if (!mongoUri) {
 }
 const DbName =  process.env.MONGO_DB_NAME || "incubator-project";
 
-// создание клиента кластера монго
-export const client = new MongoClient(mongoUri);
-
-export const db = client.db(DbName);
 export const PostModel = mongoose.model('posts', postMongoSchema);
 export const UserModel = mongoose.model('users', userMongoSchema);
 export const CommentModel = mongoose.model('comments', commentMongoSchema);
@@ -31,22 +26,6 @@ export const DEFAULT_PROJECTION = { _id: false };
 export const DEFAULT_MONGOOSE_PROJECTION = { _id: 0, __v: 0 };
 export const WITHOUT_v_MONGOOSE_PROJECTION = { __v: 0 };
 
-export async function runDb() {
-    try {
-       await client.connect();
-        // Establish and verify connection
-       db.command({ping: 1});
-       console.log('Successfully connected to db');
-
-    } catch {
-        console.log("couldn't connect to db");
-        await client.close();
-    }
-}
-export async function stopDb() {
-        await client.close();
-        console.log("Successfully disconnected");
-}
 export async function runMongooseClient() {
     try {
         await mongoose.connect(`${mongoUri}/${DbName}`);

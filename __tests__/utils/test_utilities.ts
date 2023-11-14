@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import {runDb, runMongooseClient, stopDb, stopMongooseClient} from "../../src/db/db";
+import {runMongooseClient, stopMongooseClient} from "../../src/db/db";
 import request from "supertest";
 import {app} from "../../src/app_settings";
 import {RouterPaths} from "../../src/helpers/router-paths";
@@ -29,7 +29,6 @@ export function generateString(length: number): string {
 
 export async function connectToDataBases () {
     await Promise.all([
-        runDb(),
         runMongooseClient()
     ]);
 }
@@ -39,7 +38,6 @@ export async function clearDatabase () {
 
 export async function disconnectFromDataBases () {
     await Promise.all([
-        stopDb(),
         stopMongooseClient()
     ])
 }
