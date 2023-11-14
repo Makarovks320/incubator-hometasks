@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
-import {userService} from "../services/user-service";
+import {userService} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {ObjectId} from "mongodb";
 

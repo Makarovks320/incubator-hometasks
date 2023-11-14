@@ -1,5 +1,5 @@
 import {commentsRepository} from "../repositories/comments-repository";
-import { userService } from "./user-service";
+import { userService } from "../composition-root";
 import {ObjectId} from "mongodb";
 import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";

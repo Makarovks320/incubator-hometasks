@@ -8,11 +8,8 @@ import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
 import {jwtService} from "../application/jwt-service";
 
 
-class AuthService {
-    public usersRepository: UsersRepository
-    constructor() {
-        this.usersRepository = new UsersRepository();
-    }
+export class AuthService {
+    constructor(protected usersRepository: UsersRepository) {}
     async createUser(login: string, email: string, password: string): Promise<UserDBModel | null> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(password, passwordSalt);
@@ -93,4 +90,3 @@ class AuthService {
         return await this.usersRepository.updatePassword(newPasswordHash, userId);
     }
 }
-export const authService = new AuthService;

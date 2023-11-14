@@ -1,8 +1,8 @@
 import {Request, Response} from "express";
-import {userService} from "../services/user-service";
+import {UserService} from "../services/user-service";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {authService} from "../services/auth-service";
+import {AuthService} from "../services/auth-service";
 import {sessionService} from "../services/session-service";
 import {IpType, SessionDbModel} from "../models/session/session-model";
 import {v4 as uuidv4} from "uuid";
@@ -11,9 +11,13 @@ import {UserAuthMeViewModel} from "../models/user/user-auth-me-view-model";
 
 const refreshTokenOptions = {httpOnly: true, secure: true}
 
-export const authController = {
+export class AuthController {
+    constructor(
+        protected authService: AuthService,
+        protected userService: UserService
+    ){}
     async loginUser(req: Request, res: Response) {
-        const user = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
+        const user = await this.userService.checkCredentials(req.body.loginOrEmail, req.body.password);
         if (user) {
             // todo: если есть вылидный рефреш-токен, сделать перезапись сессии вместо создания новой
             // подготавливаем данные для сохранения сессии:
@@ -34,7 +38,7 @@ export const authController = {
         } else {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
         }
-    },
+    }
 
     async logoutUser(req: Request, res: Response) {
         //здесь надо убить текущую сессию, для этого
@@ -53,7 +57,7 @@ export const authController = {
             return;
         }
         res.cookie('refreshToken', '', refreshTokenOptions).sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-    },
+    }
 
     async refreshToken(req: Request, res: Response) {
         // сначала из старого токена вытащим инфу о текущей сессии (понадобится deviceId):
@@ -84,10 +88,10 @@ export const authController = {
         res.status(HTTP_STATUSES.OK_200)
             .cookie('refreshToken', newRefreshToken, refreshTokenOptions)
             .send({accessToken: accessToken});
-    },
+    }
 
     async getCurrentUserInfo(req: Request, res: Response) {
-        const user: UserDBModel | null = await userService.findUserById(req.userId)
+        const user: UserDBModel | null = await this.userService.findUserById(req.userId)
         if (!user) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
         } else {
@@ -98,46 +102,46 @@ export const authController = {
             }
             res.status(HTTP_STATUSES.OK_200).send(userAuthMeOutput);
         }
-    },
+    }
 
     async registerNewUser(req: Request, res: Response) {
-        const user = await authService.createUser(req.body.login, req.body.email, req.body.password)
+        const user = await this.authService.createUser(req.body.login, req.body.email, req.body.password)
         if (user) {
             res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send();
         }
-    },
+    }
 
     async confirmRegistration(req: Request, res: Response) {
-        const result = await authService.confirmEmailByCodeOrEmail(req.body.code)
+        const result = await this.authService.confirmEmailByCodeOrEmail(req.body.code)
         if (result) {
             res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send();
         }
-    },
+    }
 
     async resendConfirmationCode(req: Request, res: Response) {
-        const result = await authService.sendEmailWithNewCode(req.body.email)
+        const result = await this.authService.sendEmailWithNewCode(req.body.email)
         if (result) {
             res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {
             res.status(HTTP_STATUSES.BAD_REQUEST_400).send();
         }
-    },
+    }
 
     async recoverPassword(req: Request, res: Response) {
-        const isPasswordRecovered: boolean = await authService.sendEmailWithRecoveryPasswordCode(req.body.email);
+        const isPasswordRecovered: boolean = await this.authService.sendEmailWithRecoveryPasswordCode(req.body.email);
         if (isPasswordRecovered) {
             res.status(HTTP_STATUSES.NO_CONTENT_204).send();
         } else {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send();
         }
-    },
+    }
 
     async updatePassword(req: Request, res: Response) {
-        const result = await authService.updatePassword(req.body.newPassword, req.userId)
+        const result = await this.authService.updatePassword(req.body.newPassword, req.userId)
         if (result) {
             res.status(HTTP_STATUSES.NO_CONTENT_204).send()
         } else {

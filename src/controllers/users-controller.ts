@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
-import {InputUser, UserService, userService} from "../services/user-service";
+import {InputUser, UserService} from "../services/user-service";
+import {userService} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
@@ -10,11 +11,8 @@ import {getUserViewModel} from "../helpers/user-view-model-mapper";
 import {UsersQueryParams} from "../models/user/users-query-params";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 import {UserViewModel} from "../models/user/user-view-model";
-class UsersController {
-    private userService: UserService;
-    constructor() {
-        this.userService = new UserService();
-    }
+export class UsersController {
+    constructor(protected userService: UserService) {}
 
     async createNewUser(req: Request, res: Response) {
         const newUserInput: InputUser = {
@@ -56,5 +54,4 @@ class UsersController {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
 }
-export const usersControllerInstance = new UsersController();
 

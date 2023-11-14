@@ -11,10 +11,7 @@ export type InputUser = {
     password: string
 }
 export class UserService {
-    usersRepository: UsersRepository
-    constructor() {
-        this.usersRepository = new UsersRepository();
-    }
+    constructor(protected usersRepository: UsersRepository) {}
     async createUser(u: InputUser): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
@@ -66,4 +63,3 @@ export class UserService {
         return await this.usersRepository.deleteAllUsers();
     }
 }
-export const userService = new UserService();

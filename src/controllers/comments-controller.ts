@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {commentService, InputComment} from "../services/comment-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {userService} from "../services/user-service";
+import {userService} from "../composition-root";
 import {UserDBModel} from "../models/user/user-db-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 
