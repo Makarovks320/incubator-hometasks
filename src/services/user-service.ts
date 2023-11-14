@@ -10,7 +10,7 @@ export type InputUser = {
     email: string,
     password: string
 }
-export const userService = {
+class UserService {
     async createUser(u: InputUser): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
@@ -38,10 +38,10 @@ export const userService = {
 
         const result = await usersRepository.createUser(newUser);
         return result;
-    },
+    }
     async findUserById(id: ObjectId): Promise<UserDBModel | null> {
         return await usersRepository.getUserById(id);
-    },
+    }
     async checkCredentials(loginOrEmail: string, password: string): Promise<UserDBModel | null> {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail);
         if (!user) return null;
@@ -51,14 +51,15 @@ export const userService = {
         } else {
             return user;
         }
-    },
+    }
     async _generateHash(password: string, salt: string) {
         return await bcrypt.hash(password, salt);
-    },
+    }
     async deleteUserById(_id:ObjectId): Promise<boolean> {
         return await usersRepository.deleteUserById(_id);
-    },
+    }
     async deleteAllUsers(): Promise<void> {
         return await usersRepository.deleteAllUsers();
     }
 }
+export const userService = new UserService();
