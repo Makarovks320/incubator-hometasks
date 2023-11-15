@@ -3,7 +3,8 @@ import {postsQueryRepository} from "../repositories/query-repositories/posts-que
 import {InputPost, postService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {commentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
-import {commentService, InputCommentWithPostId} from "../services/comment-service";
+import {InputCommentWithPostId} from "../services/comment-service";
+import {commentService} from "../composition-root";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";

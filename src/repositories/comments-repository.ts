@@ -4,7 +4,7 @@ import {CommentDBModel} from "../models/comment/comment-db-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {MongooseError} from "mongoose";
 
-export const commentsRepository = {
+export class CommentsRepository {
     async createNewComment(comment: CommentDBModel): Promise<CommentDBModel | string> {
         try {
             await CommentModel.insertMany(comment);
@@ -14,31 +14,31 @@ export const commentsRepository = {
             return 'Mongoose Error';
         }
         return comment;
-    },
+    }
 
     async updateComment(commentId: string, comment: CommentDBModel): Promise<boolean> {
             const result = await CommentModel.updateOne({id: commentId}, comment);
             return result.modifiedCount === 1;
-    },
+    }
 
     async getCommentById(id: string): Promise<CommentViewModel | null> {
         return CommentModel.findOne({id})
             .select(COMMENT_PROJECTION)
             .lean();
-    },
+    }
 
     async getCommentByIdWithPostId(id: string): Promise<CommentDBModel | null> {
         return CommentModel.findOne({id})
             .select(DEFAULT_MONGOOSE_PROJECTION)
             .lean();
-    },
+    }
 
     async deleteCommentById(id: string): Promise<boolean> {
         const result = await CommentModel.deleteOne({id});
         return result.deletedCount === 1;
-    },
+    }
 
     async deleteAllBlogs(): Promise<void> {
         await CommentModel.deleteMany({});
-    },
+    }
 }

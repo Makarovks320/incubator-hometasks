@@ -2,7 +2,7 @@ import {NextFunction, Request, Response, Router} from "express";
 import {postService} from "../services/post-service";
 import {blogService} from "../services/blog-service";
 import {userService} from "../composition-root";
-import {commentService} from "../services/comment-service";
+import {commentService} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {RateLimitModel} from "../db/db";
 import {sessionService} from "../services/session-service";
