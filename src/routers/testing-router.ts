@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response, Router} from "express";
 import {postService} from "../composition-root";
-import {blogService} from "../services/blog-service";
+import {blogService} from "../composition-root";
 import {userService} from "../composition-root";
 import {commentService} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";

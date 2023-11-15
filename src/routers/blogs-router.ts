@@ -6,13 +6,13 @@ import {inputValidator} from "../middlewares/input-validator";
 import {checkBlogExists} from "../middlewares/check-blog-exists";
 import {idFromUrlExistingValidator} from "../middlewares/id-from-url-existing-validator";
 import {contentValidation, shortDescriptionValidation, titleValidation} from "../middlewares/posts-validations";
-import {blogsController} from "../controllers/blogs-controller";
+import {blogsController} from "../composition-root";
 import {postsController} from "../composition-root";
 
 export const blogsRouter = Router();
-blogsRouter.get('/', blogsController.getBlogs);
+blogsRouter.get('/', blogsController.getBlogs.bind(blogsController));
 
-blogsRouter.get('/:id', blogsController.getBlogById);
+blogsRouter.get('/:id', blogsController.getBlogById.bind(blogsController));
 
 blogsRouter.post('/', [
     authorization,
@@ -20,10 +20,10 @@ blogsRouter.post('/', [
     websiteUrlValidation,
     descriptionValidation,
     inputValidator,
-    blogsController.createNewBlog
+    blogsController.createNewBlog.bind(blogsController)
 ]);
 
-blogsRouter.get('/:id/posts', blogsController.getPostsByBlogId);
+blogsRouter.get('/:id/posts', blogsController.getPostsByBlogId.bind(blogsController));
 
 blogsRouter.post('/:id/posts', [
     authorization,
@@ -42,15 +42,15 @@ blogsRouter.put('/:id', [
     websiteUrlValidation,
     descriptionValidation,
     inputValidator,
-    blogsController.updateBlog
+    blogsController.updateBlog.bind(blogsController)
 ]);
 
 blogsRouter.delete('/', [
     authorization,
-    blogsController.deleteAllBlogs
+    blogsController.deleteAllBlogs.bind(blogsController)
 ]);
 
 blogsRouter.delete('/:id', [
     authorization,
-    blogsController.deleteBlogById
+    blogsController.deleteBlogById.bind(blogsController)
 ]);

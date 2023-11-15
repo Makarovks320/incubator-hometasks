@@ -9,6 +9,9 @@ import {CommentsController} from "./controllers/comments-controller";
 import {PostsRepository} from "./repositories/posts-repository";
 import {PostService} from "./services/post-service";
 import {PostsController} from "./controllers/posts-controller";
+import {BlogsRepository} from "./repositories/blogs-repository";
+import {BlogService} from "./services/blog-service";
+import {BlogsController} from "./controllers/blogs-controller";
 
 // users dependencies
 const usersRepository = new UsersRepository;
@@ -28,5 +31,10 @@ export const commentController = new CommentsController(commentService);
 export const postsRepository = new PostsRepository();
 export const postService = new PostService(postsRepository);
 export const postsController = new PostsController(postService);
+
+//blogs deps
+export const blogsRepository = new BlogsRepository;
+export const blogService = new BlogService(blogsRepository);
+export const blogsController = new BlogsController(blogService);
 
 

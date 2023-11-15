@@ -1,4 +1,4 @@
-import {blogsRepository} from "../repositories/blogs-repository";
+import {blogsRepository} from "../composition-root";
 import {CustomValidator} from "express-validator";
 
 export const checkBlogExists: CustomValidator = async (value, { req}) => {
