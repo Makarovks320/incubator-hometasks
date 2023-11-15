@@ -1,6 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {RateLimitModel} from "../db/db";
-import {rateLimitDBModel, rateLimitViewModel} from "../models/rate-limiting/rate-limiting-model";
+import {rateLimitDBModel, RateLimitModel, rateLimitViewModel} from "../models/rate-limiting/rate-limiting-model";
 import {ObjectId} from "mongodb";
 import subSeconds from "date-fns/subSeconds";
 import mongoose from "mongoose";

@@ -19,3 +19,4 @@ export const postMongoSchema = new mongoose.Schema<PostDBModel>({
     blogName: {type: String, required: true},
     createdAt: {type: String, required: true}
 })
+export const PostModel = mongoose.model('posts', postMongoSchema);

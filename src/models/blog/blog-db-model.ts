@@ -17,3 +17,4 @@ export const blogMongoSchema = new mongoose.Schema<BlogDBModel>({
     isMembership: { type: Boolean, required: true },
     createdAt: { type: String, required: true }
 })
+export const BlogModel = mongoose.model('blogs', blogMongoSchema);

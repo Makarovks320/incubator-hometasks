@@ -1,6 +1,5 @@
-import {UserModel} from "../db/db";
 import {ObjectId} from "mongodb";
-import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
+import {EmailConfirmationType, UserDBModel, UserModel} from "../models/user/user-db-model";
 
 export class UsersRepository {
     async createUser(user: UserDBModel): Promise<UserDBModel> {

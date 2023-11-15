@@ -1,7 +1,7 @@
-import {DEFAULT_MONGOOSE_PROJECTION, PostModel} from "../../db/db";
+import {DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
 import {PostQueryParams} from "../../models/post/post-query-params-type";
 import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-model";
-import {PostDBModel} from "../../models/post/post-db-model";
+import {PostDBModel, PostModel} from "../../models/post/post-db-model";
 import mongoose from "mongoose";
 
 export const postsQueryRepository = {

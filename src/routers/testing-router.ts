@@ -4,8 +4,8 @@ import {blogService} from "../composition-root";
 import {userService} from "../composition-root";
 import {commentService} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {RateLimitModel} from "../db/db";
 import {sessionService} from "../services/session-service";
+import {RateLimitModel} from "../models/rate-limiting/rate-limiting-model";
 
 export const testingRouter = Router();
 

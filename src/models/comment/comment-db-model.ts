@@ -16,3 +16,4 @@ export const commentMongoSchema = new mongoose.Schema<CommentDBModel>({
     },
     createdAt: {type: String, required: true}
 })
+export const CommentModel = mongoose.model('comments', commentMongoSchema);

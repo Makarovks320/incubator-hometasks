@@ -1,8 +1,9 @@
-import {BlogModel, DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
+import {DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
 import {BlogQueryParams} from "../../models/blog/blog-query-params-type";
 import {BlogsWithPaginationModel} from "../../models/blog/blogs-with-pagination-model";
 import {BlogViewModel} from "../../models/blog/blog-view-model";
 import mongoose from "mongoose";
+import {BlogModel} from "../../models/blog/blog-db-model";
 
 export const blogsQueryRepository = {
     async getBlogs(queryParams: BlogQueryParams): Promise<BlogsWithPaginationModel> {

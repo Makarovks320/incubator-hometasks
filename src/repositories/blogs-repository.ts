@@ -1,6 +1,6 @@
-import {BlogModel, DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
+import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
 import {MongooseError} from "mongoose";
-import {BlogDBModel} from "../models/blog/blog-db-model";
+import {BlogDBModel, BlogModel} from "../models/blog/blog-db-model";
 
 export class BlogsRepository {
     async findBlogById(id: string): Promise<BlogDBModel | null> {

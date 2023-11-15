@@ -28,3 +28,4 @@ export const sessionMongoSchema = new mongoose.Schema<SessionDbModel>({
     refreshTokenIssuedAt: {type: Date, required: true},
     refreshTokenExpiresAt: {type: Date, required: true}
 })
+export const SessionModel = mongoose.model('sessions', sessionMongoSchema);

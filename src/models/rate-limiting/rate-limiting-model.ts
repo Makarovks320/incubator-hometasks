@@ -20,3 +20,4 @@ export const rateLimitMongoSchema = new mongoose.Schema<rateLimitDBModel>({
     URL: {type: String, required: true},
     date: {type: Date, required: true},
 })
+export const RateLimitModel = mongoose.model('rateLimit', rateLimitMongoSchema);

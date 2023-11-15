@@ -1,5 +1,6 @@
-import {CommentModel, DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
+import {DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
 import {CommentViewModel} from "../../models/comment/comment-view-model";
+import {CommentModel} from "../../models/comment/comment-db-model";
 type commentQueryParams = {
     pageNumber: number,
     pageSize: number,

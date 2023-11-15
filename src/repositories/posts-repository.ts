@@ -1,7 +1,7 @@
-import {DEFAULT_PROJECTION, PostModel} from "../db/db";
+import {DEFAULT_PROJECTION} from "../db/db";
 import {InputPost} from "../services/post-service";
 import {MongooseError} from "mongoose";
-import {PostDBModel} from "../models/post/post-db-model";
+import {PostDBModel, PostModel} from "../models/post/post-db-model";
 
 export class PostsRepository {
     async findPostById(id: string): Promise<PostDBModel | null> {

@@ -45,3 +45,4 @@ export const userMongoSchema = new mongoose.Schema<UserDBModel>({
         active: {type: Boolean, required: true}
     }
 })
+export const UserModel = mongoose.model('users', userMongoSchema);
