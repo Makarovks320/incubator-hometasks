@@ -7,7 +7,7 @@ import {checkBlogExists} from "../middlewares/check-blog-exists";
 import {idFromUrlExistingValidator} from "../middlewares/id-from-url-existing-validator";
 import {contentValidation, shortDescriptionValidation, titleValidation} from "../middlewares/posts-validations";
 import {blogsController} from "../controllers/blogs-controller";
-import {postsController} from "../controllers/posts-controller";
+import {postsController} from "../composition-root";
 
 export const blogsRouter = Router();
 blogsRouter.get('/', blogsController.getBlogs);

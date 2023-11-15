@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
-import {InputPost, postService} from "../services/post-service";
+import {InputPost, PostService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {commentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
 import {InputCommentWithPostId} from "../services/comment-service";
@@ -10,7 +10,9 @@ import {PostViewModel} from "../models/post/post-view-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 
-export const postsController = {
+export class PostsController {
+    constructor(protected postService: PostService) {}
+
     async getPosts(req: Request, res: Response) {
         const queryParams: PostQueryParams = {
             pageNumber: parseInt(req.query.pageNumber as string) || 1,
@@ -20,12 +22,12 @@ export const postsController = {
         }
         const posts = await postsQueryRepository.getPosts(queryParams);
         res.send(posts);
-    },
+    }
 
     async getPostById(req: Request, res: Response) {
-        const posts = await postService.getPostById(req.params.id);
+        const posts = await this.postService.getPostById(req.params.id);
         posts ? res.send(posts) : res.send(HTTP_STATUSES.NOT_FOUND_404);
-    },
+    }
 
     async createNewPost(req: Request, res: Response) {
         const post: InputPost = {
@@ -33,28 +35,28 @@ export const postsController = {
             blogId: req.body.blogId ? req.body.blogId : req.params.id,// смотря какой эндпоинт: /posts или /blogs
             blogName: req.blogName
         }
-        const result: PostViewModel | string = await postService.createNewPost(post);
+        const result: PostViewModel | string = await this.postService.createNewPost(post);
         if (typeof result === 'string') {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
             return;
         }
         res.status(HTTP_STATUSES.CREATED_201).send(result);
-    },
+    }
 
     async updatePost(req: Request, res: Response) {
-        const newPost = await postService.updatePostById(req.params.id, req.body)
+        const newPost = await this.postService.updatePostById(req.params.id, req.body)
         newPost ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.send(HTTP_STATUSES.NOT_FOUND_404);
-    },
+    }
 
     async deleteAllPosts(req: Request, res: Response) {
-        await postService.deleteAllPosts();
+        await this.postService.deleteAllPosts();
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-    },
+    }
 
     async deletePostById(req: Request, res: Response) {
-        const blog = await postService.deletePostById(req.params.id);
+        const blog = await this.postService.deletePostById(req.params.id);
         blog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
-    },
+    }
 
     async getCommentsForPost(req: Request, res: Response) {
         const queryParams: PostQueryParams = {
@@ -65,7 +67,7 @@ export const postsController = {
         }
         const comments = await commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
         res.send(comments);
-    },
+    }
 
     async createCommentToPost(req: Request, res: Response) {
         const comment: InputCommentWithPostId = {

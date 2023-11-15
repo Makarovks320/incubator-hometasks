@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response, Router} from "express";
-import {postService} from "../services/post-service";
+import {postService} from "../composition-root";
 import {blogService} from "../services/blog-service";
 import {userService} from "../composition-root";
 import {commentService} from "../composition-root";

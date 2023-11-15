@@ -13,13 +13,13 @@ import {commentContentValidation} from "../middlewares/comment-validations";
 import {param} from "express-validator";
 import {checkPostExists} from "../middlewares/check-post-exists";
 import {idFromUrlExistingValidator} from "../middlewares/id-from-url-existing-validator";
-import {postsController} from "../controllers/posts-controller";
+import {postsController} from "../composition-root";
 
 export const postsRouter = Router();
 
-postsRouter.get('/', postsController.getPosts);
+postsRouter.get('/', postsController.getPosts.bind(postsController));
 
-postsRouter.get('/:id', postsController.getPostById);
+postsRouter.get('/:id', postsController.getPostById.bind(postsController));
 
 postsRouter.post('/', [
     authorization,
@@ -28,7 +28,7 @@ postsRouter.post('/', [
     contentValidation,
     blogIdValidation,
     inputValidator,
-    postsController.createNewPost
+    postsController.createNewPost.bind(postsController)
 ]);
 
 postsRouter.put('/:id', [
@@ -39,17 +39,17 @@ postsRouter.put('/:id', [
     contentValidation,
     blogIdValidation,
     inputValidator,
-    postsController.updatePost
+    postsController.updatePost.bind(postsController)
 ]);
 
 postsRouter.delete('/', [
     authorization,
-    postsController.deleteAllPosts
+    postsController.deleteAllPosts.bind(postsController)
 ]);
 
 postsRouter.delete('/:id', [
     authorization,
-    postsController.deletePostById
+    postsController.deletePostById.bind(postsController)
 ]);
 
 // комментарии
@@ -57,7 +57,7 @@ postsRouter.delete('/:id', [
 postsRouter.get('/:id/comments', [
     param('id').custom(checkPostExists).withMessage('post is not found'),
     idFromUrlExistingValidator,
-    postsController.getCommentsForPost
+    postsController.getCommentsForPost.bind(postsController)
 ]);
 
 postsRouter.post('/:id/comments', [
@@ -66,5 +66,5 @@ postsRouter.post('/:id/comments', [
     idFromUrlExistingValidator,
     commentContentValidation,
     inputValidator,
-    postsController.createCommentToPost
+    postsController.createCommentToPost.bind(postsController)
 ]);

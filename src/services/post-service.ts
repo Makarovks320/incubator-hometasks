@@ -1,4 +1,4 @@
-import {postsRepository} from "../repositories/posts-repository";
+import {PostsRepository} from "../repositories/posts-repository";
 import {PostViewModel} from "../models/post/post-view-model";
 
 export type InputPost = {
@@ -9,25 +9,27 @@ export type InputPost = {
     blogName: string
 }
 
-export const postService = {
+export class PostService {
+    constructor(protected postsRepository: PostsRepository) {}
+
     async getPostById(id: string): Promise<PostViewModel | null> {
-        return postsRepository.findPostById(id);
-    },
+        return this.postsRepository.findPostById(id);
+    }
     async createNewPost(p: InputPost): Promise<PostViewModel | string> {
         const post = {
             id: new Date().valueOf().toString(),
             ...p,
             createdAt: (new Date()).toISOString()
         }
-        return await postsRepository.createNewPost(post);
-    },
+        return await this.postsRepository.createNewPost(post);
+    }
     async updatePostById(id: string, p: InputPost): Promise<boolean> {
-        return await postsRepository.updatePostById(id, p);
-    },
+        return await this.postsRepository.updatePostById(id, p);
+    }
     async deleteAllPosts(): Promise<void> {
-        await postsRepository.deleteAllPosts();
-    },
+        await this.postsRepository.deleteAllPosts();
+    }
     async deletePostById(id: string): Promise<boolean> {
-        return await postsRepository.deletePostById(id);
+        return await this.postsRepository.deletePostById(id);
     }
 }

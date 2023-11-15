@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {postsRepository} from "../repositories/posts-repository";
+import {postsRepository} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 
 export async function checkIdFromUri (req: Request, res: Response, next: NextFunction) {
