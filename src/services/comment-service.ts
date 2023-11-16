@@ -1,9 +1,9 @@
 import {CommentsRepository} from "../repositories/comments-repository";
-import { userService } from "../composition-root";
 import {ObjectId} from "mongodb";
 import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
+import {UserService} from "./user-service";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -14,10 +14,15 @@ export type InputComment = {
 }
 
 export class CommentService {
-    constructor(protected commentsRepository: CommentsRepository) {}
+    constructor(
+        protected commentsRepository: CommentsRepository,
+        protected userService: UserService
+    ) {
+    }
+
     async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentDBModel | string> {
         // найдем userLogin
-        const user: UserDBModel | null = await userService.findUserById(userId);
+        const user: UserDBModel | null = await this.userService.findUserById(userId);
         if (!user) throw new Error('user is not found');
 
         const comment: CommentDBModel = {
@@ -37,9 +42,9 @@ export class CommentService {
         //запросим существующий коммент, чтобы получить postId:
         const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentId);
         if (!currentComment) {
-                throw new Error('comment is not found');
-                return false;
-            }
+            throw new Error('comment is not found');
+            return false;
+        }
 
         const updatedComment: CommentDBModel = {
             id: commentId,

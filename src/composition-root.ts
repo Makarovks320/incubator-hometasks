@@ -29,7 +29,7 @@ const authService = new AuthService(usersRepository, jwtService);
 
 //comments dependencies
 const commentsRepository = new CommentsRepository;
-const commentService = new CommentService(commentsRepository);
+const commentService = new CommentService(commentsRepository, userService);
 
 //posts dependencies
 export const postsRepository = new PostsRepository();
