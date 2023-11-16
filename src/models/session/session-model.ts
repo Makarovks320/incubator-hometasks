@@ -20,7 +20,7 @@ export type SessionViewModel = {
     deviceId: string
 }
 
-export const sessionMongoSchema = new mongoose.Schema<SessionDbModel>({
+const sessionMongoSchema = new mongoose.Schema<SessionDbModel>({
     ip: {type: String || [String], required: true},
     title: {type: String, required: true},
     deviceId: {type: String, required: true},

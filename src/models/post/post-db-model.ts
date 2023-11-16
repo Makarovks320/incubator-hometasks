@@ -10,7 +10,7 @@ export type PostDBModel = {
     createdAt: string
 }
 
-export const postMongoSchema = new mongoose.Schema<PostDBModel>({
+const postMongoSchema = new mongoose.Schema<PostDBModel>({
     id: {type: String, required: true},
     title: {type: String, required: true},
     shortDescription: {type: String, required: true},

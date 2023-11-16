@@ -12,7 +12,7 @@ export class BlogDBModel {
     }
 }
 
-export const blogMongoSchema = new mongoose.Schema<BlogDBModel>({
+const blogMongoSchema = new mongoose.Schema<BlogDBModel>({
     id: { type: String, required: true },
     name: { type: String, required: true },
     description: { type: String, required: true },

@@ -27,7 +27,7 @@ type PasswordRecoveryType = {
     active: false
 }
 
-export const userMongoSchema = new mongoose.Schema<UserDBModel>({
+const userMongoSchema = new mongoose.Schema<UserDBModel>({
     accountData: {
         userName: {type: String, required: true},
         email: {type: String, required: true},

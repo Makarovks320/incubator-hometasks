@@ -6,7 +6,7 @@ export type CommentDBModel = CommentViewModel & {
     postId: string
 }
 
-export const commentMongoSchema = new mongoose.Schema<CommentDBModel>({
+const commentMongoSchema = new mongoose.Schema<CommentDBModel>({
     postId: {type: String, required: true},
     id: {type: String, required: true},
     content: {type: String, required: true},

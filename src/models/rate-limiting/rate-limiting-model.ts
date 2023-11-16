@@ -14,7 +14,7 @@ export type rateLimitViewModel = {
     date: Date
 }
 
-export const rateLimitMongoSchema = new mongoose.Schema<rateLimitDBModel>({
+const rateLimitMongoSchema = new mongoose.Schema<rateLimitDBModel>({
     _id: {type: ObjectId, required: true},
     IP: {type: String || [String], required: true},
     URL: {type: String, required: true},
