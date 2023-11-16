@@ -12,6 +12,9 @@ import {PostsController} from "./controllers/posts-controller";
 import {BlogsRepository} from "./repositories/blogs-repository";
 import {BlogService} from "./services/blog-service";
 import {BlogsController} from "./controllers/blogs-controller";
+import {SessionsRepository} from "./repositories/sessions-repository";
+import {SecurityDevicesController} from "./controllers/security-devices-controller";
+import {SessionService} from "./services/session-service";
 
 // users dependencies
 const usersRepository = new UsersRepository;
@@ -20,21 +23,27 @@ export const userController = new UsersController(userService);
 
 // auth dependencies
 const authService = new AuthService(usersRepository);
-export const authController = new AuthController(authService, userService)
 
 //comments dependencies
 const commentsRepository = new CommentsRepository;
 export const commentService = new CommentService(commentsRepository);
-export const commentController = new CommentsController(commentService);
 
 //posts dependencies
 export const postsRepository = new PostsRepository();
 export const postService = new PostService(postsRepository);
-export const postsController = new PostsController(postService);
 
 //blogs deps
 export const blogsRepository = new BlogsRepository;
 export const blogService = new BlogService(blogsRepository);
+
+//sessions deps
+const sessionsRepository = new SessionsRepository;
+export const sessionService = new SessionService(sessionsRepository);
+
+
+//controllers
+export const authController = new AuthController(authService, userService, sessionService)
+export const commentController = new CommentsController(commentService);
+export const postsController = new PostsController(postService);
 export const blogsController = new BlogsController(blogService);
-
-
+export const securityDevicesController = new SecurityDevicesController(sessionService);

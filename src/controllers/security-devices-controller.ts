@@ -1,12 +1,14 @@
 import {Request, Response} from "express";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {sessionService} from "../services/session-service";
-import {SessionDbModel, SessionViewModel} from "../models/session/session-model";
+import {SessionService} from "../services/session-service";
+import {SessionDbModel} from "../models/session/session-model";
 import {ObjectId} from "mongodb";
 import {getSessionViewModel} from "../helpers/session-view-model-mapper";
 
-export const securityDevicesController = {
+export class SecurityDevicesController {
+    constructor(protected sessionService: SessionService) {
+    }
     async getAllSessionsForUser(req: Request, res: Response) {
         const refreshToken = req.cookies?.refreshToken;
         if (!refreshToken) {
@@ -18,19 +20,19 @@ export const securityDevicesController = {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
         }
-        const result: SessionDbModel[] | string = await sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
+        const result: SessionDbModel[] | string = await this.sessionService.getAllSessionsForUser(refreshTokenInfo!.userId);
         if (Array.isArray(result)) {
             const sessions = result.map(s => getSessionViewModel(s));
             res.status(HTTP_STATUSES.OK_200).send(sessions);
             return;
         }
         res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
-    },
+    }
 
     async deleteSessionByDeviceId(req: Request, res: Response) {
         const deviceId: string = req.params.deviceId;
         // проверим, есть ли такой девайс в сессиях
-        const sessionForDevice: SessionDbModel | null = await sessionService.getSessionForDevice(deviceId);
+        const sessionForDevice: SessionDbModel | null = await this.sessionService.getSessionForDevice(deviceId);
         if (!sessionForDevice) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
             return;
@@ -50,7 +52,7 @@ export const securityDevicesController = {
 
         // проверим, что deviceId соответствует данному юзеру:
         // 1) сначала найдем все сессии этого юзера
-        const sessions: SessionDbModel[] | string = await sessionService.getAllSessionsForUser(req.userId);
+        const sessions: SessionDbModel[] | string = await this.sessionService.getAllSessionsForUser(req.userId);
         if (typeof sessions === 'string') {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
@@ -63,9 +65,9 @@ export const securityDevicesController = {
         }
 
         // удалим сессию по deviceId:
-        await sessionService.deleteSessionByDeviceId(deviceId);
+        await this.sessionService.deleteSessionByDeviceId(deviceId);
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-    },
+    }
 
     async deleteAllSessionsForUserExcludeCurrent(req: Request, res: Response) {
         /*Удаляет все сессии кроме текущей*/
@@ -80,7 +82,7 @@ export const securityDevicesController = {
         const currentUserId: ObjectId = refreshTokenInfo.userId;
         // дернем в сервисе метод для удаления всех сессий юзера кроме сессии для текущего девайса
         try {
-            await sessionService.deleteAllSessionsExcludeCurrent(currentUserId, currentDeviceId);
+            await this.sessionService.deleteAllSessionsExcludeCurrent(currentUserId, currentDeviceId);
         } catch (e) {
             console.log(e);
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);

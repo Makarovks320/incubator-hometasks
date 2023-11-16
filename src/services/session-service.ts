@@ -1,10 +1,12 @@
-import {IpType, SessionDbModel, SessionViewModel} from "../models/session/session-model";
-import {sessionsRepository} from "../repositories/sessions-repository";
+import {IpType, SessionDbModel} from "../models/session/session-model";
+import {SessionsRepository} from "../repositories/sessions-repository";
 import {ObjectId} from "mongodb";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 
-export const sessionService = {
-    async addSession (ip: IpType, deviceId: string, deviceName: string, refreshToken: string): Promise<SessionDbModel | null> {
+export class SessionService {
+    constructor(protected sessionsRepository: SessionsRepository) {}
+    async addSession(ip: IpType, deviceId: string, deviceName: string, refreshToken: string)
+        : Promise<SessionDbModel | null> {
         // достанем нужную для сессии инфу из Рефреш-токена:
         const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) return null;
@@ -23,16 +25,20 @@ export const sessionService = {
             refreshTokenExpiresAt,
             userId
         }
-        await sessionsRepository.addSession(session);
+        await this.sessionsRepository.addSession(session);
         return session;
-    },
-    async getAllSessionsForUser(userId: ObjectId): Promise<SessionDbModel[] | string>  {
-        return await sessionsRepository.getAllSessionsForUser(userId);
-    },
-    async getSessionForDevice(deviceId: string): Promise<SessionDbModel | null>  {
-        return await sessionsRepository.getSessionForDevice(deviceId);
-    },
-    async updateSession(currentIp: IpType, deviceId: string, refreshToken: string, currentSession: SessionDbModel): Promise<SessionDbModel | null> {
+    }
+
+    async getAllSessionsForUser(userId: ObjectId): Promise<SessionDbModel[] | string> {
+        return await this.sessionsRepository.getAllSessionsForUser(userId);
+    }
+
+    async getSessionForDevice(deviceId: string): Promise<SessionDbModel | null> {
+        return await this.sessionsRepository.getSessionForDevice(deviceId);
+    }
+
+    async updateSession(currentIp: IpType, deviceId: string, refreshToken: string, currentSession: SessionDbModel)
+        : Promise<SessionDbModel | null> {
         const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) return null;
         const refreshTokenIssuedAt: Date = new Date(refreshTokenInfo.iat);
@@ -47,21 +53,24 @@ export const sessionService = {
             refreshTokenExpiresAt
         }
         try {
-            await sessionsRepository.updateSession(deviceId, session);
+            await this.sessionsRepository.updateSession(deviceId, session);
         } catch (e) {
             console.log(e);
             return null;
         }
         return session;
-    },
+    }
+
     async deleteSessionByDeviceId(deviceId: string): Promise<boolean> {
-        const result = await sessionsRepository.deleteSessionByDeviceId(deviceId);
+        const result = await this.sessionsRepository.deleteSessionByDeviceId(deviceId);
         return result;
-    },
+    }
+
     async deleteAllSessionsExcludeCurrent(currentUserId: ObjectId, currentDeviceId: string) {
-        await sessionsRepository.deleteAllSessionsExcludeCurrent(currentUserId, currentDeviceId);
-    },
+        await this.sessionsRepository.deleteAllSessionsExcludeCurrent(currentUserId, currentDeviceId);
+    }
+
     async deleteAllSessions(): Promise<void> {
-        await sessionsRepository.deleteAllSessions();
-    },
+        await this.sessionsRepository.deleteAllSessions();
+    }
 }

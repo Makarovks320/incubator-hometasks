@@ -3,7 +3,7 @@ import {UserService} from "../services/user-service";
 import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {AuthService} from "../services/auth-service";
-import {sessionService} from "../services/session-service";
+import {SessionService} from "../services/session-service";
 import {IpType, SessionDbModel} from "../models/session/session-model";
 import {v4 as uuidv4} from "uuid";
 import {UserDBModel} from "../models/user/user-db-model";
@@ -14,7 +14,8 @@ const refreshTokenOptions = {httpOnly: true, secure: true}
 export class AuthController {
     constructor(
         protected authService: AuthService,
-        protected userService: UserService
+        protected userService: UserService,
+        protected sessionService: SessionService
     ){}
     async loginUser(req: Request, res: Response) {
         const user = await this.userService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -30,7 +31,7 @@ export class AuthController {
             const refreshToken: string = await jwtService.createRefreshToken(user._id, deviceId);
 
             // сохраняем текущую сессию:
-            await sessionService.addSession(ip, deviceId, deviceName, refreshToken);
+            await this.sessionService.addSession(ip, deviceId, deviceName, refreshToken);
 
             res.status(HTTP_STATUSES.OK_200)
                 .cookie('refreshToken', refreshToken, refreshTokenOptions)
@@ -51,7 +52,7 @@ export class AuthController {
         }
         const deviceId: string = refreshTokenInfo.deviceId;
         // теперь убьем текущую сессию
-        const result = await sessionService.deleteSessionByDeviceId(deviceId);
+        const result = await this.sessionService.deleteSessionByDeviceId(deviceId);
         if (!result) {
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
             return;
@@ -73,13 +74,13 @@ export class AuthController {
         const currentIp: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";
 
         // Получим информацию о текущей сессии:
-        const currentSession: SessionDbModel | null = await sessionService.getSessionForDevice(deviceId);
+        const currentSession: SessionDbModel | null = await this.sessionService.getSessionForDevice(deviceId);
         if (!currentSession) {
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
             return;
         }
 
-        const result = await sessionService.updateSession(currentIp, deviceId, newRefreshToken, currentSession);
+        const result = await this.sessionService.updateSession(currentIp, deviceId, newRefreshToken, currentSession);
         if (!result) {
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
             return;
