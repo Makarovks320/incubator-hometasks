@@ -1,21 +1,21 @@
 import {NextFunction, Request, Response, Router} from "express";
-import {postService} from "../composition-root";
-import {blogService} from "../composition-root";
-import {userService} from "../composition-root";
-import {commentService} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {sessionService} from "../composition-root";
 import {RateLimitModel} from "../models/rate-limiting/rate-limiting-model";
+import {SessionModel} from "../models/session/session-model";
+import {PostModel} from "../models/post/post-db-model";
+import {BlogModel} from "../models/blog/blog-db-model";
+import {UserModel} from "../models/user/user-db-model";
+import {CommentModel} from "../models/comment/comment-db-model";
 
 export const testingRouter = Router();
 
 testingRouter.delete('/', async (req: Request, res: Response, next: NextFunction) => {
         Promise.all([
-            postService.deleteAllPosts(),
-            blogService.deleteAllBlogs(),
-            userService.deleteAllUsers(),
-            commentService.deleteAllComments(),
-            sessionService.deleteAllSessions(),
+            PostModel.deleteMany(),
+            BlogModel.deleteMany(),
+            UserModel.deleteMany(),
+            CommentModel.deleteMany(),
+            SessionModel.deleteMany(),
             RateLimitModel.deleteMany({}) // не делал ни сервиса, ни репозитория
         ]).then(() => {
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
