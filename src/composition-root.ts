@@ -17,6 +17,7 @@ import {SecurityDevicesController} from "./controllers/security-devices-controll
 import {SessionService} from "./services/session-service";
 import {AuthMiddleware} from "./middlewares/auth-middleware";
 import {JwtService} from "./application/jwt-service";
+import {BlogsQueryRepository} from "./repositories/query-repositories/blogs-query-repository";
 
 //common services
 export const jwtService = new JwtService;
@@ -38,6 +39,7 @@ const postService = new PostService(postsRepository);
 
 //blogs deps
 export const blogsRepository = new BlogsRepository;
+const blogsQueryRepository = new BlogsQueryRepository;
 const blogService = new BlogService(blogsRepository);
 
 //sessions deps
@@ -49,7 +51,7 @@ export const userController = new UsersController(userService);
 export const authController = new AuthController(authService, userService, sessionService, jwtService)
 export const commentController = new CommentsController(commentService, userService);
 export const postsController = new PostsController(postService, commentService);
-export const blogsController = new BlogsController(blogService);
+export const blogsController = new BlogsController(blogService, blogsQueryRepository);
 export const securityDevicesController = new SecurityDevicesController(sessionService, jwtService);
 
 //middlewares

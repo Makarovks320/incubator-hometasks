@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {blogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
+import {BlogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
 import {BlogService} from "../services/blog-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
@@ -8,7 +8,10 @@ import {PostQueryParams} from "../models/post/post-query-params-type";
 import {BlogViewModel} from "../models/blog/blog-view-model";
 
 export class BlogsController {
-    constructor(protected blogService: BlogService) {}
+    constructor(
+        protected blogService: BlogService,
+        protected blogsQueryRepository: BlogsQueryRepository
+    ) {}
 
     async getBlogs(req: Request, res: Response) {
         const queryParams: BlogQueryParams = {
@@ -18,7 +21,7 @@ export class BlogsController {
             sortBy: req.query.sortBy as string || 'createdAt',
             sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
         }
-        const blogs = await blogsQueryRepository.getBlogs(queryParams);
+        const blogs = await this.blogsQueryRepository.getBlogs(queryParams);
         res.send(blogs);
     }
 

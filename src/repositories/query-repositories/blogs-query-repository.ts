@@ -5,7 +5,7 @@ import {BlogViewModel} from "../../models/blog/blog-view-model";
 import mongoose from "mongoose";
 import {BlogModel} from "../../models/blog/blog-db-model";
 
-export const blogsQueryRepository = {
+export class BlogsQueryRepository {
     async getBlogs(queryParams: BlogQueryParams): Promise<BlogsWithPaginationModel> {
 
         const filter: mongoose.FilterQuery<BlogViewModel> = {};
