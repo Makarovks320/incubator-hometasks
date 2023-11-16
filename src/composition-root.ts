@@ -18,32 +18,32 @@ import {SessionService} from "./services/session-service";
 
 // users dependencies
 const usersRepository = new UsersRepository;
-export const userService = new UserService(usersRepository);
-export const userController = new UsersController(userService);
+const userService = new UserService(usersRepository);
 
 // auth dependencies
 const authService = new AuthService(usersRepository);
 
 //comments dependencies
 const commentsRepository = new CommentsRepository;
-export const commentService = new CommentService(commentsRepository);
+const commentService = new CommentService(commentsRepository);
 
 //posts dependencies
 export const postsRepository = new PostsRepository();
-export const postService = new PostService(postsRepository);
+const postService = new PostService(postsRepository);
 
 //blogs deps
 export const blogsRepository = new BlogsRepository;
-export const blogService = new BlogService(blogsRepository);
+const blogService = new BlogService(blogsRepository);
 
 //sessions deps
 const sessionsRepository = new SessionsRepository;
-export const sessionService = new SessionService(sessionsRepository);
+const sessionService = new SessionService(sessionsRepository);
 
 
 //controllers
+export const userController = new UsersController(userService);
 export const authController = new AuthController(authService, userService, sessionService)
-export const commentController = new CommentsController(commentService);
-export const postsController = new PostsController(postService);
+export const commentController = new CommentsController(commentService, userService);
+export const postsController = new PostsController(postService, commentService);
 export const blogsController = new BlogsController(blogService);
 export const securityDevicesController = new SecurityDevicesController(sessionService);

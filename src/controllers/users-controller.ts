@@ -1,6 +1,5 @@
 import {Request, Response} from "express";
 import {InputUser, UserService} from "../services/user-service";
-import {userService} from "../composition-root";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
@@ -11,8 +10,9 @@ import {getUserViewModel} from "../helpers/user-view-model-mapper";
 import {UsersQueryParams} from "../models/user/users-query-params";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 import {UserViewModel} from "../models/user/user-view-model";
+
 export class UsersController {
-    constructor(protected userService: UserService) {}
+    constructor(protected userService: UserService ) {}
 
     async createNewUser(req: Request, res: Response) {
         const newUserInput: InputUser = {
@@ -20,7 +20,7 @@ export class UsersController {
             email: req.body.email,
             password: req.body.password
         }
-        const createdUser = await userService.createUser(newUserInput);
+        const createdUser = await this.userService.createUser(newUserInput);
         const userViewModel = getUserViewModel(createdUser)
         res.status(HTTP_STATUSES.CREATED_201).send(userViewModel);
     }
@@ -38,19 +38,19 @@ export class UsersController {
     async getUserById(req: Request, res: Response) {
         const stringId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(stringId);
-        const userDB: UserDBModel | null = await userService.findUserById(objectId as ObjectId);
+        const userDB: UserDBModel | null = await this.userService.findUserById(objectId as ObjectId);
         userDB ? res.send(getUserViewModel(userDB)) : res.send(HTTP_STATUSES.NOT_FOUND_404);
     }
 
     async deleteUserById(req: Request, res: Response) {
         const stringId = req.params.id;
         const objectId = new mongoose.Types.ObjectId(stringId);
-        const user = await userService.deleteUserById(objectId);
+        const user = await this.userService.deleteUserById(objectId);
         user ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
     }
 
     async deleteAllUsers(req: Request, res: Response) {
-        await userService.deleteAllUsers();
+        await this.userService.deleteAllUsers();
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
 }

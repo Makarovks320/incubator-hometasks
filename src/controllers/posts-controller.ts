@@ -3,15 +3,17 @@ import {postsQueryRepository} from "../repositories/query-repositories/posts-que
 import {InputPost, PostService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {commentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
-import {InputCommentWithPostId} from "../services/comment-service";
-import {commentService} from "../composition-root";
+import {CommentService, InputCommentWithPostId} from "../services/comment-service";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 
 export class PostsController {
-    constructor(protected postService: PostService) {}
+    constructor(
+        protected postService: PostService,
+        protected commentService: CommentService
+    ) {}
 
     async getPosts(req: Request, res: Response) {
         const queryParams: PostQueryParams = {
@@ -74,7 +76,7 @@ export class PostsController {
             content: req.body.content,
             postId: req.params.id
         }
-        const result: CommentDBModel | string = await commentService.createNewComment(comment, req.userId);
+        const result: CommentDBModel | string = await this.commentService.createNewComment(comment, req.userId);
         if (typeof result === 'string') {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
             return;
