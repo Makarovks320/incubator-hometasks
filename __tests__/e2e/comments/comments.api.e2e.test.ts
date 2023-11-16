@@ -14,7 +14,7 @@ import {
 import {PostViewModel} from "../../../src/models/post/post-view-model";
 import {CreatePostInputModel} from "../../../src/models/post/create-post-input-model";
 import {postsTestManager} from "../../utils/postsTestManager";
-import {UserCreateModel} from "../../../src/models/user/create-input-user-model";
+import {CreateUserInputModel} from "../../../src/models/user/create-input-user-model";
 import {UserViewModel} from "../../../src/models/user/user-view-model";
 import {usersTestManager} from "../../utils/usersTestManager";
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
@@ -66,7 +66,7 @@ describe('tests for comments', () => {
 
         //Создаем юзера1, чтобы оставлять комменты
 
-        const dataUser: UserCreateModel = {
+        const dataUser: CreateUserInputModel = {
             "login": "User01",
             "password": "Password01",
             "email": "email01@fishmail2dd.com",
@@ -83,7 +83,7 @@ describe('tests for comments', () => {
 
         //Создаем юзера2, чтобы оставлять комменты
 
-        const dataUser2: UserCreateModel = {
+        const dataUser2: CreateUserInputModel = {
             "login": "User02",
             "password": "Password02",
             "email": "email02@fishmail3dd.com",

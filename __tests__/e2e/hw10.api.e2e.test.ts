@@ -9,7 +9,7 @@ import {
     disconnectFromDataBases
 } from "../utils/test_utilities";
 import {RouterPaths} from "../../src/helpers/router-paths";
-import {UserCreateModel} from "../../src/models/user/create-input-user-model";
+import {CreateUserInputModel} from "../../src/models/user/create-input-user-model";
 import {UserViewModel} from "../../src/models/user/user-view-model";
 import {usersTestManager} from "../utils/usersTestManager";
 import {usersRepositoryInstance} from "../../src/repositories/users-repository";
@@ -27,7 +27,7 @@ describe('testing password recovery', () => {
 
     beforeAll(async () => {
         //Создаем юзера
-        const userData: UserCreateModel = {
+        const userData: CreateUserInputModel = {
             login: "login1",
             password: "password123",
             email: "email123@mail.com",

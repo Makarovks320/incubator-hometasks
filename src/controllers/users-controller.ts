@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {InputUser, UserService} from "../services/user-service";
+import {UserService} from "../services/user-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
@@ -10,13 +10,14 @@ import {getUserViewModel} from "../helpers/user-view-model-mapper";
 import {UsersQueryParams} from "../models/user/users-query-params";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 import {UserViewModel} from "../models/user/user-view-model";
+import {CreateUserInputModel} from "../models/user/create-input-user-model";
 
 export class UsersController {
     constructor(protected userService: UserService) {
     }
 
     async createNewUser(req: Request, res: Response) {
-        const newUserInput: InputUser = {
+        const newUserInput: CreateUserInputModel = {
             login: req.body.login,
             email: req.body.email,
             password: req.body.password

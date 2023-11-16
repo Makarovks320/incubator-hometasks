@@ -4,15 +4,11 @@ import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {UserDBModel} from "../models/user/user-db-model";
+import {CreateUserInputModel} from "../models/user/create-input-user-model";
 
-export type InputUser = {
-    login: string,
-    email: string,
-    password: string
-}
 export class UserService {
     constructor(protected usersRepository: UsersRepository) {}
-    async createUser(u: InputUser): Promise<UserDBModel> {
+    async createUser(u: CreateUserInputModel): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);
         const newUser = new UserDBModel (
