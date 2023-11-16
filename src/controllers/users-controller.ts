@@ -12,7 +12,8 @@ import {WithPagination} from "../models/common-types-aliases-&-generics/with-pag
 import {UserViewModel} from "../models/user/user-view-model";
 
 export class UsersController {
-    constructor(protected userService: UserService ) {}
+    constructor(protected userService: UserService) {
+    }
 
     async createNewUser(req: Request, res: Response) {
         const newUserInput: InputUser = {

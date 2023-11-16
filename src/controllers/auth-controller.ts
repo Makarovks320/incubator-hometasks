@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {UserService} from "../services/user-service";
-import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
+import {JwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {AuthService} from "../services/auth-service";
 import {SessionService} from "../services/session-service";
@@ -15,7 +15,8 @@ export class AuthController {
     constructor(
         protected authService: AuthService,
         protected userService: UserService,
-        protected sessionService: SessionService
+        protected sessionService: SessionService,
+        protected jwtService: JwtService
     ){}
     async loginUser(req: Request, res: Response) {
         const user = await this.userService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -27,8 +28,8 @@ export class AuthController {
             const deviceName: string = req.headers['user-agent'] || "deviceName undefined";
 
             // создаем токены
-            const accessToken: string = await jwtService.createAccessToken(user._id);
-            const refreshToken: string = await jwtService.createRefreshToken(user._id, deviceId);
+            const accessToken: string = await this.jwtService.createAccessToken(user._id);
+            const refreshToken: string = await this.jwtService.createRefreshToken(user._id, deviceId);
 
             // сохраняем текущую сессию:
             await this.sessionService.addSession(ip, deviceId, deviceName, refreshToken);
@@ -45,7 +46,7 @@ export class AuthController {
         //здесь надо убить текущую сессию, для этого
         // возьмем deviceId:
         const refreshToken: string = req.cookies.refreshToken;
-        const refreshTokenInfo: RefreshTokenInfoType | null = jwtService.getRefreshTokenInfo(refreshToken);
+        const refreshTokenInfo: RefreshTokenInfoType | null = this.jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
@@ -63,12 +64,12 @@ export class AuthController {
     async refreshToken(req: Request, res: Response) {
         // сначала из старого токена вытащим инфу о текущей сессии (понадобится deviceId):
         const currentRefreshToken: string = req.cookies.refreshToken;
-        const currentRTInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(currentRefreshToken);
+        const currentRTInfo: RefreshTokenInfoType | null = await this.jwtService.getRefreshTokenInfo(currentRefreshToken);
         const deviceId: string = currentRTInfo!.deviceId;
 
         // теперь создадим новую пару токенов:
-        const accessToken: string = await jwtService.createAccessToken(req.userId);
-        const newRefreshToken = await jwtService.createRefreshToken(req.userId, deviceId);
+        const accessToken: string = await this.jwtService.createAccessToken(req.userId);
+        const newRefreshToken = await this.jwtService.createRefreshToken(req.userId, deviceId);
 
         // Также может поменяться ip:
         const currentIp: IpType = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "IP undefined";

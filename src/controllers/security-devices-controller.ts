@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
+import {JwtService, RefreshTokenInfoType} from "../application/jwt-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {SessionService} from "../services/session-service";
 import {SessionDbModel} from "../models/session/session-model";
@@ -7,15 +7,18 @@ import {ObjectId} from "mongodb";
 import {getSessionViewModel} from "../helpers/session-view-model-mapper";
 
 export class SecurityDevicesController {
-    constructor(protected sessionService: SessionService) {
-    }
+    constructor(
+        protected sessionService: SessionService,
+        protected jwtService: JwtService
+    ) {}
+
     async getAllSessionsForUser(req: Request, res: Response) {
         const refreshToken = req.cookies?.refreshToken;
         if (!refreshToken) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
         }
-        const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
+        const refreshTokenInfo: RefreshTokenInfoType | null = await this.jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo || !refreshTokenInfo.userId) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
@@ -44,7 +47,7 @@ export class SecurityDevicesController {
             return;
         }
 
-        const refreshTokenInfo: RefreshTokenInfoType | null = jwtService.getRefreshTokenInfo(refreshToken);
+        const refreshTokenInfo: RefreshTokenInfoType | null = this.jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;
@@ -73,7 +76,7 @@ export class SecurityDevicesController {
         /*Удаляет все сессии кроме текущей*/
         // определим текущую сессию по девайсу:
         const refreshToken: string = req.cookies.refreshToken;
-        const refreshTokenInfo: RefreshTokenInfoType | null = jwtService.getRefreshTokenInfo(refreshToken);
+        const refreshTokenInfo: RefreshTokenInfoType | null = this.jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
             return;

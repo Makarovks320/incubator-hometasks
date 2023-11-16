@@ -15,13 +15,17 @@ import {BlogsController} from "./controllers/blogs-controller";
 import {SessionsRepository} from "./repositories/sessions-repository";
 import {SecurityDevicesController} from "./controllers/security-devices-controller";
 import {SessionService} from "./services/session-service";
+import {JwtService} from "./application/jwt-service";
+
+//common services
+export const jwtService = new JwtService;
 
 // users dependencies
 const usersRepository = new UsersRepository;
 const userService = new UserService(usersRepository);
 
 // auth dependencies
-const authService = new AuthService(usersRepository);
+const authService = new AuthService(usersRepository, jwtService);
 
 //comments dependencies
 const commentsRepository = new CommentsRepository;
@@ -37,13 +41,13 @@ const blogService = new BlogService(blogsRepository);
 
 //sessions deps
 const sessionsRepository = new SessionsRepository;
-const sessionService = new SessionService(sessionsRepository);
+const sessionService = new SessionService(sessionsRepository, jwtService);
 
 
 //controllers
 export const userController = new UsersController(userService);
-export const authController = new AuthController(authService, userService, sessionService)
+export const authController = new AuthController(authService, userService, sessionService, jwtService)
 export const commentController = new CommentsController(commentService, userService);
 export const postsController = new PostsController(postService, commentService);
 export const blogsController = new BlogsController(blogService);
-export const securityDevicesController = new SecurityDevicesController(sessionService);
+export const securityDevicesController = new SecurityDevicesController(sessionService, jwtService);

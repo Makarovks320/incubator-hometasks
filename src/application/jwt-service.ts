@@ -19,13 +19,15 @@ export type RefreshTokenInfoType = {
     exp: number
 }
 
-export const jwtService = {
+export class JwtService {
     async createAccessToken(userId: ObjectId) {
         return jwt.sign({userId}, secret, {expiresIn: '120s'});
-    },
+    }
+
     async createRefreshToken(userId: ObjectId, deviceId: string) {
         return jwt.sign({userId, deviceId}, refreshSecret, {expiresIn: '1200s'})
-    },
+    }
+
     async getUserIdByToken(token: string): Promise<ObjectId | null> {
         try {
             const result: any = await jwt.verify(token, secret);
@@ -36,7 +38,8 @@ export const jwtService = {
         } catch (e) {
             return null;
         }
-    },
+    }
+
     getRefreshTokenInfo(refreshToken: string): RefreshTokenInfoType | null {
         try {
             const result: any = jwt.verify(refreshToken, secret)
@@ -51,3 +54,4 @@ export const jwtService = {
         }
     }
 }
+export const jwtService = new JwtService;

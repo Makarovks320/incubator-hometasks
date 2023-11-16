@@ -1,14 +1,19 @@
 import {IpType, SessionDbModel} from "../models/session/session-model";
 import {SessionsRepository} from "../repositories/sessions-repository";
 import {ObjectId} from "mongodb";
-import {jwtService, RefreshTokenInfoType} from "../application/jwt-service";
+import {JwtService, RefreshTokenInfoType} from "../application/jwt-service";
 
 export class SessionService {
-    constructor(protected sessionsRepository: SessionsRepository) {}
+    constructor(
+        protected sessionsRepository: SessionsRepository,
+        protected jwtService: JwtService
+    ) {
+    }
+
     async addSession(ip: IpType, deviceId: string, deviceName: string, refreshToken: string)
         : Promise<SessionDbModel | null> {
         // достанем нужную для сессии инфу из Рефреш-токена:
-        const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
+        const refreshTokenInfo: RefreshTokenInfoType | null = await this.jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) return null;
         const refreshTokenIssuedAt: Date = new Date(refreshTokenInfo.iat);
         const refreshTokenExpiresAt: Date = new Date(refreshTokenInfo.exp);
@@ -39,7 +44,7 @@ export class SessionService {
 
     async updateSession(currentIp: IpType, deviceId: string, refreshToken: string, currentSession: SessionDbModel)
         : Promise<SessionDbModel | null> {
-        const refreshTokenInfo: RefreshTokenInfoType | null = await jwtService.getRefreshTokenInfo(refreshToken);
+        const refreshTokenInfo: RefreshTokenInfoType | null = await this.jwtService.getRefreshTokenInfo(refreshToken);
         if (!refreshTokenInfo) return null;
         const refreshTokenIssuedAt: Date = new Date(refreshTokenInfo.iat);
         const refreshTokenExpiresAt: Date = new Date(refreshTokenInfo.exp);

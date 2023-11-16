@@ -8,7 +8,6 @@ import {blogsTestManager} from "../../utils/blogsTestManager";
 import {
     authBasicHeader,
     clearDatabase,
-    connection_string,
     connectToDataBases, disconnectFromDataBases,
     generateString
 } from "../../utils/test_utilities";
@@ -22,7 +21,7 @@ import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {CommentViewModel} from "../../../src/models/comment/comment-view-model";
 import {CreateCommentInputModel} from "../../../src/models/comment/create-input-comment-model";
 import {commentsTestManager} from "../../utils/commentsTestManager";
-import {jwtService} from "../../../src/application/jwt-service";
+import {jwtService} from "../../../src/composition-root";
 import mongoose from "mongoose";
 
 jest.setTimeout(10000)
