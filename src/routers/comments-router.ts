@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {authMiddleware} from "../middlewares/auth-middleware";
+import {authMiddleware} from "../composition-root";
 import {commentContentValidation} from "../middlewares/comment-validations";
 import {inputValidator} from "../middlewares/input-validator";
 import {commentController} from "../composition-root";
@@ -7,7 +7,7 @@ import {commentController} from "../composition-root";
 export const commentsRouter = Router();
 
 commentsRouter.put('/:id', [
-    authMiddleware,
+    authMiddleware.checkBearerToken.bind(authMiddleware),
     commentContentValidation,
     inputValidator,
     commentController.updateComment.bind(commentController)
@@ -18,6 +18,6 @@ commentsRouter.get('/:id', [
 ]);
 
 commentsRouter.delete('/:id', [
-    authMiddleware,
+    authMiddleware.checkBearerToken.bind(authMiddleware),
     commentController.deleteCommentById.bind(commentController)
 ])

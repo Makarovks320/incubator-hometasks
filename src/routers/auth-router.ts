@@ -6,7 +6,7 @@ import {
     passwordAuthValidation
 } from "../middlewares/auth-validations";
 import {inputValidator} from "../middlewares/input-validator";
-import {authMiddleware, refreshTokenCheck} from "../middlewares/auth-middleware";
+import {authMiddleware} from "../composition-root";
 import {body} from "express-validator";
 import {checkEmailExists} from "../middlewares/check-email-exists";
 import {checkLoginExists} from "../middlewares/check-login-exists";
@@ -26,15 +26,15 @@ authRouter.post('/login', [
     authController.loginUser.bind(authController)
 ]);
 authRouter.post('/logout', [
-    refreshTokenCheck,
+    authMiddleware.refreshTokenCheck.bind(authMiddleware),
     authController.logoutUser.bind(authController)
 ])
 authRouter.post('/refresh-token', [
-    refreshTokenCheck,
+    authMiddleware.refreshTokenCheck.bind(authMiddleware),
     authController.refreshToken.bind(authController)
 ])
 authRouter.get('/me', [
-    authMiddleware,
+    authMiddleware.checkBearerToken.bind(authMiddleware),
     authController.getCurrentUserInfo.bind(authController)
 ]);
 authRouter.post('/registration', [

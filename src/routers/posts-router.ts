@@ -8,7 +8,7 @@ import {
 } from "../middlewares/posts-validations";
 import {inputValidator} from "../middlewares/input-validator";
 import {checkIdFromUri} from "../middlewares/check-id-from-uri";
-import {authMiddleware} from "../middlewares/auth-middleware";
+import {authMiddleware} from "../composition-root";
 import {commentContentValidation} from "../middlewares/comment-validations";
 import {param} from "express-validator";
 import {checkPostExists} from "../middlewares/check-post-exists";
@@ -61,7 +61,7 @@ postsRouter.get('/:id/comments', [
 ]);
 
 postsRouter.post('/:id/comments', [
-    authMiddleware,
+    authMiddleware.checkBearerToken.bind(authMiddleware),
     param('id').custom(checkPostExists).withMessage('post is not found'),
     idFromUrlExistingValidator,
     commentContentValidation,

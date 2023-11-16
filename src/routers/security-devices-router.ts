@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {securityDevicesController} from "../composition-root";
-import {refreshTokenCheck} from "../middlewares/auth-middleware";
+import {authMiddleware} from "../composition-root";
 
 export const securityDevicesRouter = Router();
 
@@ -9,12 +9,12 @@ securityDevicesRouter.get('/', [
 ]);
 
 securityDevicesRouter.delete('/:deviceId', [
-    refreshTokenCheck,
+    authMiddleware.refreshTokenCheck.bind(authMiddleware),
     securityDevicesController.deleteSessionByDeviceId.bind(securityDevicesController)
 ]);
 
 securityDevicesRouter.delete('/', [
-    refreshTokenCheck,
+    authMiddleware.refreshTokenCheck.bind(authMiddleware),
     securityDevicesController.deleteAllSessionsForUserExcludeCurrent.bind(securityDevicesController)
 ]);
 
