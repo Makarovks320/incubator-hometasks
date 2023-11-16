@@ -20,43 +20,47 @@ import {JwtService} from "./application/jwt-service";
 import {BlogsQueryRepository} from "./repositories/query-repositories/blogs-query-repository";
 import {CommentQueryRepository} from "./repositories/query-repositories/comment-query-repository";
 import {PostsQueryRepository} from "./repositories/query-repositories/posts-query-repository";
+import {UsersQueryRepository} from "./repositories/query-repositories/users-query-repository";
+import {RecoveryCodeValidator} from "./middlewares/is-recovery-code-correct";
 
-//common services
+// common services
 export const jwtService = new JwtService;
 
 // users dependencies
 const usersRepository = new UsersRepository;
+const usersQueryRepository = new UsersQueryRepository;
 const userService = new UserService(usersRepository);
 
 // auth dependencies
 const authService = new AuthService(usersRepository, jwtService);
 
-//comments dependencies
+// comments dependencies
 const commentsRepository = new CommentsRepository;
 const commentQueryRepository = new CommentQueryRepository;
 const commentService = new CommentService(commentsRepository, userService);
 
-//posts dependencies
+// posts dependencies
 export const postsRepository = new PostsRepository;
 const postsQueryRepository = new PostsQueryRepository;
 const postService = new PostService(postsRepository);
 
-//blogs deps
+// blogs deps
 export const blogsRepository = new BlogsRepository;
 const blogsQueryRepository = new BlogsQueryRepository;
 const blogService = new BlogService(blogsRepository);
 
-//sessions deps
+// sessions deps
 const sessionsRepository = new SessionsRepository;
 const sessionService = new SessionService(sessionsRepository, jwtService);
 
-//controllers
-export const userController = new UsersController(userService);
+// controllers
+export const userController = new UsersController(userService, usersQueryRepository);
 export const authController = new AuthController(authService, userService, sessionService, jwtService)
 export const commentController = new CommentsController(commentService, userService);
 export const postsController = new PostsController(postService, commentService, commentQueryRepository, postsQueryRepository);
 export const blogsController = new BlogsController(blogService, blogsQueryRepository, postsQueryRepository);
 export const securityDevicesController = new SecurityDevicesController(sessionService, jwtService);
 
-//middlewares
+// middlewares
 export const authMiddleware = new AuthMiddleware(userService, jwtService)
+export const recoveryCodeValidator = new RecoveryCodeValidator(usersQueryRepository);

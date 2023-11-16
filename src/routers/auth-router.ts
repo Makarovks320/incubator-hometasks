@@ -14,7 +14,7 @@ import {checkConfirmationData} from "../middlewares/check-confirmation-data";
 import {emailValidation, newPasswordValidation} from "../middlewares/users-validations";
 import {authController} from "../composition-root";
 import {rateLimitMiddleware} from "../middlewares/rate-limit-middleware";
-import {isRecoveryCodeCorrect} from "../middlewares/is-recovery-code-correct";
+import {recoveryCodeValidator} from "../composition-root";
 
 export const authRouter = Router();
 authRouter.use(rateLimitMiddleware);
@@ -67,7 +67,9 @@ authRouter.post('/new-password', [
     newPasswordValidation,
     inputValidator,
     body('recoveryCode').notEmpty().withMessage('should not be empty'),
-    body('recoveryCode').custom(isRecoveryCodeCorrect).withMessage('incorrect confirmation code'),
+    body('recoveryCode')
+        .custom(recoveryCodeValidator.isRecoveryCodeCorrect.bind(recoveryCodeValidator))
+        .withMessage('incorrect confirmation code'),
     inputValidator,
     authController.updatePassword.bind(authController)
 ]);

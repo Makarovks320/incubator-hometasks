@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {UserService} from "../services/user-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {usersQueryRepository} from "../repositories/query-repositories/users-query-repository";
+import {UsersQueryRepository} from "../repositories/query-repositories/users-query-repository";
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
 import {UserDBModel} from "../models/user/user-db-model";
@@ -13,7 +13,9 @@ import {UserViewModel} from "../models/user/user-view-model";
 import {CreateUserInputModel} from "../models/user/create-input-user-model";
 
 export class UsersController {
-    constructor(protected userService: UserService) {
+    constructor(
+        protected userService: UserService,
+        protected usersQueryRepository: UsersQueryRepository) {
     }
 
     async createNewUser(req: Request, res: Response) {
@@ -29,7 +31,7 @@ export class UsersController {
 
     async getUsers(req: Request, res: Response) {
         const queryParams: UsersQueryParams = getQueryParamsForUsers(req);
-        const usersFromRepo: WithPagination<UserDBModel> = await usersQueryRepository.getUsers(queryParams);
+        const usersFromRepo: WithPagination<UserDBModel> = await this.usersQueryRepository.getUsers(queryParams);
         const users: WithPagination<UserViewModel> = {
             ...usersFromRepo,
             items: usersFromRepo.items.map(u => getUserViewModel(u))

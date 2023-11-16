@@ -5,7 +5,7 @@ import {PostDBModel} from "../../models/post/post-db-model";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {UserDBModel, UserModel} from "../../models/user/user-db-model";
 
-export const usersQueryRepository = {
+export class UsersQueryRepository {
     async getUsers(queryParams: UsersQueryParams): Promise<WithPagination<UserDBModel>> {
         let filter: mongoose.FilterQuery<PostDBModel> = {};
         if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
@@ -40,7 +40,7 @@ export const usersQueryRepository = {
             totalCount: totalCount,
             items: users
         }
-    },
+    }
 
     async findUserByPassRecoveryCode(code: string): Promise<UserDBModel | null> {
         return UserModel.findOne({"passwordRecovery.passwordRecoveryCode": code});
