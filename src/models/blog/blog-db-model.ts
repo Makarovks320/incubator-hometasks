@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 
-export type BlogDBModel = {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    isMembership: boolean,
-    createdAt: string
+export class BlogDBModel {
+    constructor(
+        public id: string,
+        public name: string,
+        public description: string,
+        public websiteUrl: string,
+        public isMembership: boolean,
+        public createdAt: string
+    ) {
+    }
 }
 
 export const blogMongoSchema = new mongoose.Schema<BlogDBModel>({

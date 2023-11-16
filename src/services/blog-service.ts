@@ -1,6 +1,7 @@
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {BlogViewModel} from "../models/blog/blog-view-model";
 import {CreateBlogInputModel} from "../models/blog/create-input-blog-model";
+import {BlogDBModel} from "../models/blog/blog-db-model";
 
 export class BlogService {
     constructor(protected blogsRepository: BlogsRepository) {}
@@ -8,7 +9,7 @@ export class BlogService {
         return this.blogsRepository.findBlogById(id);
     }
     async createNewBlog(p: CreateBlogInputModel): Promise<BlogViewModel | string> {
-        const blog = {
+        const blog: BlogDBModel = {
             id: new Date().valueOf().toString(),
             ...p,
             isMembership: false,

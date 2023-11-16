@@ -1,5 +1,6 @@
 import {PostsRepository} from "../repositories/posts-repository";
 import {PostViewModel} from "../models/post/post-view-model";
+import {PostDBModel} from "../models/post/post-db-model";
 
 export type InputPost = {
     title: string,
@@ -16,7 +17,7 @@ export class PostService {
         return this.postsRepository.findPostById(id);
     }
     async createNewPost(p: InputPost): Promise<PostViewModel | string> {
-        const post = {
+        const post: PostDBModel = {
             id: new Date().valueOf().toString(),
             ...p,
             createdAt: (new Date()).toISOString()
