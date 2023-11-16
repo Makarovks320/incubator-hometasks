@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
+import {PostsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {InputPost, PostService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {CommentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
@@ -13,7 +13,8 @@ export class PostsController {
     constructor(
         protected postService: PostService,
         protected commentService: CommentService,
-        protected commentQueryRepository: CommentQueryRepository
+        protected commentQueryRepository: CommentQueryRepository,
+        protected postsQueryRepository: PostsQueryRepository
     ) {}
 
     async getPosts(req: Request, res: Response) {
@@ -23,7 +24,7 @@ export class PostsController {
             sortBy: req.query.sortBy as string || 'createdAt',
             sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
         }
-        const posts = await postsQueryRepository.getPosts(queryParams);
+        const posts = await this.postsQueryRepository.getPosts(queryParams);
         res.send(posts);
     }
 

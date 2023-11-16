@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {BlogsQueryRepository} from "../repositories/query-repositories/blogs-query-repository";
 import {BlogService} from "../services/blog-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
+import {PostsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {BlogQueryParams} from "../models/blog/blog-query-params-type";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {BlogViewModel} from "../models/blog/blog-view-model";
@@ -10,7 +10,8 @@ import {BlogViewModel} from "../models/blog/blog-view-model";
 export class BlogsController {
     constructor(
         protected blogService: BlogService,
-        protected blogsQueryRepository: BlogsQueryRepository
+        protected blogsQueryRepository: BlogsQueryRepository,
+        protected postsQueryRepository: PostsQueryRepository
     ) {}
 
     async getBlogs(req: Request, res: Response) {
@@ -48,7 +49,7 @@ export class BlogsController {
                 sortBy: req.query.sortBy as string || 'createdAt',
                 sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
             }
-            const posts = await postsQueryRepository.getPosts(queryParams, req.params.id);
+            const posts = await this.postsQueryRepository.getPosts(queryParams, req.params.id);
             res.send(posts);
         } else {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send();

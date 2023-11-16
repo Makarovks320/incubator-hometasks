@@ -4,7 +4,7 @@ import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-
 import {PostDBModel, PostModel} from "../../models/post/post-db-model";
 import mongoose from "mongoose";
 
-export const postsQueryRepository = {
+export class PostsQueryRepository {
     async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsWithPaginationModel> {
         const filter: mongoose.FilterQuery<PostDBModel> = {};
         if (blogId) {

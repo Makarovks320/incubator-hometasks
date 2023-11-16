@@ -19,6 +19,7 @@ import {AuthMiddleware} from "./middlewares/auth-middleware";
 import {JwtService} from "./application/jwt-service";
 import {BlogsQueryRepository} from "./repositories/query-repositories/blogs-query-repository";
 import {CommentQueryRepository} from "./repositories/query-repositories/comment-query-repository";
+import {PostsQueryRepository} from "./repositories/query-repositories/posts-query-repository";
 
 //common services
 export const jwtService = new JwtService;
@@ -36,7 +37,8 @@ const commentQueryRepository = new CommentQueryRepository;
 const commentService = new CommentService(commentsRepository, userService);
 
 //posts dependencies
-export const postsRepository = new PostsRepository();
+export const postsRepository = new PostsRepository;
+const postsQueryRepository = new PostsQueryRepository;
 const postService = new PostService(postsRepository);
 
 //blogs deps
@@ -52,8 +54,8 @@ const sessionService = new SessionService(sessionsRepository, jwtService);
 export const userController = new UsersController(userService);
 export const authController = new AuthController(authService, userService, sessionService, jwtService)
 export const commentController = new CommentsController(commentService, userService);
-export const postsController = new PostsController(postService, commentService, commentQueryRepository);
-export const blogsController = new BlogsController(blogService, blogsQueryRepository);
+export const postsController = new PostsController(postService, commentService, commentQueryRepository, postsQueryRepository);
+export const blogsController = new BlogsController(blogService, blogsQueryRepository, postsQueryRepository);
 export const securityDevicesController = new SecurityDevicesController(sessionService, jwtService);
 
 //middlewares
