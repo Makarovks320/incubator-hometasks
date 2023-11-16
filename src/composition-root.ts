@@ -22,9 +22,11 @@ import {CommentQueryRepository} from "./repositories/query-repositories/comment-
 import {PostsQueryRepository} from "./repositories/query-repositories/posts-query-repository";
 import {UsersQueryRepository} from "./repositories/query-repositories/users-query-repository";
 import {RecoveryCodeValidator} from "./middlewares/is-recovery-code-correct";
+import {EmailManager} from "./managers/emailManager";
 
 // common services
-export const jwtService = new JwtService;
+const jwtService = new JwtService;
+const emailManager = new EmailManager;
 
 // users dependencies
 const usersRepository = new UsersRepository;
@@ -32,7 +34,7 @@ const usersQueryRepository = new UsersQueryRepository;
 const userService = new UserService(usersRepository);
 
 // auth dependencies
-const authService = new AuthService(usersRepository, jwtService);
+const authService = new AuthService(usersRepository, jwtService, emailManager);
 
 // comments dependencies
 const commentsRepository = new CommentsRepository;

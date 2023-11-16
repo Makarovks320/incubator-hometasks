@@ -3,7 +3,7 @@ import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {UsersRepository} from "../repositories/users-repository";
-import {emailManager} from "../managers/emailManager";
+import {EmailManager} from "../managers/emailManager";
 import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
 import {JwtService} from "../application/jwt-service";
 
@@ -11,7 +11,9 @@ import {JwtService} from "../application/jwt-service";
 export class AuthService {
     constructor(
         protected usersRepository: UsersRepository,
-        protected jwtService: JwtService) {
+        protected jwtService: JwtService,
+        protected emailManager: EmailManager
+    ) {
     }
 
     async createUser(login: string, email: string, password: string): Promise<UserDBModel | null> {
@@ -37,7 +39,7 @@ export class AuthService {
             });
         const createResult = await this.usersRepository.createUser(user);
         try {
-            await emailManager.sendConformationCode(email, user.emailConfirmation.confirmationCode);
+            await this.emailManager.sendConformationCode(email, user.emailConfirmation.confirmationCode);
         } catch (e) {
             console.log(e);
             await this.usersRepository.deleteUserById(user._id);
@@ -65,7 +67,7 @@ export class AuthService {
             isConfirmed: false
         }
         await this.usersRepository.updateConfirmationCode(user._id, emailConfirmation);
-        await emailManager.sendNewConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
+        await this.emailManager.sendNewConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
         return true; //todo: как я могу уверенно вернуть true, если я не могу контролировать emailManager?
 
     }
@@ -82,7 +84,7 @@ export class AuthService {
         await this.usersRepository.addPassRecoveryCode(userDB._id, passwordRecoveryCode);
 
         try {
-            await emailManager.sendPasswordRecoveryMessage(userDB.accountData.email, passwordRecoveryCode);
+            await this.emailManager.sendPasswordRecoveryMessage(userDB.accountData.email, passwordRecoveryCode);
             return true;
         } catch (e) {
             console.log(e)

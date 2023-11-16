@@ -1,7 +1,7 @@
 import {emailAdapter} from "../adapters/email-adapter";
 
 
-export const emailManager = {
+export class EmailManager {
     async sendConformationCode(email: string, code: string): Promise<void> {
         const message = ` <h1>Thank for your registration</h1>
             <p>To finish registration please follow the link below:
@@ -9,7 +9,7 @@ export const emailManager = {
             </p>
             Код: ${code}`;
         await emailAdapter.sendEmail(email, 'confirmarion', message)
-    },
+    }
     async sendNewConformationCode(email: string, code: string): Promise<void> {
         const message = ' <h1>New confirmarion code</h1>\n' +
             ' <p>To finish registration please follow the link below:\n' +
@@ -17,7 +17,7 @@ export const emailManager = {
             ' </p>\n' +
             `Код: ${code}`;
         await emailAdapter.sendEmail(email, 'confirmarion', message)
-    },
+    }
     async sendPasswordRecoveryMessage(email: string, code: string) {
         const message = `<h1>Password recovery</h1>
         <p>To finish password recovery please follow the link below:
