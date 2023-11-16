@@ -17,7 +17,7 @@ type CommentsOutput = {
     items: CommentViewModel[]
 }
 
-export const commentQueryRepository = {
+export class CommentQueryRepository {
     async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<CommentsOutput> {
 
         const sort: Record<string, -1 | 1> = {};

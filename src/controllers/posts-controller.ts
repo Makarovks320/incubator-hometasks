@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {postsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {InputPost, PostService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {commentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
+import {CommentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
 import {CommentService, InputCommentWithPostId} from "../services/comment-service";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
@@ -12,7 +12,8 @@ import {CommentDBModel} from "../models/comment/comment-db-model";
 export class PostsController {
     constructor(
         protected postService: PostService,
-        protected commentService: CommentService
+        protected commentService: CommentService,
+        protected commentQueryRepository: CommentQueryRepository
     ) {}
 
     async getPosts(req: Request, res: Response) {
@@ -67,7 +68,7 @@ export class PostsController {
             sortBy: req.query.sortBy as string || 'createdAt',
             sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
         }
-        const comments = await commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
+        const comments = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
         res.send(comments);
     }
 
