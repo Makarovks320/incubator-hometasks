@@ -15,15 +15,16 @@ export class PostsController {
         protected commentService: CommentService,
         protected commentQueryRepository: CommentQueryRepository,
         protected postsQueryRepository: PostsQueryRepository
-    ) {}
+    ) {
+    }
 
     async getPosts(req: Request, res: Response) {
-        const queryParams: PostQueryParams = {
-            pageNumber: parseInt(req.query.pageNumber as string) || 1,
-            pageSize: parseInt(req.query.pageSize as string) || 10,
-            sortBy: req.query.sortBy as string || 'createdAt',
-            sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-        }
+        const queryParams = new PostQueryParams(
+            parseInt(req.query.pageNumber as string) || 1,
+            parseInt(req.query.pageSize as string) || 10,
+            req.query.sortBy as string || 'createdAt',
+            req.query.sortDirection === 'asc' ? 'asc' : 'desc'
+        )
         const posts = await this.postsQueryRepository.getPosts(queryParams);
         res.send(posts);
     }
@@ -63,12 +64,12 @@ export class PostsController {
     }
 
     async getCommentsForPost(req: Request, res: Response) {
-        const queryParams: PostQueryParams = {
-            pageNumber: parseInt(req.query.pageNumber as string) || 1,
-            pageSize: parseInt(req.query.pageSize as string) || 10,
-            sortBy: req.query.sortBy as string || 'createdAt',
-            sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-        }
+        const queryParams = new PostQueryParams(
+            parseInt(req.query.pageNumber as string) || 1,
+            parseInt(req.query.pageSize as string) || 10,
+            req.query.sortBy as string || 'createdAt',
+            req.query.sortDirection === 'asc' ? 'asc' : 'desc'
+        )
         const comments = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
         res.send(comments);
     }
@@ -84,10 +85,10 @@ export class PostsController {
             return;
         }
         const createdComment: CommentViewModel = {
-                id: result.id,
-                content: result.content,
-                commentatorInfo: result.commentatorInfo,
-                createdAt: result.createdAt
+            id: result.id,
+            content: result.content,
+            commentatorInfo: result.commentatorInfo,
+            createdAt: result.createdAt
         }
         res.status(HTTP_STATUSES.CREATED_201).send(createdComment);
     }

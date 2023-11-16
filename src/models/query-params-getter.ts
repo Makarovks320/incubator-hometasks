@@ -2,12 +2,12 @@ import {Request} from "express";
 import {UsersQueryParams} from "./user/users-query-params";
 
 export function getQueryParamsForUsers(req: Request): UsersQueryParams {
-    return {
-        searchLoginTerm: req.query.searchLoginTerm as string || null,
-        searchEmailTerm: req.query.searchEmailTerm as string || null,
-        pageNumber: parseInt(req.query.pageNumber as string) || 1,
-        pageSize: parseInt(req.query.pageSize as string) || 10,
-        sortBy: req.query.sortBy as string || 'createdAt',
-        sortDirection: req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-    }
+    return new UsersQueryParams (
+        parseInt(req.query.pageNumber as string) || 1,
+        parseInt(req.query.pageSize as string) || 10,
+        req.query.sortBy as string || 'createdAt',
+        req.query.sortDirection === 'asc' ? 'asc' : 'desc',
+        req.query.searchLoginTerm as string || null,
+        req.query.searchEmailTerm as string || null
+    )
 }

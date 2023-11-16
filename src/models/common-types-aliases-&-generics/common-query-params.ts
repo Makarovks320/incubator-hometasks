@@ -1,6 +1,9 @@
-export type CommonQueryParams = {
-    pageNumber: number,
-    pageSize: number,
-    sortBy: string,
-    sortDirection: 'asc' | 'desc'
+export class CommonQueryParams {
+    constructor (
+        public pageNumber: number,
+        public pageSize: number,
+        public sortBy: string,
+        public sortDirection: 'asc' | 'desc'
+    ) {
+    }
 }
