@@ -1,8 +1,8 @@
 import {CustomValidator} from "express-validator";
-import {usersRepositoryInstance} from "../repositories/users-repository";
+import {usersRepository} from "../composition-root";
 
 export const checkLoginExists: CustomValidator = async (value, { req}) => {
-    const user = await usersRepositoryInstance.findUserByLoginOrEmail(value);
+    const user = await usersRepository.findUserByLoginOrEmail(value);
     if (user) {
         throw new Error('Incorrect user login: login already exists');
     }

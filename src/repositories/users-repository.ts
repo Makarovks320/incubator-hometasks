@@ -58,4 +58,3 @@ export class UsersRepository {
     }
 }
 
-export const usersRepositoryInstance = new UsersRepository();

@@ -31,7 +31,7 @@ const emailAdapter = new EmailAdapter;
 const emailManager = new EmailManager(emailAdapter);
 
 // users dependencies
-const usersRepository = new UsersRepository;
+export const usersRepository = new UsersRepository;
 const usersQueryRepository = new UsersQueryRepository;
 const userService = new UserService(usersRepository);
 
