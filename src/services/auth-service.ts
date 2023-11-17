@@ -38,10 +38,8 @@ export class AuthService {
                 active: false
             });
         const createResult = await this.usersRepository.createUser(user);
-        try {
-            await this.emailManager.sendConformationCode(email, user.emailConfirmation.confirmationCode);
-        } catch (e) {
-            console.log(e);
+        const sendEmailResult = await this.emailManager.sendConformationCode(email, user.emailConfirmation.confirmationCode);
+        if (!sendEmailResult) {
             await this.usersRepository.deleteUserById(user._id);
             return null;
         }
@@ -67,8 +65,8 @@ export class AuthService {
             isConfirmed: false
         }
         await this.usersRepository.updateConfirmationCode(user._id, emailConfirmation);
-        await this.emailManager.sendNewConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
-        return true; //todo: как я могу уверенно вернуть true, если я не могу контролировать emailManager?
+        const sendEmailResult = await this.emailManager.sendNewConformationCode(user.accountData.email, emailConfirmation.confirmationCode)
+        return sendEmailResult; //todo: как я могу уверенно вернуть true, если я не могу контролировать emailManager?
 
     }
 
@@ -83,14 +81,11 @@ export class AuthService {
         const passwordRecoveryCode = await this.jwtService.createAccessToken(userDB._id);
         await this.usersRepository.addPassRecoveryCode(userDB._id, passwordRecoveryCode);
 
-        try {
-            await this.emailManager.sendPasswordRecoveryMessage(userDB.accountData.email, passwordRecoveryCode);
-            return true;
-        } catch (e) {
-            console.log(e)
+        const sendEmailResult = await this.emailManager.sendPasswordRecoveryMessage(userDB.accountData.email, passwordRecoveryCode);
+        if (!sendEmailResult) {
             return false;
         }
-
+        return true;
     }
 
     async updatePassword(newPassword: string, userId: ObjectId): Promise<boolean> {

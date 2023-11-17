@@ -12,7 +12,13 @@ import {CreateUserInputModel} from "../../src/models/user/create-input-user-mode
 import {UserViewModel} from "../../src/models/user/user-view-model";
 import {usersTestManager} from "../utils/usersTestManager";
 import {PasswordRecoveryType, UserDBModel, UserModel} from "../../src/models/user/user-db-model";
-import {authService, jwtService, usersRepository} from "../../src/composition-root";
+import {jwtService, usersRepository} from "../../src/composition-root";
+
+const emailAdapter = {
+    async sendEmail(email: string, subject: string, message: string): Promise<boolean> {
+        return true;
+    }
+}
 
 describe('testing password recovery', () => {
 
@@ -21,6 +27,16 @@ describe('testing password recovery', () => {
     beforeAll(clearDatabase);
 
     afterAll(disconnectFromDataBases);
+
+    afterAll(() => {
+        // restore the spy created with spyOn
+        jest.restoreAllMocks();
+    });
+
+    // const isPlaying = video.play();
+    //
+    // expect(spy).toHaveBeenCalled();
+    // expect(isPlaying).toBe(true);
 
     // изначальные credentials
     const email: string = "email123@mail.com";
@@ -61,6 +77,11 @@ describe('testing password recovery', () => {
     });
 
     it('should send email with correct recovery code', async () => {
+        //todo: Как правильно замокать?
+        //@ts-ignore
+        const spyForSendEmail = jest.spyOn(emailAdapter, 'sendEmail');
+        const isPlaying = await emailAdapter.sendEmail('a', 'b', 'c');
+
         if (!user) throw new Error('test cannot be performed.');
         const userDB: UserDBModel | null = await usersRepository.findUserByLoginOrEmail(user.email);
         if (!userDB) throw new Error('test cannot be performed.');
@@ -72,7 +93,10 @@ describe('testing password recovery', () => {
         await request(app)
             .post(`${RouterPaths.auth}/password-recovery`)
             .send(data)
-            .expect(HTTP_STATUSES.NO_CONTENT_204)
+            .expect(HTTP_STATUSES.NO_CONTENT_204);
+
+        expect(spyForSendEmail).toHaveBeenCalled();
+        expect(isPlaying).toBe(true);
 
         // Response получен, теперь проверим, что код сохранился верный.
         const userWithCreatedPasswordRecoveryCode: UserDBModel | null = await UserModel.findOne({'accountData.email': data.email})
@@ -122,7 +146,7 @@ describe('testing password recovery', () => {
             ]});
     });
 
-    
+
     it('should confirm password recovery; status 204;', async () => {
         if (!passwordRecovery) throw new Error('test cannot be performed.');
 
@@ -165,4 +189,3 @@ describe('testing password recovery', () => {
 
 // todo:
 // замокать сервис почты (в джесте есть механизм Мокания данных)
-// authService.sendEmailWithRecoveryPasswordCode

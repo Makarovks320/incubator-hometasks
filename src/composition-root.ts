@@ -27,7 +27,7 @@ import {EmailAdapter} from "./adapters/email-adapter";
 
 // common services
 export const jwtService = new JwtService;
-const emailAdapter = new EmailAdapter;
+export const emailAdapter = new EmailAdapter;
 const emailManager = new EmailManager(emailAdapter);
 
 // users dependencies
