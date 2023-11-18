@@ -2,13 +2,14 @@ import {Request, Response} from "express";
 import {PostsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {InputPost, PostService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {CommentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
+import {CommentQueryRepository, CommentsOutput} from "../repositories/query-repositories/comment-query-repository";
 import {CommentService, InputCommentWithPostId} from "../services/comment-service";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
+import {ObjectId} from "mongodb";
 
 export class PostsController {
     constructor(
@@ -71,8 +72,11 @@ export class PostsController {
             req.query.sortBy as string || 'createdAt',
             req.query.sortDirection === 'asc' ? 'asc' : 'desc'
         )
-        const comments = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
-        res.send(comments);
+        const foundComments: CommentsOutput = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
+        //todo: find likes for comments
+        const foundCommentsIds: ObjectId[] = foundComments.items.map(c => c._id);
+
+        res.send(foundComments);
     }
 
     async createCommentToPost(req: Request, res: Response) {

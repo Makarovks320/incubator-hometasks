@@ -21,7 +21,7 @@ export const commentsTestManager = {
 
         let createdComment: CommentViewModel | null = null;
 
-        if(expectedStatusCode === HTTP_STATUSES.CREATED_201) {
+        if (expectedStatusCode === HTTP_STATUSES.CREATED_201) {
 
             createdComment = response.body;
 
@@ -32,7 +32,12 @@ export const commentsTestManager = {
                     userId: expect.any(String),
                     userLogin: expect.any(String)
                 },
-                createdAt: expect.any(String)
+                createdAt: expect.any(String),
+                likesInfo: {
+                    dislikesCount: 0,
+                    likesCount: 0,
+                    myStatus: "None",
+                },
             })
 
         }

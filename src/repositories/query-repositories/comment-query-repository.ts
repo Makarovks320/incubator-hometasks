@@ -1,5 +1,4 @@
-import {DEFAULT_MONGOOSE_PROJECTION, WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
-import {CommentViewModel} from "../../models/comment/comment-view-model";
+import {WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
 import {CommentDBModel, CommentModel} from "../../models/comment/comment-db-model";
 type commentQueryParams = {
     pageNumber: number,
@@ -9,7 +8,7 @@ type commentQueryParams = {
 }
 export const COMMENT_PROJECTION = {...WITHOUT_v_MONGOOSE_PROJECTION, postId: false}
 
-type CommentsOutput = {
+export type CommentsOutput = {
     pagesCount: number,
     page: number,
     pageSize: number,
@@ -24,7 +23,7 @@ export class CommentQueryRepository {
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const res = await CommentModel.find({postId})
+        const foundComments = await CommentModel.find({postId})
             .select(COMMENT_PROJECTION)
             .lean()
             .sort(sort)
@@ -37,7 +36,7 @@ export class CommentQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount: totalCount,
-            items: res
+            items: foundComments
         }
     }
 }

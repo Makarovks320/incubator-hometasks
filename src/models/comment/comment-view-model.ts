@@ -7,5 +7,11 @@ export type CommentViewModel = {
         userId: ObjectId,
         userLogin: string
     },
-    createdAt: string
+    createdAt: string,
+    likesInfo: LikesInfo
+}
+export type LikesInfo = {
+    likesCount: number,
+        dislikesCount: number,
+        myStatus: "None" | "Like" | "Dislike"
 }

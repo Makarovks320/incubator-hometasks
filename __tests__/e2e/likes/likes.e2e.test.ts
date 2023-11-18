@@ -119,7 +119,7 @@ describe('testing likes', () => {
             .get(`${RouterPaths.posts}/${post.id}/comments`)
             .expect(HTTP_STATUSES.OK_200, {
                 pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                    id: comment.id,
+                    _id: comment.id,
                     content: data.content,
                     commentatorInfo: comment.commentatorInfo,
                     createdAt: comment.createdAt,
