@@ -3,6 +3,7 @@ import {COMMENT_PROJECTION} from "./query-repositories/comment-query-repository"
 import {CommentDBModel, CommentModel} from "../models/comment/comment-db-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {MongooseError} from "mongoose";
+import {ObjectId} from "mongodb";
 
 export class CommentsRepository {
     async createNewComment(comment: CommentDBModel): Promise<CommentDBModel | string> {
@@ -16,25 +17,25 @@ export class CommentsRepository {
         return comment;
     }
 
-    async updateComment(commentId: string, comment: CommentDBModel): Promise<boolean> {
-            const result = await CommentModel.updateOne({id: commentId}, comment);
+    async updateComment(commentId: ObjectId, comment: CommentDBModel): Promise<boolean> {
+            const result = await CommentModel.updateOne({_id: commentId}, comment);
             return result.modifiedCount === 1;
     }
 
-    async getCommentById(id: string): Promise<CommentViewModel | null> {
-        return CommentModel.findOne({id})
+    async getCommentById(_id: ObjectId): Promise<CommentDBModel | null> {
+        return CommentModel.findOne({_id})
             .select(COMMENT_PROJECTION)
             .lean();
     }
 
-    async getCommentByIdWithPostId(id: string): Promise<CommentDBModel | null> {
-        return CommentModel.findOne({id})
+    async getCommentByIdWithPostId(_id: ObjectId): Promise<CommentDBModel | null> {
+        return CommentModel.findOne({_id})
             .select(DEFAULT_MONGOOSE_PROJECTION)
             .lean();
     }
 
-    async deleteCommentById(id: string): Promise<boolean> {
-        const result = await CommentModel.deleteOne({id});
+    async deleteCommentById(_id: ObjectId): Promise<boolean> {
+        const result = await CommentModel.deleteOne({_id});
         return result.deletedCount === 1;
     }
 

@@ -4,6 +4,7 @@ import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {UserService} from "./user-service";
+import mongoose from "mongoose";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -26,7 +27,7 @@ export class CommentService {
         if (!user) throw new Error('user is not found');
 
         const comment: CommentDBModel = {
-            id: new Date().valueOf().toString(),
+            _id: new ObjectId(),
             postId: c.postId,
             content: c.content,
             commentatorInfo: {
@@ -38,32 +39,35 @@ export class CommentService {
         return await this.commentsRepository.createNewComment(comment);
     }
 
-    async updateComment(c: InputComment, commentId: string): Promise<boolean> {
+    async updateComment(comment: InputComment, commentId: string): Promise<boolean> {
         //запросим существующий коммент, чтобы получить postId:
-        const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentId);
+        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(commentId);
+        const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
         if (!currentComment) {
             throw new Error('comment is not found');
             return false;
         }
 
         const updatedComment: CommentDBModel = {
-            id: commentId,
+            _id: commentObjectId,
             postId: currentComment!.postId,
-            content: c.content,
+            content: comment.content,
             commentatorInfo: currentComment.commentatorInfo,
             createdAt: currentComment.createdAt
         }
-        const isUpdated = await this.commentsRepository.updateComment(commentId, updatedComment);
+        const isUpdated = await this.commentsRepository.updateComment(commentObjectId, updatedComment);
 
         return !!isUpdated;
     }
 
-    async getCommentById(id: string): Promise<CommentViewModel | null> {
-        return await this.commentsRepository.getCommentById(id);
+    async getCommentById(id: string): Promise<CommentDBModel | null> {
+        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
+        return await this.commentsRepository.getCommentById(commentObjectId);
     }
 
     async deleteCommentById(id: string): Promise<boolean> {
-        return this.commentsRepository.deleteCommentById(id);
+        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
+        return this.commentsRepository.deleteCommentById(commentObjectId);
     }
 
     async deleteAllComments(): Promise<void> {

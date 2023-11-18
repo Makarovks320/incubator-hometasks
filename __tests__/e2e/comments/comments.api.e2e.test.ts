@@ -173,7 +173,7 @@ describe('tests for comments', () => {
             .get(`${RouterPaths.posts}/${post.id}/comments`)
             .expect(HTTP_STATUSES.OK_200, {
                 pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                    id: comment_1.id,
+                    _id: comment_1.id,
                     content: data.content,
                     commentatorInfo: comment_1.commentatorInfo,
                     createdAt: comment_1.createdAt
@@ -204,12 +204,12 @@ describe('tests for comments', () => {
             .expect(HTTP_STATUSES.OK_200, {
                 pagesCount: 1, page: 1, pageSize: 10, totalCount: 2, items: [
                     {
-                        id: comment_2.id,
+                        _id: comment_2.id,
                         content: data.content,
                         commentatorInfo: comment_2.commentatorInfo,
                         createdAt: comment_2.createdAt
                     }, {
-                        id: comment_1.id,
+                        _id: comment_1.id,
                         content: comment_1.content,
                         commentatorInfo: comment_1.commentatorInfo,
                         createdAt: comment_1.createdAt
@@ -231,7 +231,7 @@ describe('tests for comments', () => {
         await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
             .expect(HTTP_STATUSES.OK_200, {
-                id: comment_1.id,
+                _id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
                 createdAt: comment_1.createdAt
@@ -261,7 +261,7 @@ describe('tests for comments', () => {
         await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
             .expect(HTTP_STATUSES.OK_200, {
-                id: comment_1.id,
+                _id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
                 createdAt: comment_1.createdAt
@@ -283,7 +283,7 @@ describe('tests for comments', () => {
         await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
             .expect(HTTP_STATUSES.OK_200, {
-                id: comment_1.id,
+                _id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
                 createdAt: comment_1.createdAt
@@ -305,7 +305,7 @@ describe('tests for comments', () => {
         await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
             .expect(HTTP_STATUSES.OK_200, {
-                id: comment_1.id,
+                _id: comment_1.id,
                 content: data.content,
                 commentatorInfo: comment_1.commentatorInfo,
                 createdAt: comment_1.createdAt
@@ -320,20 +320,20 @@ describe('tests for comments', () => {
         }
 
         await request(app)
-            .put(`${RouterPaths.comments}/-223232323`)
+            .put(`${RouterPaths.comments}/111111111111`)
             .set(authJWTHeader1)
             .send(data)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
 
         await request(app)
-            .delete(`${RouterPaths.comments}/-223232323`)
+            .delete(`${RouterPaths.comments}/111111111111`)
             .set(authJWTHeader1)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
 
         await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
             .expect(HTTP_STATUSES.OK_200, {
-                id: comment_1.id,
+                _id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
                 createdAt: comment_1.createdAt
@@ -350,7 +350,7 @@ describe('tests for comments', () => {
         await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
             .expect(HTTP_STATUSES.OK_200, {
-                id: comment_1.id,
+                _id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
                 createdAt: comment_1.createdAt
@@ -373,7 +373,7 @@ describe('tests for comments', () => {
             .get(`${RouterPaths.posts}/${post.id}/comments`)
             .expect(HTTP_STATUSES.OK_200, {
                 pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                    id: comment_2.id,
+                    _id: comment_2.id,
                     content: comment_2.content,
                     commentatorInfo: comment_2.commentatorInfo,
                     createdAt: comment_2.createdAt

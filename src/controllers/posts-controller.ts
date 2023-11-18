@@ -8,6 +8,7 @@ import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
+import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 
 export class PostsController {
     constructor(
@@ -84,12 +85,7 @@ export class PostsController {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
             return;
         }
-        const createdComment: CommentViewModel = {
-            id: result.id,
-            content: result.content,
-            commentatorInfo: result.commentatorInfo,
-            createdAt: result.createdAt
-        }
+        const createdComment: CommentViewModel = getCommentViewModel(result);
         res.status(HTTP_STATUSES.CREATED_201).send(createdComment);
     }
 }
