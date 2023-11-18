@@ -41,7 +41,7 @@ const authService = new AuthService(usersRepository, jwtService, emailManager);
 // comments dependencies
 const commentsRepository = new CommentsRepository;
 const commentQueryRepository = new CommentQueryRepository;
-const commentService = new CommentService(commentsRepository, userService);
+export const commentService = new CommentService(commentsRepository, userService);
 
 // posts dependencies
 export const postsRepository = new PostsRepository;

@@ -23,6 +23,7 @@ import {CreateCommentInputModel} from "../../../src/models/comment/create-input-
 import {commentsTestManager} from "../../utils/commentsTestManager";
 import {jwtService} from "../../../src/composition-root";
 import mongoose from "mongoose";
+import any = jasmine.any;
 
 jest.setTimeout(10000)
 
@@ -109,7 +110,7 @@ describe('tests for comments', () => {
 
     it('should return 404 for not existing comment', async () => {
         await request(app)
-            .get(`${RouterPaths.comments}/-22222222220`)
+            .get(`${RouterPaths.comments}/111111111111`)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
     })
 
@@ -169,16 +170,19 @@ describe('tests for comments', () => {
 
         if (!comment_1) throw new Error('test cannot be performed.');
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.posts}/${post.id}/comments`)
-            .expect(HTTP_STATUSES.OK_200, {
-                pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                    _id: comment_1.id,
-                    content: data.content,
-                    commentatorInfo: comment_1.commentatorInfo,
-                    createdAt: comment_1.createdAt
-                }]
-            })
+            .expect(HTTP_STATUSES.OK_200);
+        const body = response.body;
+        expect(body).toEqual({
+            pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
+                id: comment_1.id,
+                content: data.content,
+                commentatorInfo: comment_1.commentatorInfo,
+                createdAt: comment_1.createdAt,
+                likesInfo: expect.any(Object)
+            }]
+        })
     })
 
 
@@ -199,23 +203,27 @@ describe('tests for comments', () => {
 
         if (!comment_1 || !comment_2) throw new Error('test cannot be performed.');
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.posts}/${post.id}/comments`)
-            .expect(HTTP_STATUSES.OK_200, {
-                pagesCount: 1, page: 1, pageSize: 10, totalCount: 2, items: [
-                    {
-                        _id: comment_2.id,
-                        content: data.content,
-                        commentatorInfo: comment_2.commentatorInfo,
-                        createdAt: comment_2.createdAt
-                    }, {
-                        _id: comment_1.id,
-                        content: comment_1.content,
-                        commentatorInfo: comment_1.commentatorInfo,
-                        createdAt: comment_1.createdAt
-                    }]
-            })
-    })
+            .expect(HTTP_STATUSES.OK_200);
+
+        expect(response.body).toEqual({
+            pagesCount: 1, page: 1, pageSize: 10, totalCount: 2, items: [
+                {
+                    id: comment_2.id,
+                    content: data.content,
+                    commentatorInfo: comment_2.commentatorInfo,
+                    createdAt: comment_2.createdAt,
+                    likesInfo: expect.any(Object)
+                }, {
+                    id: comment_1.id,
+                    content: comment_1.content,
+                    commentatorInfo: comment_1.commentatorInfo,
+                    createdAt: comment_1.createdAt,
+                    likesInfo: expect.any(Object)
+                }]
+        })
+    });
 
     it('should not update comment 1 without AUTH', async () => {
         if (!comment_1) throw new Error('test cannot be performed.');
@@ -228,15 +236,18 @@ describe('tests for comments', () => {
             .send(data)
             .expect(HTTP_STATUSES.UNAUTHORIZED_401)
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
-            .expect(HTTP_STATUSES.OK_200, {
-                _id: comment_1.id,
-                content: comment_1.content,
-                commentatorInfo: comment_1.commentatorInfo,
-                createdAt: comment_1.createdAt
-            })
-    })
+            .expect(HTTP_STATUSES.OK_200);
+
+        expect(response.body).toEqual({
+            id: comment_1.id,
+            content: comment_1.content,
+            commentatorInfo: comment_1.commentatorInfo,
+            createdAt: comment_1.createdAt,
+            likesInfo: expect.any(Object)
+        })
+    });
 
     it('should not update comment 1 with AUTH but incorrect body', async () => {
         if (!comment_1) throw new Error('test cannot be performed.');
@@ -258,13 +269,15 @@ describe('tests for comments', () => {
             })
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
-            .expect(HTTP_STATUSES.OK_200, {
-                _id: comment_1.id,
+            .expect(HTTP_STATUSES.OK_200)
+            expect(response.body).toEqual({
+                id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
-                createdAt: comment_1.createdAt
+                createdAt: comment_1.createdAt,
+                likesInfo: expect.any(Object)
             })
     })
 
@@ -280,13 +293,15 @@ describe('tests for comments', () => {
             .send(data)
             .expect(HTTP_STATUSES.FORBIDDEN_403)
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
-            .expect(HTTP_STATUSES.OK_200, {
-                _id: comment_1.id,
+            .expect(HTTP_STATUSES.OK_200);
+        expect(response.body).toEqual({
+                id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
-                createdAt: comment_1.createdAt
+                createdAt: comment_1.createdAt,
+                likesInfo: expect.any(Object)
             })
     })
 
@@ -302,13 +317,15 @@ describe('tests for comments', () => {
             .send(data)
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
-            .expect(HTTP_STATUSES.OK_200, {
-                _id: comment_1.id,
+            .expect(HTTP_STATUSES.OK_200);
+        expect(response.body).toEqual({
+                id: comment_1.id,
                 content: data.content,
                 commentatorInfo: comment_1.commentatorInfo,
-                createdAt: comment_1.createdAt
+                createdAt: comment_1.createdAt,
+                likesInfo: expect.any(Object)
             })
         comment_1.content = data.content
     })
@@ -330,13 +347,15 @@ describe('tests for comments', () => {
             .set(authJWTHeader1)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
-            .expect(HTTP_STATUSES.OK_200, {
-                _id: comment_1.id,
+            .expect(HTTP_STATUSES.OK_200);
+        expect(response.body).toEqual({
+                id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
-                createdAt: comment_1.createdAt
+                createdAt: comment_1.createdAt,
+                likesInfo: expect.any(Object)
             })
     })
 
@@ -347,13 +366,15 @@ describe('tests for comments', () => {
             .set(authJWTHeader2)
             .expect(HTTP_STATUSES.FORBIDDEN_403)
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.comments}/${comment_1.id}`)
-            .expect(HTTP_STATUSES.OK_200, {
-                _id: comment_1.id,
+            .expect(HTTP_STATUSES.OK_200);
+        expect(response.body).toEqual({
+                id: comment_1.id,
                 content: comment_1.content,
                 commentatorInfo: comment_1.commentatorInfo,
-                createdAt: comment_1.createdAt
+                createdAt: comment_1.createdAt,
+                likesInfo: expect.any(Object)
             })
     })
 
@@ -369,14 +390,16 @@ describe('tests for comments', () => {
             .get(`${RouterPaths.comments}/${comment_1.id}`)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.posts}/${post.id}/comments`)
-            .expect(HTTP_STATUSES.OK_200, {
+            .expect(HTTP_STATUSES.OK_200);
+        expect(response.body).toEqual({
                 pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                    _id: comment_2.id,
+                    id: comment_2.id,
                     content: comment_2.content,
                     commentatorInfo: comment_2.commentatorInfo,
-                    createdAt: comment_2.createdAt
+                    createdAt: comment_2.createdAt,
+                    likesInfo: expect.any(Object)
                 }]
             })
     })

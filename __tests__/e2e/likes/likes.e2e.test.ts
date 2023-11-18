@@ -145,4 +145,18 @@ describe('testing likes', () => {
             })
     });
 
+
+    it('should add like for comment', async () => {
+        if (!comment) throw new Error('test cannot be performed.');
+
+        const data = {
+            likeStatus: "Like"
+        }
+        await request(app)
+            .put(`${RouterPaths.comments}/${comment.id}/like-status`)
+            .set(authJWTHeader)
+            .send(data)
+            .expect(HTTP_STATUSES.NO_CONTENT_204);
+    });
+
 })

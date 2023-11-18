@@ -31,17 +31,13 @@ export class CommentsController {
     }
 
     async getCommentById(req: Request, res: Response) {
-        const comment = await this.commentService.getCommentById(req.params.id);
-        if (!comment) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-        res.send(getCommentViewModel(comment!));
+        const comment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
+        const viewComment: CommentViewModel = getCommentViewModel(comment!);
+        res.send(viewComment);
     }
 
     async deleteCommentById(req: Request, res: Response) {
         const comment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
-        if (!comment) {
-            res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
-            return;
-        }
         const user: UserDBModel | null = await this.userService.findUserById(req.userId!);
         if (!user || comment!.commentatorInfo.userLogin != user.accountData.userName) {
             res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
@@ -50,5 +46,11 @@ export class CommentsController {
             await this.commentService.deleteCommentById(req.params.id);
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
         }
+    }
+
+    async changeLikeStatus(req: Request, res: Response) {
+        const comment = await this.commentService.getCommentById(req.params.id);
+
+
     }
 }
