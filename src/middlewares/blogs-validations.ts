@@ -15,5 +15,6 @@ export const descriptionValidation = body('description')
 export const websiteUrlValidation = body('websiteUrl')
     .trim()
     .isLength({max: 100}).withMessage('max length is 100')
+    // @ts-ignore
     .isURL({ignore_max_length: true}).withMessage('websiteUrl should be url')
     .notEmpty().withMessage('should not be empty');

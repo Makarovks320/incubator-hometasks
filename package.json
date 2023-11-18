@@ -8,7 +8,8 @@
     "dev": "nodemon --inspect dist/index.js",
     "test": "cross-env PORT=3333 jest \"__tests__/.*\\.test\\.ts\" --runInBand",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "serveo": "ssh -R 80:localhost:3000 serveo.net"
   },
   "dependencies": {
     "axios": "^1.4.0",
