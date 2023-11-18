@@ -5,6 +5,7 @@ import {UserDBModel} from "../models/user/user-db-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {UserService} from "../services/user-service";
 import {CommentDBModel} from "../models/comment/comment-db-model";
+import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 
 export class CommentsController {
     constructor(
@@ -31,7 +32,8 @@ export class CommentsController {
 
     async getCommentById(req: Request, res: Response) {
         const comment = await this.commentService.getCommentById(req.params.id);
-        comment ? res.send(comment) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        if (!comment) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        res.send(getCommentViewModel(comment!));
     }
 
     async deleteCommentById(req: Request, res: Response) {

@@ -1,5 +1,6 @@
 import {WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
 import {CommentDBModel, CommentModel} from "../../models/comment/comment-db-model";
+import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 type commentQueryParams = {
     pageNumber: number,
     pageSize: number,
@@ -8,16 +9,9 @@ type commentQueryParams = {
 }
 export const COMMENT_PROJECTION = {...WITHOUT_v_MONGOOSE_PROJECTION, postId: false}
 
-export type CommentsOutput = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: CommentDBModel[]
-}
 
 export class CommentQueryRepository {
-    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<CommentsOutput> {
+    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<WithPagination<CommentDBModel>> {
 
         const sort: Record<string, -1 | 1> = {};
         if (queryParams.sortBy) {

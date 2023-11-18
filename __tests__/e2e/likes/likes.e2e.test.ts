@@ -42,7 +42,6 @@ describe('testing likes', () => {
     afterAll(disconnectFromDataBases);
 
 
-
     beforeAll(async () => {
         // Создаем блог, к которому будем прикреплять пост
         const blogData: CreateBlogInputModel = {
@@ -65,7 +64,7 @@ describe('testing likes', () => {
 
         const {createdPost} = await postsTestManager.createPost(postData, HTTP_STATUSES.CREATED_201);
         post = createdPost;
-        
+
         // Создаем юзера, чтобы оставлять комменты
         const userData: CreateUserInputModel = {
             "login": "User01",
@@ -87,7 +86,7 @@ describe('testing likes', () => {
         'content: JWT access token, JWT refresh token in cookie (http only, secure);', async () => {
         const response = await request(app)
             .post(`${RouterPaths.auth}/login`)
-            .send({ loginOrEmail: email, password: password })
+            .send({loginOrEmail: email, password: password})
             .expect(HTTP_STATUSES.OK_200);
 
         accessToken = response.body.accessToken;
@@ -104,10 +103,10 @@ describe('testing likes', () => {
     });
 
 
-    it(' should create new comment; status 201; content: created comment;', async () => {
+    it('should create new comment; status 201; content: created comment;', async () => {
         if (!post) throw new Error('test cannot be performed.');
 
-        const data: CreateCommentInputModel = { content: "Say my name! Heisenberg? You're goddamn right!" }
+        const data: CreateCommentInputModel = {content: "Say my name! Heisenberg? You're goddamn right!"}
 
         const {createdComment} = await commentsTestManager.createComment(post.id, data, HTTP_STATUSES.CREATED_201, authJWTHeader)
 
@@ -119,7 +118,7 @@ describe('testing likes', () => {
             .get(`${RouterPaths.posts}/${post.id}/comments`)
             .expect(HTTP_STATUSES.OK_200, {
                 pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                    _id: comment.id,
+                    id: comment.id,
                     content: data.content,
                     commentatorInfo: comment.commentatorInfo,
                     createdAt: comment.createdAt,
@@ -129,6 +128,21 @@ describe('testing likes', () => {
                         myStatus: "None"
                     }
                 }]
+            });
+
+        await request(app)
+            .get(`${RouterPaths.comments}/${comment.id}`)
+            .expect(HTTP_STATUSES.OK_200, {
+                id: comment.id,
+                content: data.content,
+                commentatorInfo: comment.commentatorInfo,
+                createdAt: comment.createdAt,
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: "None"
+                }
             })
     });
+
 })
