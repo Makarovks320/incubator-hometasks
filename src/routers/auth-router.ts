@@ -4,20 +4,20 @@ import {
     loginAuthValidation,
     loginOrEmailAuthValidation,
     passwordAuthValidation
-} from "../middlewares/auth-validations";
-import {inputValidator} from "../middlewares/input-validator";
+} from "../middlewares/auth/auth-validations";
+import {inputValidator} from "../middlewares/common/input-validator";
 import {authMiddleware} from "../composition-root";
 import {body} from "express-validator";
-import {checkEmailExists} from "../middlewares/check-email-exists";
-import {checkLoginExists} from "../middlewares/check-login-exists";
-import {checkConfirmationData} from "../middlewares/check-confirmation-data";
-import {emailValidation, newPasswordValidation} from "../middlewares/users-validations";
+import {checkEmailExists} from "../middlewares/auth/check-email-exists";
+import {checkLoginExists} from "../middlewares/auth/check-login-exists";
+import {checkConfirmationData} from "../middlewares/auth/check-confirmation-data";
+import {emailValidation, newPasswordValidation} from "../middlewares/users/users-validations";
 import {authController} from "../composition-root";
-import {rateLimitMiddleware} from "../middlewares/rate-limit-middleware";
+import {rateLimitValidator} from "../middlewares/rate-limiting/rate-limit-validator";
 import {recoveryCodeValidator} from "../composition-root";
 
 export const authRouter = Router();
-authRouter.use(rateLimitMiddleware);
+authRouter.use(rateLimitValidator);
 
 authRouter.post('/login', [
     loginOrEmailAuthValidation,

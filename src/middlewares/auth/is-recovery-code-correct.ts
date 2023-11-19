@@ -1,6 +1,6 @@
 import {CustomValidator} from "express-validator";
-import {UserDBModel} from "../models/user/user-db-model";
-import {UsersQueryRepository} from "../repositories/query-repositories/users-query-repository";
+import {UserDBModel} from "../../models/user/user-db-model";
+import {UsersQueryRepository} from "../../repositories/query-repositories/users-query-repository";
 import jwt from "jsonwebtoken";
 
 /*

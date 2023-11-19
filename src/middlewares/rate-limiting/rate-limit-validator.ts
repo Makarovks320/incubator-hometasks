@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {rateLimitDBModel, RateLimitModel, rateLimitViewModel} from "../models/rate-limiting/rate-limiting-model";
+import {rateLimitDBModel, RateLimitModel, rateLimitViewModel} from "../../models/rate-limiting/rate-limiting-model";
 import {ObjectId} from "mongodb";
 import subSeconds from "date-fns/subSeconds";
 import mongoose from "mongoose";
@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 Middlewar возвращает ошибку 429 "too many requests"
 */
 
-export const rateLimitMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const rateLimitValidator = async (req: Request, res: Response, next: NextFunction) => {
     //занесем в БД текущую активность:
     const newAPIUsage: rateLimitDBModel = {
         _id: new ObjectId(),

@@ -1,5 +1,5 @@
 import {CustomValidator} from "express-validator";
-import {usersRepository} from "../composition-root";
+import {usersRepository} from "../../composition-root";
 
 export const checkConfirmationData: CustomValidator = async (value, { req}) => {
     if (!value) return true;

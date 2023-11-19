@@ -1,5 +1,5 @@
 import {CustomValidator} from "express-validator";
-import {postsRepository} from "../composition-root";
+import {postsRepository} from "../../composition-root";
 
 export const checkPostExists: CustomValidator = async (value)=> {
     const post = await postsRepository.findPostById(value);

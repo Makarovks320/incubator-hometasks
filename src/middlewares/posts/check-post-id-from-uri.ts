@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {postsRepository} from "../composition-root";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {postsRepository} from "../../composition-root";
+import {HTTP_STATUSES} from "../../enums/http-statuses";
 
-export async function checkIdFromUri (req: Request, res: Response, next: NextFunction) {
+export async function checkPostIdFromUri (req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     const exist = await postsRepository.findPostById(id);
     exist ? next() :

@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {ValidationError, validationResult} from "express-validator";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {HTTP_STATUSES} from "../../enums/http-statuses";
 
 export const inputValidator = (req: Request, res: Response, next: NextFunction) => {
     const myValidationResult = validationResult.withDefaults({

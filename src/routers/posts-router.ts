@@ -1,18 +1,18 @@
 import {Router} from "express";
-import {authorization} from "../middlewares/authorization";
+import {authorization} from "../middlewares/auth/authorization";
 import {
     blogIdValidation,
     contentValidation,
     shortDescriptionValidation,
     titleValidation
-} from "../middlewares/posts-validations";
-import {inputValidator} from "../middlewares/input-validator";
-import {checkIdFromUri} from "../middlewares/check-id-from-uri";
+} from "../middlewares/posts/posts-validations";
+import {inputValidator} from "../middlewares/common/input-validator";
+import {checkPostIdFromUri} from "../middlewares/posts/check-post-id-from-uri";
 import {authMiddleware} from "../composition-root";
 import {commentContentValidation} from "../middlewares/comments/comment-validations";
 import {param} from "express-validator";
-import {checkPostExists} from "../middlewares/check-post-exists";
-import {idFromUrlExistingValidator} from "../middlewares/id-from-url-existing-validator";
+import {checkPostExists} from "../middlewares/posts/check-post-exists";
+import {idFromUrlExistingValidator} from "../middlewares/common/id-from-url-existing-validator";
 import {postsController} from "../composition-root";
 
 export const postsRouter = Router();
@@ -33,7 +33,7 @@ postsRouter.post('/', [
 
 postsRouter.put('/:id', [
     authorization,
-    checkIdFromUri,
+    checkPostIdFromUri,
     titleValidation,
     shortDescriptionValidation,
     contentValidation,

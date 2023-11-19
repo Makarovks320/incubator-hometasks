@@ -15,13 +15,13 @@ import {BlogsController} from "./controllers/blogs-controller";
 import {SessionsRepository} from "./repositories/sessions-repository";
 import {SecurityDevicesController} from "./controllers/security-devices-controller";
 import {SessionService} from "./services/session-service";
-import {AuthMiddleware} from "./middlewares/auth-middleware";
+import {AuthMiddleware} from "./middlewares/auth/auth-middleware";
 import {JwtService} from "./application/jwt-service";
 import {BlogsQueryRepository} from "./repositories/query-repositories/blogs-query-repository";
 import {CommentQueryRepository} from "./repositories/query-repositories/comment-query-repository";
 import {PostsQueryRepository} from "./repositories/query-repositories/posts-query-repository";
 import {UsersQueryRepository} from "./repositories/query-repositories/users-query-repository";
-import {RecoveryCodeValidator} from "./middlewares/is-recovery-code-correct";
+import {RecoveryCodeValidator} from "./middlewares/auth/is-recovery-code-correct";
 import {EmailManager} from "./managers/emailManager";
 import {EmailAdapter} from "./adapters/email-adapter";
 

@@ -1,7 +1,7 @@
 import {Router} from "express";
-import {authorization} from "../middlewares/authorization";
-import {emailValidation, loginValidation, passwordValidation} from "../middlewares/users-validations";
-import {inputValidator} from "../middlewares/input-validator";
+import {authorization} from "../middlewares/auth/authorization";
+import {emailValidation, loginValidation, passwordValidation} from "../middlewares/users/users-validations";
+import {inputValidator} from "../middlewares/common/input-validator";
 import {userController} from "../composition-root";
 
 

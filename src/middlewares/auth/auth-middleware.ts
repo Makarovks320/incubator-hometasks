@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {JwtService, RefreshTokenInfoType} from "../application/jwt-service";
-import {HTTP_STATUSES} from "../enums/http-statuses";
+import {JwtService, RefreshTokenInfoType} from "../../application/jwt-service";
+import {HTTP_STATUSES} from "../../enums/http-statuses";
 import {ObjectId} from "mongodb";
-import {UserService} from "../services/user-service";
+import {UserService} from "../../services/user-service";
 
 
 export class AuthMiddleware {

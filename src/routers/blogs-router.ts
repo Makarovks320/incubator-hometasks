@@ -1,11 +1,11 @@
 import {Router} from "express";
 import {param} from "express-validator";
-import {authorization} from "../middlewares/authorization";
-import {descriptionValidation, nameValidation, websiteUrlValidation} from "../middlewares/blogs-validations";
-import {inputValidator} from "../middlewares/input-validator";
-import {checkBlogExists} from "../middlewares/check-blog-exists";
-import {idFromUrlExistingValidator} from "../middlewares/id-from-url-existing-validator";
-import {contentValidation, shortDescriptionValidation, titleValidation} from "../middlewares/posts-validations";
+import {authorization} from "../middlewares/auth/authorization";
+import {descriptionValidation, nameValidation, websiteUrlValidation} from "../middlewares/blogs/blogs-validations";
+import {inputValidator} from "../middlewares/common/input-validator";
+import {checkBlogExists} from "../middlewares/blogs/check-blog-exists";
+import {idFromUrlExistingValidator} from "../middlewares/common/id-from-url-existing-validator";
+import {contentValidation, shortDescriptionValidation, titleValidation} from "../middlewares/posts/posts-validations";
 import {blogsController} from "../composition-root";
 import {postsController} from "../composition-root";
 
