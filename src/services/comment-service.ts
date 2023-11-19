@@ -60,16 +60,16 @@ export class CommentService {
     }
 
     async getCommentById(id: string): Promise<CommentDBModel | null> {
+        try {
         const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
         return await this.commentsRepository.getCommentById(commentObjectId);
+        } catch {
+            return null;
+        }
     }
 
     async deleteCommentById(id: string): Promise<boolean> {
         const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
         return this.commentsRepository.deleteCommentById(commentObjectId);
-    }
-
-    async deleteAllComments(): Promise<void> {
-        await this.commentsRepository.deleteAllBlogs();
     }
 }

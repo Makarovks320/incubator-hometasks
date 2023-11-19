@@ -1,33 +1,24 @@
 import {CommentDBModel, CommentModel} from "../models/comment/comment-db-model";
 import {MongooseError} from "mongoose";
 import {ObjectId} from "mongodb";
-import {LikeDbModel, LikeModel, LikeStatusDbEnum} from "../models/like/like-db-model";
+import {LikeDbModel, LikeModel, likesCountInfo, LikeStatusDbEnum} from "../models/like/like-db-model";
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
 
 export class LikesRepository {
     async createNewLike(like: LikeDbModel): Promise<LikeDbModel | string> {
         try {
-            await LikeModel.insertMany(like);
+            const result = await LikeModel.insertMany(like);
+            console.log(result);
         } catch (e) {
             console.log(e);
             if (e instanceof MongooseError) return e.message;
-            return 'Mongoose Error';
+            return 'Error';
         }
         return like;
     }
 
-    async getLikesForComment(commentId: ObjectId): Promise<CommentDBModel | null> {
-        return CommentModel.findOne({_id})
-            .select(DEFAULT_MONGOOSE_PROJECTION)
-            .lean();
-    }
-
-    async updateLikeStstus(commentId: ObjectId, likeStatus: LikeStatusDbEnum): Promise<boolean> {
-        const result = await LikeModel.updateOne({_id: commentId}, likeStatus);
+    async updateLike(like: LikeDbModel): Promise<boolean> {
+        const result = await LikeModel.updateOne({_id: like._id}, like);
         return result.modifiedCount === 1;
-    }
-
-    async deleteAllLikes(): Promise<void> {
-        await LikeModel.deleteMany({});
     }
 }

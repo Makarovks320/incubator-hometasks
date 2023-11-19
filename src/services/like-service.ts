@@ -1,26 +1,45 @@
 import {ObjectId} from "mongodb";
-import {LikeDbModel, LikeStatusDbEnum, LikeStatusType} from "../models/like/like-db-model";
+import {LikeDbModel, likesCountInfo, LikeStatusType} from "../models/like/like-db-model";
 import {LikesRepository} from "../repositories/likes-repository";
+import {convertLikeStatusToDbEnum} from "../helpers/like-status-converters";
+import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 
 
 export class LikeService {
     constructor(
-        protected likesRepository: LikesRepository
+        protected likesRepository: LikesRepository,
+        protected likesQueryRepository: LikesQueryRepository
     ) {
     }
 
     async createNewLike(commentId: ObjectId, userId: ObjectId, likeStatus: LikeStatusType): Promise<LikeDbModel | string> {
-
         const like: LikeDbModel = {
             _id: new ObjectId(),
             comment_id: commentId,
-            type: this.convertLikeStatusToDbEnum(likeStatus),
+            type: convertLikeStatusToDbEnum(likeStatus),
             user_id: userId,
-            createdAt: new Date()
+            createdAt: new Date(),
+            updatedAt: null
         }
         return await this.likesRepository.createNewLike(like);
     }
 
+    async getLikesAndDislikesCountForComment(commentId: ObjectId): Promise<likesCountInfo> {
+        return await this.likesQueryRepository.getLikesAndDislikesCountForComment(commentId);
+    }
+
+    async getLikeForCommentForCurrentUser(commentId: ObjectId, userId: ObjectId): Promise<LikeDbModel | null> {
+        return await this.likesQueryRepository.getLikeForCommentForCurrentUser(commentId, userId);
+    }
+
+    async changeLikeStatus(currentLike: LikeDbModel, updateLikeStatus: LikeStatusType): Promise<boolean> {
+        const like: LikeDbModel = {
+            ...currentLike,
+            type: convertLikeStatusToDbEnum(updateLikeStatus),
+            updatedAt: new Date()
+        }
+        return await this.likesRepository.updateLike(like);
+    }
     // async updateLikeStatus(comment: InputComment, commentId: string): Promise<boolean> {
     //     //запросим существующий коммент, чтобы получить postId:
     //     const commentObjectId: ObjectId = new mongoose.Types.ObjectId(commentId);
@@ -30,39 +49,12 @@ export class LikeService {
     //         return false;
     //     }
     //
-    // async getLikesForComment(id: string): Promise<CommentDBModel | null> {
-    //     const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
-    //     return await this.commentsRepository.getCommentById(commentObjectId);
-    // }
+
     //
     // async deleteAllLikes(): Promise<void> {
     //     await this.commentsRepository.deleteAllBlogs();
     // }
 
-    //todo: убрать в утилиты
-    private convertLikeStatusToDbEnum(likeStatus: LikeStatusType): LikeStatusDbEnum {
-        switch (likeStatus) {
-            case 'Like':
-                return LikeStatusDbEnum.LIKE;
-            case 'Dislike':
-                return LikeStatusDbEnum.DISLIKE;
-            case 'None':
-                return LikeStatusDbEnum.NONE;
-            default:
-                throw new Error('Invalid LikeStatusType');
-        }
-    }
 
-    private convertDbEnumToLikeStatus(dbEnumValue: LikeStatusDbEnum): LikeStatusType {
-        switch (dbEnumValue) {
-            case LikeStatusDbEnum.LIKE:
-                return 'Like';
-            case LikeStatusDbEnum.DISLIKE:
-                return 'Dislike';
-            case LikeStatusDbEnum.NONE:
-                return 'None';
-            default:
-                throw new Error('Invalid LikeStatusDbEnum');
-        }
-    }
 }
+

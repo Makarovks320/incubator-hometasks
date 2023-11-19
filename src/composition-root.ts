@@ -24,6 +24,9 @@ import {UsersQueryRepository} from "./repositories/query-repositories/users-quer
 import {RecoveryCodeValidator} from "./middlewares/auth/is-recovery-code-correct";
 import {EmailManager} from "./managers/emailManager";
 import {EmailAdapter} from "./adapters/email-adapter";
+import {LikeService} from "./services/like-service";
+import {LikesRepository} from "./repositories/likes-repository";
+import {LikesQueryRepository} from "./repositories/query-repositories/likes-query-repository";
 
 // common services
 export const jwtService = new JwtService;
@@ -57,10 +60,14 @@ const blogService = new BlogService(blogsRepository);
 const sessionsRepository = new SessionsRepository;
 const sessionService = new SessionService(sessionsRepository, jwtService);
 
+const likesRepository: LikesRepository = new LikesRepository;
+const likesQueryRepository: LikesQueryRepository = new LikesQueryRepository;
+const likeService: LikeService = new LikeService(likesRepository, likesQueryRepository);
+
 // controllers
 export const userController = new UsersController(userService, usersQueryRepository);
 export const authController = new AuthController(authService, userService, sessionService, jwtService)
-export const commentController = new CommentsController(commentService, userService);
+export const commentController = new CommentsController(commentService, userService, likeService);
 export const postsController = new PostsController(postService, commentService, commentQueryRepository, postsQueryRepository);
 export const blogsController = new BlogsController(blogService, blogsQueryRepository, postsQueryRepository);
 export const securityDevicesController = new SecurityDevicesController(sessionService, jwtService);

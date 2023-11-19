@@ -6,6 +6,7 @@ import {PostModel} from "../models/post/post-db-model";
 import {BlogModel} from "../models/blog/blog-db-model";
 import {UserModel} from "../models/user/user-db-model";
 import {CommentModel} from "../models/comment/comment-db-model";
+import {LikeModel} from "../models/like/like-db-model";
 
 export const testingRouter = Router();
 
@@ -16,7 +17,8 @@ testingRouter.delete('/', async (req: Request, res: Response, next: NextFunction
             UserModel.deleteMany(),
             CommentModel.deleteMany(),
             SessionModel.deleteMany(),
-            RateLimitModel.deleteMany({}) // не делал ни сервиса, ни репозитория
+            RateLimitModel.deleteMany({}), // не делал ни сервиса, ни репозитория
+            LikeModel.deleteMany({})
         ]).then(() => {
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
             return;

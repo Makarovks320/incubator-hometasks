@@ -7,11 +7,14 @@ import {UserService} from "../services/user-service";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 import {LikeService} from "../services/like-service";
+import {LikeDbModel} from "../models/like/like-db-model";
+import mongoose from "mongoose";
 
 export class CommentsController {
     constructor(
         protected commentService: CommentService,
-        protected userService: UserService
+        protected userService: UserService,
+        protected likeService: LikeService
     ) {}
     async updateComment(req: Request, res: Response) {
         const oldComment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
@@ -50,10 +53,16 @@ export class CommentsController {
     }
 
     async changeLikeStatus(req: Request, res: Response) {
-        const comment = await this.commentService.getCommentById(req.params.id);
-        // если у коммента нет лайка, то создать
-        // LikeService.createLike(comment_id, req.userId, likeStatus);
-        // если есть, то поменять статус
-        // LikeService.changeLikeStatus(comment_id, req.userId, likeStatus);
+        try {
+            const comment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
+            const currentLike: LikeDbModel | null = await this.likeService.getLikeForCommentForCurrentUser(comment!._id, req.userId);
+            currentLike ?
+                await this.likeService.changeLikeStatus(currentLike, req.body.likeStatus)
+                : await this.likeService.createNewLike(comment!._id, req.userId, req.body.likeStatus);
+        } catch (e) {
+            if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Something went wrong');
+        }
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     }
 }
