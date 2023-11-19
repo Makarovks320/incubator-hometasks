@@ -49,6 +49,8 @@ export class CommentsController {
     }
 
     async changeLikeStatus(req: Request, res: Response) {
+        // если у коммента нет лайка, то создать
+        // если есть, то поменять статус
         const comment = await this.commentService.getCommentById(req.params.id);
 
 

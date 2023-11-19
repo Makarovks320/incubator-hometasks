@@ -1,10 +1,10 @@
 import {Router} from "express";
 import {authMiddleware} from "../composition-root";
-import {commentContentValidation} from "../middlewares/comment-validations";
+import {commentContentValidation, likeStatusValidation} from "../middlewares/comments/comment-validations";
 import {inputValidator} from "../middlewares/input-validator";
 import {commentController} from "../composition-root";
 import {body} from "express-validator";
-import {checkCommentExists} from "../middlewares/likes/check-comment-exists";
+import {checkCommentExists} from "../middlewares/comments/check-comment-exists";
 
 export const commentsRouter = Router();
 
@@ -29,8 +29,8 @@ commentsRouter.delete('/:id', [
 
 commentsRouter.put('/:id/like-status', [
     authMiddleware.checkBearerToken.bind(authMiddleware),
-    body('likeStatus').isIn(['None', 'Like', 'Dislike']).withMessage("should be in ['None', 'Like', 'Dislike']"),
+    likeStatusValidation,
     inputValidator,
     checkCommentExists,
-    commentController.updateComment.bind(commentController)
+    commentController.changeLikeStatus.bind(commentController)
 ]);

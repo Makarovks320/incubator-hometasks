@@ -9,7 +9,7 @@ import {
 import {inputValidator} from "../middlewares/input-validator";
 import {checkIdFromUri} from "../middlewares/check-id-from-uri";
 import {authMiddleware} from "../composition-root";
-import {commentContentValidation} from "../middlewares/comment-validations";
+import {commentContentValidation} from "../middlewares/comments/comment-validations";
 import {param} from "express-validator";
 import {checkPostExists} from "../middlewares/check-post-exists";
 import {idFromUrlExistingValidator} from "../middlewares/id-from-url-existing-validator";
