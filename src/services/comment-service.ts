@@ -2,7 +2,6 @@ import {CommentsRepository} from "../repositories/comments-repository";
 import {ObjectId} from "mongodb";
 import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
-import {CommentViewModel} from "../models/comment/comment-view-model";
 import {UserService} from "./user-service";
 import mongoose from "mongoose";
 

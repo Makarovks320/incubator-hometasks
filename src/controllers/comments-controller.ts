@@ -6,6 +6,7 @@ import {CommentViewModel} from "../models/comment/comment-view-model";
 import {UserService} from "../services/user-service";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
+import {LikeService} from "../services/like-service";
 
 export class CommentsController {
     constructor(
@@ -49,10 +50,10 @@ export class CommentsController {
     }
 
     async changeLikeStatus(req: Request, res: Response) {
-        // если у коммента нет лайка, то создать
-        // если есть, то поменять статус
         const comment = await this.commentService.getCommentById(req.params.id);
-
-
+        // если у коммента нет лайка, то создать
+        // LikeService.createLike(comment_id, req.userId, likeStatus);
+        // если есть, то поменять статус
+        // LikeService.changeLikeStatus(comment_id, req.userId, likeStatus);
     }
 }
