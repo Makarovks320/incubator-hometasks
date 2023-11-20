@@ -18,7 +18,8 @@ export enum LikeStatusDbEnum  {
     DISLIKE,
     NONE
 };
-export type likesCountInfo = { likes: number, dislikes: number };
+
+export type likesCountInfo = { likesCount: number, dislikesCount: number };
 
 const LikeMongoSchema = new mongoose.Schema<LikeDbModel>(
     {
@@ -27,7 +28,7 @@ const LikeMongoSchema = new mongoose.Schema<LikeDbModel>(
         type: {type: Number, enum: [LikeStatusDbEnum.LIKE, LikeStatusDbEnum.DISLIKE, LikeStatusDbEnum.NONE], required: true},
         user_id: {type: mongoose.Schema.Types.ObjectId, required: true},
         createdAt: {type: Date, required: true},
-        updatedAt: {type: Date, required: false}//todo: почему нельзя null при required? Это же определенное значение. Тупой монгус
+        updatedAt: {type: Date, required: false, default: null}
     }
 )
 export const LikeModel = mongoose.model('likes', LikeMongoSchema);

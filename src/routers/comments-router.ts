@@ -18,6 +18,7 @@ commentsRouter.put('/:id', [
 ]);
 
 commentsRouter.get('/:id', [
+    authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
     checkCommentExists,
     commentController.getCommentById.bind(commentController)
 ]);

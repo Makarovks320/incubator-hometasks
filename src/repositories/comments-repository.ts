@@ -1,7 +1,6 @@
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
 import {COMMENT_PROJECTION} from "./query-repositories/comment-query-repository";
 import {CommentDBModel, CommentModel} from "../models/comment/comment-db-model";
-import {CommentViewModel} from "../models/comment/comment-view-model";
 import {MongooseError} from "mongoose";
 import {ObjectId} from "mongodb";
 

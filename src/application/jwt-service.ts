@@ -21,7 +21,7 @@ export type RefreshTokenInfoType = {
 
 export class JwtService {
     async createAccessToken(userId: ObjectId) {
-        return jwt.sign({userId}, secret, {expiresIn: '120s'});
+        return jwt.sign({userId}, secret, {expiresIn: '600s'});
     }
 
     async createRefreshToken(userId: ObjectId, deviceId: string) {

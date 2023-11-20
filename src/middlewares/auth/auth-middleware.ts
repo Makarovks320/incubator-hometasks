@@ -37,6 +37,30 @@ export class AuthMiddleware {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401);
     }
 
+    /* проверяет заголовок authorization,
+    достает bearer token,
+    дергает getUserIdByToken из jwtService.
+    если юзера нет, то 401
+    если юзер есть, то добавляет юзер id в реквест в поле userId */
+    async lookBearerTokenForCurrentUserId(req: Request, res: Response, next: NextFunction) {
+        if (!req.headers.authorization) {
+            next();
+            return;//todo: нужны ли ретурны?
+        }
+        const token = req.headers.authorization.split(' ')[1];
+        const userId: ObjectId | null = await this.jwtService.getUserIdByToken(token);
+        if (!userId) {
+            next();
+            return;
+        }
+        const user = await this.userService.findUserById(userId);
+        if (user) {
+            req.userId = userId;
+            next();
+            return;
+        }
+    }
+
     /* миддлвар проверяет refresh-token из cookies
     достает юзер id
     если юзера нет, то 401

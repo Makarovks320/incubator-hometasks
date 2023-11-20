@@ -5,15 +5,8 @@ import {LikeDbModel, LikeModel, likesCountInfo, LikeStatusDbEnum} from "../model
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
 
 export class LikesRepository {
-    async createNewLike(like: LikeDbModel): Promise<LikeDbModel | string> {
-        try {
-            const result = await LikeModel.insertMany(like);
-            console.log(result);
-        } catch (e) {
-            console.log(e);
-            if (e instanceof MongooseError) return e.message;
-            return 'Error';
-        }
+    async createNewLike(like: LikeDbModel): Promise<LikeDbModel> {
+        const result = await LikeModel.insertMany(like);
         return like;
     }
 
