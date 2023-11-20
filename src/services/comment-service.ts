@@ -4,6 +4,7 @@ import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {UserService} from "./user-service";
 import mongoose from "mongoose";
+import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -57,15 +58,6 @@ export class CommentService {
         const isUpdated = await this.commentsRepository.updateComment(commentObjectId, updatedComment);
 
         return !!isUpdated;
-    }
-
-    async getCommentById(id: string): Promise<CommentDBModel | null> {
-        try {
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
-        return await this.commentsRepository.getCommentById(commentObjectId);
-        } catch {
-            return null;
-        }
     }
 
     async deleteCommentById(id: string): Promise<boolean> {

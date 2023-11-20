@@ -1,5 +1,5 @@
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
-import {COMMENT_PROJECTION} from "./query-repositories/comment-query-repository";
+import {COMMENT_PROJECTION} from "./query-repositories/comments-query-repository";
 import {CommentDBModel, CommentModel} from "../models/comment/comment-db-model";
 import {MongooseError} from "mongoose";
 import {ObjectId} from "mongodb";
@@ -19,12 +19,6 @@ export class CommentsRepository {
     async updateComment(commentId: ObjectId, comment: CommentDBModel): Promise<boolean> {
             const result = await CommentModel.updateOne({_id: commentId}, comment);
             return result.modifiedCount === 1;
-    }
-
-    async getCommentById(_id: ObjectId): Promise<CommentDBModel | null> {
-        return CommentModel.findOne({_id})
-            .select(COMMENT_PROJECTION)
-            .lean();
     }
 
     async getCommentByIdWithPostId(_id: ObjectId): Promise<CommentDBModel | null> {

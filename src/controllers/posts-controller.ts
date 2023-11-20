@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {PostsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
 import {InputPost, PostService} from "../services/post-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
-import {CommentQueryRepository} from "../repositories/query-repositories/comment-query-repository";
+import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
 import {CommentService, InputCommentWithPostId} from "../services/comment-service";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
@@ -16,7 +16,7 @@ export class PostsController {
     constructor(
         protected postService: PostService,
         protected commentService: CommentService,
-        protected commentQueryRepository: CommentQueryRepository,
+        protected commentQueryRepository: CommentsQueryRepository,
         protected postsQueryRepository: PostsQueryRepository
     ) {
     }

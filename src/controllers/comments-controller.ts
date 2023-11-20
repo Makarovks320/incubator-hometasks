@@ -11,16 +11,20 @@ import {LikeDbModel, likesCountInfo, LikeStatusType} from "../models/like/like-d
 import mongoose from "mongoose";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 import {convertDbEnumToLikeStatus} from "../helpers/like-status-converters";
+import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
+import {ObjectId} from "mongodb";
 
 export class CommentsController {
     constructor(
         protected commentService: CommentService,
         protected userService: UserService,
         protected likeService: LikeService,
-        protected likeQueryRepository: LikesQueryRepository
+        protected likeQueryRepository: LikesQueryRepository,
+        protected commentsQueryRepository: CommentsQueryRepository,
     ) {}
     async updateComment(req: Request, res: Response) {
-        const oldComment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
+        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+        const oldComment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
         if (!oldComment) {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
             return;
@@ -38,8 +42,10 @@ export class CommentsController {
     }
 
     async getCommentById(req: Request, res: Response) {
-        try {//todo: не многовато ли логики для контроллера?
-            const comment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);//у query запросить
+        try {
+            const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+            const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
+            //todo: создать в queryRepo утилиту, в которой будет вся эта логика по доставанию данных во View виде
             const likesCountInfo: likesCountInfo = await this.likeQueryRepository.getLikesAndDislikesCountForComment(comment!._id);
             const myLike: LikeDbModel | null = await this.likeQueryRepository.getLikeForCommentForCurrentUser(comment!._id, req.userId);
             let myStatus: LikeStatusType = 'None';
@@ -56,7 +62,8 @@ export class CommentsController {
     }
 
     async deleteCommentById(req: Request, res: Response) {
-        const comment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
+        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+        const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
         const user: UserDBModel | null = await this.userService.findUserById(req.userId!);
         if (!user || comment!.commentatorInfo.userLogin != user.accountData.userName) {
             res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
@@ -69,7 +76,8 @@ export class CommentsController {
 
     async changeLikeStatus(req: Request, res: Response) {
         try {
-            const comment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);//у query запросить
+            const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+            const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
             const currentLike: LikeDbModel | null = await this.likeService.getLikeForCommentForCurrentUser(comment!._id, req.userId);
             currentLike ?
                 await this.likeService.changeLikeStatus(currentLike, req.body.likeStatus)

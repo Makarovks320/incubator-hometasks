@@ -18,7 +18,7 @@ import {SessionService} from "./services/session-service";
 import {AuthMiddleware} from "./middlewares/auth/auth-middleware";
 import {JwtService} from "./application/jwt-service";
 import {BlogsQueryRepository} from "./repositories/query-repositories/blogs-query-repository";
-import {CommentQueryRepository} from "./repositories/query-repositories/comment-query-repository";
+import {CommentsQueryRepository} from "./repositories/query-repositories/comments-query-repository";
 import {PostsQueryRepository} from "./repositories/query-repositories/posts-query-repository";
 import {UsersQueryRepository} from "./repositories/query-repositories/users-query-repository";
 import {RecoveryCodeValidator} from "./middlewares/auth/is-recovery-code-correct";
@@ -43,7 +43,7 @@ const authService = new AuthService(usersRepository, jwtService, emailManager);
 
 // comments dependencies
 const commentsRepository = new CommentsRepository;
-const commentQueryRepository = new CommentQueryRepository;
+export const commentsQueryRepository = new CommentsQueryRepository;
 export const commentService = new CommentService(commentsRepository, userService);
 
 // posts dependencies
@@ -67,8 +67,8 @@ const likeService: LikeService = new LikeService(likesRepository, likesQueryRepo
 // controllers
 export const userController = new UsersController(userService, usersQueryRepository);
 export const authController = new AuthController(authService, userService, sessionService, jwtService)
-export const commentController = new CommentsController(commentService, userService, likeService, likesQueryRepository);
-export const postsController = new PostsController(postService, commentService, commentQueryRepository, postsQueryRepository);
+export const commentsController = new CommentsController(commentService, userService, likeService, likesQueryRepository, commentsQueryRepository);
+export const postsController = new PostsController(postService, commentService, commentsQueryRepository, postsQueryRepository);
 export const blogsController = new BlogsController(blogService, blogsQueryRepository, postsQueryRepository);
 export const securityDevicesController = new SecurityDevicesController(sessionService, jwtService);
 
