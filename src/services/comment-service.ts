@@ -3,8 +3,7 @@ import {ObjectId} from "mongodb";
 import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {UserService} from "./user-service";
-import mongoose from "mongoose";
-import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
+import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -41,7 +40,7 @@ export class CommentService {
 
     async updateComment(comment: InputComment, commentId: string): Promise<boolean> {
         //запросим существующий коммент, чтобы получить postId:
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(commentId);
+        const commentObjectId: ObjectId = stringToObjectIdMapper(commentId);
         const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
         if (!currentComment) {
             throw new Error('comment is not found');
@@ -61,7 +60,7 @@ export class CommentService {
     }
 
     async deleteCommentById(id: string): Promise<boolean> {
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
+        const commentObjectId: ObjectId = stringToObjectIdMapper(id);
         return this.commentsRepository.deleteCommentById(commentObjectId);
     }
 }

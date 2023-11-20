@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import {settings} from "../settings";
 import {ObjectId} from "mongodb";
-import mongoose from "mongoose";
+import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 
 const secret: string = settings.JWT_SECRET;
 const refreshSecret: string = settings.JWT_REFRESH_SECRET;
@@ -33,7 +33,7 @@ export class JwtService {
             const result: any = await jwt.verify(token, secret);
             // todo: обсудить, почему создаем userId как ObjectId, а возвращается string.
             // todo: почему verify возвращает result.userId как строку? хотя получал ObjectId
-            const userId = new mongoose.Types.ObjectId(result.userId);
+            const userId = stringToObjectIdMapper(result.userId);
             return userId;
         } catch (e) {
             return null;
@@ -47,7 +47,7 @@ export class JwtService {
                 deviceId: result.deviceId,
                 iat: result.iat * 1000,
                 exp: result.exp * 1000,
-                userId: new mongoose.Types.ObjectId(result.userId)
+                userId: stringToObjectIdMapper(result.userId)
             }
         } catch (e) {
             return null

@@ -13,6 +13,7 @@ import {LikesQueryRepository} from "../repositories/query-repositories/likes-que
 import {convertDbEnumToLikeStatus} from "../helpers/like-status-converters";
 import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
 import {ObjectId} from "mongodb";
+import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 
 export class CommentsController {
     constructor(
@@ -23,7 +24,7 @@ export class CommentsController {
         protected commentsQueryRepository: CommentsQueryRepository,
     ) {}
     async updateComment(req: Request, res: Response) {
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+        const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
         const oldComment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
         if (!oldComment) {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
@@ -43,7 +44,7 @@ export class CommentsController {
 
     async getCommentById(req: Request, res: Response) {
         try {
-            const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+            const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
             const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
             //todo: создать в queryRepo утилиту, в которой будет вся эта логика по доставанию данных во View виде
             const likesCountInfo: likesCountInfo = await this.likeQueryRepository.getLikesAndDislikesCountForComment(comment!._id);
@@ -62,7 +63,7 @@ export class CommentsController {
     }
 
     async deleteCommentById(req: Request, res: Response) {
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+        const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
         const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
         const user: UserDBModel | null = await this.userService.findUserById(req.userId!);
         if (!user || comment!.commentatorInfo.userLogin != user.accountData.userName) {
@@ -76,7 +77,7 @@ export class CommentsController {
 
     async changeLikeStatus(req: Request, res: Response) {
         try {
-            const commentObjectId: ObjectId = new mongoose.Types.ObjectId(req.params.id);
+            const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
             const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
             const currentLike: LikeDbModel | null = await this.likeService.getLikeForCommentForCurrentUser(comment!._id, req.userId);
             currentLike ?

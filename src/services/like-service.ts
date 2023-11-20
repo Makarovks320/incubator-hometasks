@@ -42,7 +42,7 @@ export class LikeService {
     }
     // async updateLikeStatus(comment: InputComment, commentId: string): Promise<boolean> {
     //     //запросим существующий коммент, чтобы получить postId:
-    //     const commentObjectId: ObjectId = new mongoose.Types.ObjectId(commentId);
+    //     const commentObjectId: ObjectId = stringToObjectIdMapper(commentId);
     //     const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
     //     if (!currentComment) {
     //         throw new Error('comment is not found');
