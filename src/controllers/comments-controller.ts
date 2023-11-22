@@ -7,10 +7,9 @@ import {UserService} from "../services/user-service";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 import {LikeService} from "../services/like-service";
-import {LikeDbModel, likesCountInfo, LikeStatusType} from "../models/like/like-db-model";
+import {LikeDbModel} from "../models/like/like-db-model";
 import mongoose from "mongoose";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
-import {convertDbEnumToLikeStatus} from "../helpers/like-status-converters";
 import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
@@ -20,7 +19,7 @@ export class CommentsController {
         protected commentService: CommentService,
         protected userService: UserService,
         protected likeService: LikeService,
-        protected likeQueryRepository: LikesQueryRepository,
+        protected likesQueryRepository: LikesQueryRepository,
         protected commentsQueryRepository: CommentsQueryRepository,
     ) {}
     async updateComment(req: Request, res: Response) {
@@ -46,15 +45,12 @@ export class CommentsController {
         try {
             const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
             const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
-            //todo: создать в queryRepo утилиту, в которой будет вся эта логика по доставанию данных во View виде
-            const likesCountInfo: likesCountInfo = await this.likeQueryRepository.getLikesAndDislikesCountForComment(comment!._id);
-            const myLike: LikeDbModel | null = await this.likeQueryRepository.getLikeForCommentForCurrentUser(comment!._id, req.userId);
-            let myStatus: LikeStatusType = 'None';
-            if (myLike) {
-                myStatus = convertDbEnumToLikeStatus(myLike!.type);
+            if (!comment) {
+                res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+                return;
             }
-            const likesInfo: LikesInfo = {...likesCountInfo, myStatus};
-            const viewComment: CommentViewModel = getCommentViewModel(comment!, likesInfo);
+            const likesInfo: LikesInfo = await this.likesQueryRepository.getLikesInfo(comment._id, req.userId);
+            const viewComment: CommentViewModel = getCommentViewModel(comment, likesInfo);
             res.send(viewComment);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db Error');
@@ -79,7 +75,9 @@ export class CommentsController {
         try {
             const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
             const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
-            const currentLike: LikeDbModel | null = await this.likeService.getLikeForCommentForCurrentUser(comment!._id, req.userId);
+
+            // если у текущего пользователя есть лайк для данного коммента, то изменим его, если нет - создадим
+            const currentLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForCommentForCurrentUser(comment!._id, req.userId);
             currentLike ?
                 await this.likeService.changeLikeStatus(currentLike, req.body.likeStatus)
                 : await this.likeService.createNewLike(comment!._id, req.userId, req.body.likeStatus);

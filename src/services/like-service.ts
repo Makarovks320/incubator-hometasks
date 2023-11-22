@@ -24,14 +24,6 @@ export class LikeService {
         return await this.likesRepository.createNewLike(like);
     }
 
-    async getLikesAndDislikesCountForComment(commentId: ObjectId): Promise<likesCountInfo> {
-        return await this.likesQueryRepository.getLikesAndDislikesCountForComment(commentId);
-    }
-
-    async getLikeForCommentForCurrentUser(commentId: ObjectId, userId: ObjectId): Promise<LikeDbModel | null> {
-        return await this.likesQueryRepository.getLikeForCommentForCurrentUser(commentId, userId);
-    }
-
     async changeLikeStatus(currentLike: LikeDbModel, updateLikeStatus: LikeStatusType): Promise<boolean> {
         const like: LikeDbModel = {
             ...currentLike,
@@ -40,21 +32,5 @@ export class LikeService {
         }
         return await this.likesRepository.updateLike(like);
     }
-    // async updateLikeStatus(comment: InputComment, commentId: string): Promise<boolean> {
-    //     //запросим существующий коммент, чтобы получить postId:
-    //     const commentObjectId: ObjectId = stringToObjectIdMapper(commentId);
-    //     const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
-    //     if (!currentComment) {
-    //         throw new Error('comment is not found');
-    //         return false;
-    //     }
-    //
-
-    //
-    // async deleteAllLikes(): Promise<void> {
-    //     await this.commentsRepository.deleteAllBlogs();
-    // }
-
-
 }
 

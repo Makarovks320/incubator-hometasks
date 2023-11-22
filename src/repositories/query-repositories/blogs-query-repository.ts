@@ -13,7 +13,7 @@ export class BlogsQueryRepository {
             filter.name = {$regex: queryParams.searchNameTerm, $options: 'i'};
         }
 
-        let sort: Record<string, 1 | -1> = {};//todo: как типизировать?
+        let sort: Record<string, 1 | -1> = {};
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }

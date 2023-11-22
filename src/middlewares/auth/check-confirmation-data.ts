@@ -4,7 +4,6 @@ import {usersRepository} from "../../composition-root";
 export const checkConfirmationData: CustomValidator = async (value, { req}) => {
     if (!value) return true;
     const user = await usersRepository.findUserByConfirmationCodeOrEmail(value);
-    //todo: Дублирование обращения к БД здесь и в auth-service
     if (!user) {
         throw new Error('code or email doesnt exist');
     }

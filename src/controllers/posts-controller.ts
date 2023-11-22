@@ -11,13 +11,16 @@ import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 import {ObjectId} from "mongodb";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
+import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
+import mongoose from "mongoose";
 
 export class PostsController {
     constructor(
-        protected postService: PostService,
-        protected commentService: CommentService,
-        protected commentQueryRepository: CommentsQueryRepository,
-        protected postsQueryRepository: PostsQueryRepository
+        private postService: PostService,
+        private commentService: CommentService,
+        private commentQueryRepository: CommentsQueryRepository,
+        private postsQueryRepository: PostsQueryRepository,
+        private likesQueryRepository: LikesQueryRepository
     ) {
     }
 
@@ -67,17 +70,20 @@ export class PostsController {
     }
 
     async getCommentsForPost(req: Request, res: Response) {
-        const queryParams = new PostQueryParams(
-            parseInt(req.query.pageNumber as string) || 1,
-            parseInt(req.query.pageSize as string) || 10,
-            req.query.sortBy as string || 'createdAt',
-            req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-        )
-        const foundComments: WithPagination<CommentDBModel> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
-        //todo: find likes for comments
-        const foundCommentsIds: ObjectId[] = foundComments.items.map(c => c._id);
-        const viewComments: WithPagination<CommentViewModel> = {...foundComments, items: foundComments.items.map(c => getCommentViewModel(c))};
-        res.send(viewComments);
+        try {
+            const queryParams = new PostQueryParams(
+                parseInt(req.query.pageNumber as string) || 1,
+                parseInt(req.query.pageSize as string) || 10,
+                req.query.sortBy as string || 'createdAt',
+                req.query.sortDirection === 'asc' ? 'asc' : 'desc'
+            )
+            const foundComments: WithPagination<CommentDBModel> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
+            const commentsWithLikesInfo: WithPagination<CommentViewModel> = await this.likesQueryRepository.findLikesForManyComments(foundComments, req.userId);
+            res.send(commentsWithLikesInfo);
+        } catch (e) {
+            if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db Error');
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+        }
     }
 
     async createCommentToPost(req: Request, res: Response) {

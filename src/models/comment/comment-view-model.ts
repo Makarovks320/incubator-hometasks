@@ -10,6 +10,7 @@ export type CommentViewModel = {
     createdAt: string,
     likesInfo: LikesInfo
 }
+
 export type LikesInfo = {
     likesCount: number,
         dislikesCount: number,

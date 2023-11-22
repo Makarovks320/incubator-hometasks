@@ -68,7 +68,7 @@ const likeService: LikeService = new LikeService(likesRepository, likesQueryRepo
 export const userController = new UsersController(userService, usersQueryRepository);
 export const authController = new AuthController(authService, userService, sessionService, jwtService)
 export const commentsController = new CommentsController(commentService, userService, likeService, likesQueryRepository, commentsQueryRepository);
-export const postsController = new PostsController(postService, commentService, commentsQueryRepository, postsQueryRepository);
+export const postsController = new PostsController(postService, commentService, commentsQueryRepository, postsQueryRepository, likesQueryRepository);
 export const blogsController = new BlogsController(blogService, blogsQueryRepository, postsQueryRepository);
 export const securityDevicesController = new SecurityDevicesController(sessionService, jwtService);
 

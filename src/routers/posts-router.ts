@@ -55,6 +55,7 @@ postsRouter.delete('/:id', [
 // комментарии
 
 postsRouter.get('/:id/comments', [
+    authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
     param('id').custom(checkPostExists).withMessage('post is not found'),
     idFromUrlExistingValidator,
     postsController.getCommentsForPost.bind(postsController)
