@@ -13,6 +13,7 @@ import {UserViewModel} from "../../src/models/user/user-view-model";
 import {usersTestManager} from "../utils/usersTestManager";
 import {PasswordRecoveryType, UserDBModel, UserModel} from "../../src/models/user/user-db-model";
 import {jwtService, usersRepository} from "../../src/composition-root";
+import {EmailAdapter} from "../../src/adapters/email-adapter";
 
 const emailAdapter = {
     async sendEmail(email: string, subject: string, message: string): Promise<boolean> {
@@ -189,3 +190,12 @@ describe('testing password recovery', () => {
 
 // todo:
 // замокать сервис почты (в джесте есть механизм Мокания данных)
+// const sendEmailConfirmation =
+//     jest.spyOn(EmailAdapter.prototype, 'sendEmail')
+//         .mockReturnValue(fakeSendEmail);
+//
+// const fakeSendEmail() : Promise<boolean> {
+//     return Promise.resolve(true);
+// }
+//
+// expect(sendEmailConfirmation).toHaveBeenCalledWith()
