@@ -6,12 +6,13 @@ import {PostsQueryRepository} from "../repositories/query-repositories/posts-que
 import {BlogQueryParams} from "../models/blog/blog-query-params-type";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {BlogViewModel} from "../models/blog/blog-view-model";
-
+import {inject, injectable} from "inversify";
+@injectable()
 export class BlogsController {
     constructor(
-        private blogService: BlogService,
-        private blogsQueryRepository: BlogsQueryRepository,
-        private postsQueryRepository: PostsQueryRepository
+        @inject(BlogService) private blogService: BlogService,
+        @inject(BlogsQueryRepository) private blogsQueryRepository: BlogsQueryRepository,
+        @inject(PostsQueryRepository) private postsQueryRepository: PostsQueryRepository
     ) {
     }
 

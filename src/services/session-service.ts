@@ -2,11 +2,13 @@ import {IpType, SessionDbModel} from "../models/session/session-model";
 import {SessionsRepository} from "../repositories/sessions-repository";
 import {ObjectId} from "mongodb";
 import {JwtService, RefreshTokenInfoType} from "../application/jwt-service";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class SessionService {
     constructor(
-        private sessionsRepository: SessionsRepository,
-        private jwtService: JwtService
+        @inject(SessionsRepository) private sessionsRepository: SessionsRepository,
+        @inject(JwtService) private jwtService: JwtService
     ) {
     }
 

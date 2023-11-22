@@ -4,6 +4,7 @@ import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {UserService} from "./user-service";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
+import {inject, injectable} from "inversify";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -13,10 +14,11 @@ export type InputComment = {
     content: string
 }
 
+@injectable()
 export class CommentService {
     constructor(
-        private commentsRepository: CommentsRepository,
-        private userService: UserService
+        @inject(CommentsRepository) private commentsRepository: CommentsRepository,
+        @inject(UserService) private userService: UserService
     ) {
     }
 

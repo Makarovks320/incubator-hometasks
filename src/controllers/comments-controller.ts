@@ -13,14 +13,15 @@ import {LikesQueryRepository} from "../repositories/query-repositories/likes-que
 import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
-
+import {inject, injectable} from "inversify";
+@injectable()
 export class CommentsController {
     constructor(
-        private commentService: CommentService,
-        private userService: UserService,
-        private likeService: LikeService,
-        private likesQueryRepository: LikesQueryRepository,
-        private commentsQueryRepository: CommentsQueryRepository,
+        @inject(CommentService) private commentService: CommentService,
+        @inject(UserService) private userService: UserService,
+        @inject(LikeService) private likeService: LikeService,
+        @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository,
+        @inject(CommentsQueryRepository) private commentsQueryRepository: CommentsQueryRepository,
     ) {}
     async updateComment(req: Request, res: Response) {
         const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);

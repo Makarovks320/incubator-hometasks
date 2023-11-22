@@ -5,11 +5,13 @@ import {SessionService} from "../services/session-service";
 import {SessionDbModel} from "../models/session/session-model";
 import {ObjectId} from "mongodb";
 import {getSessionViewModel} from "../helpers/session-view-model-mapper";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class SecurityDevicesController {
     constructor(
-        private sessionService: SessionService,
-        private jwtService: JwtService
+        @inject(SessionService) private sessionService: SessionService,
+        @inject(JwtService) private jwtService: JwtService
     ) {}
 
     async getAllSessionsForUser(req: Request, res: Response) {

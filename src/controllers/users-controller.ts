@@ -11,11 +11,13 @@ import {WithPagination} from "../models/common-types-aliases-&-generics/with-pag
 import {UserViewModel} from "../models/user/user-view-model";
 import {CreateUserInputModel} from "../models/user/create-input-user-model";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class UsersController {
     constructor(
-        private userService: UserService,
-        private usersQueryRepository: UsersQueryRepository) {
+        @inject(UserService) private userService: UserService,
+        @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository) {
     }
 
     async createNewUser(req: Request, res: Response) {

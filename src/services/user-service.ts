@@ -5,9 +5,11 @@ import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
 import {UserDBModel} from "../models/user/user-db-model";
 import {CreateUserInputModel} from "../models/user/create-input-user-model";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class UserService {
-    constructor(private usersRepository: UsersRepository) {}
+    constructor(@inject(UsersRepository) private usersRepository: UsersRepository) {}
     async createUser(u: CreateUserInputModel): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);

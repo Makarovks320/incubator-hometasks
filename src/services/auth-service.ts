@@ -6,13 +6,14 @@ import {UsersRepository} from "../repositories/users-repository";
 import {EmailManager} from "../managers/emailManager";
 import {EmailConfirmationType, UserDBModel} from "../models/user/user-db-model";
 import {JwtService} from "../application/jwt-service";
+import {inject, injectable} from "inversify";
 
-
+@injectable()
 export class AuthService {
     constructor(
-        private usersRepository: UsersRepository,
-        private jwtService: JwtService,
-        private emailManager: EmailManager
+        @inject(UsersRepository) private usersRepository: UsersRepository,
+        @inject(JwtService) private jwtService: JwtService,
+        @inject(EmailManager) private emailManager: EmailManager
     ) {
     }
 

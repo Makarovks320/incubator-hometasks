@@ -2,11 +2,12 @@ import {ObjectId} from "mongodb";
 import {LikeDbModel, LikeStatusType} from "../models/like/like-db-model";
 import {LikesRepository} from "../repositories/likes-repository";
 import {convertLikeStatusToDbEnum} from "../helpers/like-status-converters";
+import {inject, injectable} from "inversify";
 
-
+@injectable()
 export class LikeService {
     constructor(
-        private likesRepository: LikesRepository
+        @inject(LikesRepository) private likesRepository: LikesRepository
     ) {
     }
 

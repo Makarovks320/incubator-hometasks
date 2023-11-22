@@ -1,6 +1,7 @@
 import {PostsRepository} from "../repositories/posts-repository";
 import {PostViewModel} from "../models/post/post-view-model";
 import {PostDBModel} from "../models/post/post-db-model";
+import {inject, injectable} from "inversify";
 
 export type InputPost = {
     title: string,
@@ -10,8 +11,9 @@ export type InputPost = {
     blogName: string
 }
 
+@injectable()
 export class PostService {
-    constructor(private postsRepository: PostsRepository) {}
+    constructor(@inject(PostsRepository) private postsRepository: PostsRepository) {}
 
     async getPostById(id: string): Promise<PostViewModel | null> {
         return this.postsRepository.findPostById(id);

@@ -13,14 +13,15 @@ import {ObjectId} from "mongodb";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 import mongoose from "mongoose";
-
+import {inject, injectable} from "inversify";
+@injectable()
 export class PostsController {
     constructor(
-        private postService: PostService,
-        private commentService: CommentService,
-        private commentQueryRepository: CommentsQueryRepository,
-        private postsQueryRepository: PostsQueryRepository,
-        private likesQueryRepository: LikesQueryRepository
+        @inject(PostService) private postService: PostService,
+        @inject(CommentService) private commentService: CommentService,
+        @inject(CommentsQueryRepository) private commentQueryRepository: CommentsQueryRepository,
+        @inject(PostsQueryRepository) private postsQueryRepository: PostsQueryRepository,
+        @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository
     ) {
     }
 
