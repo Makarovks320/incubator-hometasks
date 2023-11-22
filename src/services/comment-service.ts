@@ -15,8 +15,8 @@ export type InputComment = {
 
 export class CommentService {
     constructor(
-        protected commentsRepository: CommentsRepository,
-        protected userService: UserService
+        private commentsRepository: CommentsRepository,
+        private userService: UserService
     ) {
     }
 

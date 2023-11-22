@@ -10,9 +10,9 @@ import {JwtService} from "../application/jwt-service";
 
 export class AuthService {
     constructor(
-        protected usersRepository: UsersRepository,
-        protected jwtService: JwtService,
-        protected emailManager: EmailManager
+        private usersRepository: UsersRepository,
+        private jwtService: JwtService,
+        private emailManager: EmailManager
     ) {
     }
 

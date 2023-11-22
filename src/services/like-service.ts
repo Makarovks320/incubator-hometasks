@@ -1,14 +1,12 @@
 import {ObjectId} from "mongodb";
-import {LikeDbModel, likesCountInfo, LikeStatusType} from "../models/like/like-db-model";
+import {LikeDbModel, LikeStatusType} from "../models/like/like-db-model";
 import {LikesRepository} from "../repositories/likes-repository";
 import {convertLikeStatusToDbEnum} from "../helpers/like-status-converters";
-import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 
 
 export class LikeService {
     constructor(
-        protected likesRepository: LikesRepository,
-        protected likesQueryRepository: LikesQueryRepository
+        private likesRepository: LikesRepository
     ) {
     }
 

@@ -7,8 +7,8 @@ import {UserService} from "../../services/user-service";
 
 export class AuthMiddleware {
     constructor(
-        protected userService: UserService,
-        protected jwtService: JwtService
+        private userService: UserService,
+        private jwtService: JwtService
     ) {
     }
 

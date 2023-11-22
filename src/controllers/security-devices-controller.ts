@@ -8,8 +8,8 @@ import {getSessionViewModel} from "../helpers/session-view-model-mapper";
 
 export class SecurityDevicesController {
     constructor(
-        protected sessionService: SessionService,
-        protected jwtService: JwtService
+        private sessionService: SessionService,
+        private jwtService: JwtService
     ) {}
 
     async getAllSessionsForUser(req: Request, res: Response) {

@@ -7,7 +7,7 @@ import {UserDBModel} from "../models/user/user-db-model";
 import {CreateUserInputModel} from "../models/user/create-input-user-model";
 
 export class UserService {
-    constructor(protected usersRepository: UsersRepository) {}
+    constructor(private usersRepository: UsersRepository) {}
     async createUser(u: CreateUserInputModel): Promise<UserDBModel> {
         const passwordSalt = await bcrypt.genSalt(8);
         const passwordHash = await this._generateHash(u.password, passwordSalt);

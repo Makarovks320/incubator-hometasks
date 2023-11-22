@@ -4,7 +4,7 @@ import {CreateBlogInputModel} from "../models/blog/create-input-blog-model";
 import {BlogDBModel} from "../models/blog/blog-db-model";
 
 export class BlogService {
-    constructor(protected blogsRepository: BlogsRepository) {}
+    constructor(private blogsRepository: BlogsRepository) {}
     async getBlogById(id: string): Promise<BlogViewModel | null> {
         return this.blogsRepository.findBlogById(id);
     }

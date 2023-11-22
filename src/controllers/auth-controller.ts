@@ -13,10 +13,10 @@ const refreshTokenOptions = {httpOnly: true, secure: true}
 
 export class AuthController {
     constructor(
-        protected authService: AuthService,
-        protected userService: UserService,
-        protected sessionService: SessionService,
-        protected jwtService: JwtService
+        private authService: AuthService,
+        private userService: UserService,
+        private sessionService: SessionService,
+        private jwtService: JwtService
     ){}
     async loginUser(req: Request, res: Response) {
         const user = await this.userService.checkCredentials(req.body.loginOrEmail, req.body.password);

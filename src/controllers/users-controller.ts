@@ -14,8 +14,8 @@ import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 
 export class UsersController {
     constructor(
-        protected userService: UserService,
-        protected usersQueryRepository: UsersQueryRepository) {
+        private userService: UserService,
+        private usersQueryRepository: UsersQueryRepository) {
     }
 
     async createNewUser(req: Request, res: Response) {

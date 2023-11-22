@@ -11,7 +11,7 @@ export type InputPost = {
 }
 
 export class PostService {
-    constructor(protected postsRepository: PostsRepository) {}
+    constructor(private postsRepository: PostsRepository) {}
 
     async getPostById(id: string): Promise<PostViewModel | null> {
         return this.postsRepository.findPostById(id);

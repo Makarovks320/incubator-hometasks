@@ -9,9 +9,9 @@ import {BlogViewModel} from "../models/blog/blog-view-model";
 
 export class BlogsController {
     constructor(
-        protected blogService: BlogService,
-        protected blogsQueryRepository: BlogsQueryRepository,
-        protected postsQueryRepository: PostsQueryRepository
+        private blogService: BlogService,
+        private blogsQueryRepository: BlogsQueryRepository,
+        private postsQueryRepository: PostsQueryRepository
     ) {
     }
 

@@ -16,11 +16,11 @@ import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 
 export class CommentsController {
     constructor(
-        protected commentService: CommentService,
-        protected userService: UserService,
-        protected likeService: LikeService,
-        protected likesQueryRepository: LikesQueryRepository,
-        protected commentsQueryRepository: CommentsQueryRepository,
+        private commentService: CommentService,
+        private userService: UserService,
+        private likeService: LikeService,
+        private likesQueryRepository: LikesQueryRepository,
+        private commentsQueryRepository: CommentsQueryRepository,
     ) {}
     async updateComment(req: Request, res: Response) {
         const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);

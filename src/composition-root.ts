@@ -62,7 +62,7 @@ const sessionService = new SessionService(sessionsRepository, jwtService);
 
 const likesRepository: LikesRepository = new LikesRepository;
 const likesQueryRepository: LikesQueryRepository = new LikesQueryRepository;
-const likeService: LikeService = new LikeService(likesRepository, likesQueryRepository);
+const likeService: LikeService = new LikeService(likesRepository);
 
 // controllers
 export const userController = new UsersController(userService, usersQueryRepository);

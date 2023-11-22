@@ -5,8 +5,8 @@ import {JwtService, RefreshTokenInfoType} from "../application/jwt-service";
 
 export class SessionService {
     constructor(
-        protected sessionsRepository: SessionsRepository,
-        protected jwtService: JwtService
+        private sessionsRepository: SessionsRepository,
+        private jwtService: JwtService
     ) {
     }
 

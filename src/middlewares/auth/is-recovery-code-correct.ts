@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 * */
 export class RecoveryCodeValidator {
     constructor(
-        protected usersQueryRepository: UsersQueryRepository
+        private usersQueryRepository: UsersQueryRepository
     ) {
     }
     // @ts-ignore
