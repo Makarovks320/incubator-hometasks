@@ -1,6 +1,8 @@
 import {ObjectId} from "mongodb";
 import {EmailConfirmationType, UserDBModel, UserModel} from "../models/user/user-db-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersRepository {
     async createUser(user: UserDBModel): Promise<UserDBModel> {
         await UserModel.insertMany(user);

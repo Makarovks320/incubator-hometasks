@@ -1,5 +1,7 @@
 import {EmailAdapter} from "../adapters/email-adapter";
+import {injectable} from "inversify";
 
+@injectable()
 export class EmailManager {
     constructor(
         private emailAdapter: EmailAdapter

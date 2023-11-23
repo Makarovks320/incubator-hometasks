@@ -21,12 +21,13 @@ import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {CommentViewModel} from "../../../src/models/comment/comment-view-model";
 import {CreateCommentInputModel} from "../../../src/models/comment/create-input-comment-model";
 import {commentsTestManager} from "../../utils/commentsTestManager";
-import {jwtService} from "../../../src/composition-root";
+import {container} from "../../../src/composition-root";
 import mongoose from "mongoose";
-import any = jasmine.any;
+import {JwtService} from "../../../src/application/jwt-service";
 
 jest.setTimeout(10000)
 
+const jwtService = container.resolve(JwtService);
 describe('tests for comments', () => {
     let post: PostViewModel | null;
     let user1: UserViewModel | null;

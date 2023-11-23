@@ -2,7 +2,9 @@ import {DEFAULT_PROJECTION} from "../db/db";
 import {InputPost} from "../services/post-service";
 import {MongooseError} from "mongoose";
 import {PostDBModel, PostModel} from "../models/post/post-db-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsRepository {
     async findPostById(id: string): Promise<PostDBModel | null> {
         return PostModel.findOne({id}, { projection: DEFAULT_PROJECTION});

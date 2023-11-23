@@ -4,7 +4,9 @@ import {BlogsWithPaginationModel} from "../../models/blog/blogs-with-pagination-
 import {BlogViewModel} from "../../models/blog/blog-view-model";
 import mongoose from "mongoose";
 import {BlogModel} from "../../models/blog/blog-db-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsQueryRepository {
     async getBlogs(queryParams: BlogQueryParams): Promise<BlogsWithPaginationModel> {
 

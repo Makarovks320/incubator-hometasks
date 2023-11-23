@@ -1,7 +1,9 @@
 import {SessionDbModel, SessionModel} from "../models/session/session-model";
 import {ObjectId} from "mongodb";
 import {MongooseError} from "mongoose";
+import {injectable} from "inversify";
 
+@injectable()
 export class SessionsRepository {
     async addSession(session: SessionDbModel): Promise<SessionDbModel | null> {
         try {

@@ -11,7 +11,9 @@ import {CommentViewModel, LikesInfo} from "../../models/comment/comment-view-mod
 import {convertDbEnumToLikeStatus} from "../../helpers/like-status-converters";
 import {getCommentViewModel} from "../../helpers/comment-view-model-mapper";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
+import {injectable} from "inversify";
 
+@injectable()
 export class LikesQueryRepository {
 
     private async getLikesAndDislikesCountForComment(comment_id: ObjectId): Promise<likesCountInfo> {

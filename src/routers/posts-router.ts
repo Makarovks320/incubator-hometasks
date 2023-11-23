@@ -1,20 +1,16 @@
 import {Router} from "express";
-import {authorization} from "../middlewares/auth/authorization";
-import {
-    blogIdValidation,
-    contentValidation,
-    shortDescriptionValidation,
-    titleValidation
-} from "../middlewares/posts/posts-validations";
 import {inputValidator} from "../middlewares/common/input-validator";
-import {checkPostIdFromUri} from "../middlewares/posts/check-post-id-from-uri";
-import {authMiddleware} from "../composition-root";
-import {commentContentValidation} from "../middlewares/comments/comment-validations";
-import {param} from "express-validator";
-import {checkPostExists} from "../middlewares/posts/check-post-exists";
+import {container} from "../composition-root";
 import {idFromUrlExistingValidator} from "../middlewares/common/id-from-url-existing-validator";
-import {postsController} from "../composition-root";
+import {PostsController} from "../controllers/posts-controller";
+import {PostsValidations} from "../middlewares/posts/posts-validations";
+import {AuthMiddleware} from "../middlewares/auth/auth-middleware";
+import {CommentsValidations} from "../middlewares/comments/comments-validations";
 
+const postsController = container.resolve(PostsController);
+const postsValidations = container.resolve(PostsValidations);
+const commentValidation = container.resolve(CommentsValidations);
+const authMiddleware = container.resolve(AuthMiddleware);
 export const postsRouter = Router();
 
 postsRouter.get('/', postsController.getPosts.bind(postsController));
@@ -22,33 +18,33 @@ postsRouter.get('/', postsController.getPosts.bind(postsController));
 postsRouter.get('/:id', postsController.getPostById.bind(postsController));
 
 postsRouter.post('/', [
-    authorization,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    blogIdValidation,
+    authMiddleware.checkBasicAuthorization,
+    postsValidations.titleValidation.bind(postsValidations),
+    postsValidations.shortDescriptionValidation.bind(postsValidations),
+    postsValidations.contentValidation.bind(postsValidations),
+    postsValidations.blogIdValidation.bind(postsValidations),
     inputValidator,
     postsController.createNewPost.bind(postsController)
 ]);
 
 postsRouter.put('/:id', [
-    authorization,
-    checkPostIdFromUri,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    blogIdValidation,
+    authMiddleware.checkBasicAuthorization,
+    postsValidations.checkPostIdFromUri.bind(postsValidations),
+    postsValidations.titleValidation.bind(postsValidations),
+    postsValidations.shortDescriptionValidation.bind(postsValidations),
+    postsValidations.contentValidation.bind(postsValidations),
+    postsValidations.blogIdValidation.bind(postsValidations),
     inputValidator,
     postsController.updatePost.bind(postsController)
 ]);
 
 postsRouter.delete('/', [
-    authorization,
+    authMiddleware.checkBasicAuthorization,
     postsController.deleteAllPosts.bind(postsController)
 ]);
 
 postsRouter.delete('/:id', [
-    authorization,
+    authMiddleware.checkBasicAuthorization,
     postsController.deletePostById.bind(postsController)
 ]);
 
@@ -56,16 +52,16 @@ postsRouter.delete('/:id', [
 
 postsRouter.get('/:id/comments', [
     authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
-    param('id').custom(checkPostExists).withMessage('post is not found'),
+    postsValidations.checkPostExists.bind(postsValidations),
     idFromUrlExistingValidator,
     postsController.getCommentsForPost.bind(postsController)
 ]);
 
 postsRouter.post('/:id/comments', [
     authMiddleware.checkBearerToken.bind(authMiddleware),
-    param('id').custom(checkPostExists).withMessage('post is not found'),
+    postsValidations.checkPostExists.bind(postsValidations),
     idFromUrlExistingValidator,
-    commentContentValidation,
+    commentValidation.commentContentValidation,
     inputValidator,
     postsController.createCommentToPost.bind(postsController)
 ]);

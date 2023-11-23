@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import {settings} from "../settings";
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
+import {injectable} from "inversify";
 
 const secret: string = settings.JWT_SECRET;
 const refreshSecret: string = settings.JWT_REFRESH_SECRET;
@@ -19,6 +20,7 @@ export type RefreshTokenInfoType = {
     exp: number
 }
 
+@injectable()
 export class JwtService {
     async createAccessToken(userId: ObjectId) {
         return jwt.sign({userId}, secret, {expiresIn: '600s'});

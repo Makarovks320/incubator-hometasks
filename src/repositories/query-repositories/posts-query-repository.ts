@@ -3,7 +3,9 @@ import {PostQueryParams} from "../../models/post/post-query-params-type";
 import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-model";
 import {PostDBModel, PostModel} from "../../models/post/post-db-model";
 import mongoose from "mongoose";
+import {injectable} from "inversify";
 
+@injectable()
 export class PostsQueryRepository {
     async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsWithPaginationModel> {
         const filter: mongoose.FilterQuery<PostDBModel> = {};

@@ -1,9 +1,10 @@
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
-import {COMMENT_PROJECTION} from "./query-repositories/comments-query-repository";
 import {CommentDBModel, CommentModel} from "../models/comment/comment-db-model";
 import {MongooseError} from "mongoose";
 import {ObjectId} from "mongodb";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsRepository {
     async createNewComment(comment: CommentDBModel): Promise<CommentDBModel | string> {
         try {

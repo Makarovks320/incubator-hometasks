@@ -22,7 +22,6 @@ import {BlogsQueryRepository} from "./repositories/query-repositories/blogs-quer
 import {CommentsQueryRepository} from "./repositories/query-repositories/comments-query-repository";
 import {PostsQueryRepository} from "./repositories/query-repositories/posts-query-repository";
 import {UsersQueryRepository} from "./repositories/query-repositories/users-query-repository";
-import {RecoveryCodeValidator} from "./middlewares/auth/is-recovery-code-correct";
 import {EmailManager} from "./managers/emailManager";
 import {EmailAdapter} from "./adapters/email-adapter";
 import {LikeService} from "./services/like-service";
@@ -78,4 +77,3 @@ container.bind(SecurityDevicesController).to(SecurityDevicesController);
 
 // middlewares
 container.bind(AuthMiddleware).to(AuthMiddleware);
-container.bind(RecoveryCodeValidator).to(RecoveryCodeValidator);
