@@ -9,7 +9,6 @@ import {PostViewModel} from "../models/post/post-view-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
-import {ObjectId} from "mongodb";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 import mongoose from "mongoose";

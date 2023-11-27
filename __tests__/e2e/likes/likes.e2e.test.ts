@@ -21,14 +21,19 @@ import {postsTestManager} from "../../utils/postsTestManager";
 import {CreateCommentInputModel} from "../../../src/models/comment/create-input-comment-model";
 import {commentsTestManager} from "../../utils/commentsTestManager";
 import {CommentViewModel} from "../../../src/models/comment/comment-view-model";
+import {authTestManager} from "../../utils/authTestManager";
 
 describe('testing likes', () => {
-    const email: string = "email123@mail.com";
+    const email1: string = "email-1@mail.com";
+    const email2: string = "email-2@mail.com";
+    const email3: string = "email-3@mail.com";
     const password: string = "password123";
 
     let blog: BlogViewModel | null;
     let post: PostViewModel | null;
     let user: UserViewModel | null = null;
+    let user2: UserViewModel | null = null;
+    let user3: UserViewModel | null = null;
     let authJWTHeader = {}
     let comment: CommentViewModel | null = null;
     // сюда сохраним токены юзера
@@ -65,41 +70,44 @@ describe('testing likes', () => {
         const {createdPost} = await postsTestManager.createPost(postData, HTTP_STATUSES.CREATED_201);
         post = createdPost;
 
-        // Создаем юзера, чтобы оставлять комменты
+        // Создаем юзера 1, чтобы оставлять комменты и лайкать их
         const userData: CreateUserInputModel = {
             "login": "User01",
             "password": password,
-            "email": email,
+            "email": email1,
+        }
+        // Создаем юзеров 2 и 3, чтобы лайкали
+        const userData2: CreateUserInputModel = {
+            "login": "User02",
+            "password": password,
+            "email": email2,
+        }
+        const userData3: CreateUserInputModel = {
+            "login": "User02",
+            "password": password,
+            "email": email3,
         }
 
         const {createdUser} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
         user = createdUser;
+        const {createdUser: createdUser2} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
+        user2 = createdUser2;
+        const {createdUser: createdUser3} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
+        user3 = createdUser3
     });
 
     it('Check that necessary support objects have been successfully created', async () => {
         expect(blog).not.toBeNull();
         expect(post).not.toBeNull();
         expect(user).not.toBeNull();
+        expect(user2).not.toBeNull();
+        expect(user3).not.toBeNull();
     });
 
-    it('should sign in user with correct credentials; stats 200; ' +
+    it('should sign in user with correct credentials; status 200; ' +
         'content: JWT access token, JWT refresh token in cookie (http only, secure);', async () => {
-        const response = await request(app)
-            .post(`${RouterPaths.auth}/login`)
-            .send({loginOrEmail: email, password: password})
-            .expect(HTTP_STATUSES.OK_200);
-
-        accessToken = response.body.accessToken;
-        expect(accessToken).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_.+/=]*$/);
-        authJWTHeader = {Authorization: `Bearer ${accessToken}`}
-
-        const cookieHeader = response.headers['set-cookie'][0];
-        expect(cookieHeader.includes('HttpOnly')).toEqual(true);
-        expect(cookieHeader.includes('Secure')).toEqual(true);
-
-        const cookies = cookie.parse(cookieHeader);
-        refreshToken = cookies.refreshToken;
-        expect(refreshToken).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_.+/=]*$/);
+        const result: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email1, password: password});
+        authJWTHeader = {Authorization: `Bearer ${result!.accessToken}`}
     });
 
 
