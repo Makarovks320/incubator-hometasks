@@ -42,7 +42,7 @@ describe('CRUD tests for /posts', () => {
 
     // create blog + create post for blog
     let createdBlogForPost: BlogViewModel | null = null;
-    let createdPostEntity1: PostViewModel | null = null;
+    let createdPost1: PostViewModel | null = null;
     it('should create new post for existing blogId', async () => {
         // сначала создадим блог
         const blogData: CreateBlogInputModel = {
@@ -64,12 +64,12 @@ describe('CRUD tests for /posts', () => {
         }
 
         const {createdPost} = await postsTestManager.createPost(postData, HTTP_STATUSES.CREATED_201);
-        createdPostEntity1 = createdPost;
+        createdPost1 = createdPost;
     });
 
     // create another post
-    let createdPostEntity2: PostViewModel | null = null;
-    it('should create another post entity for same blog', async () => {
+    let createdPost2: PostViewModel | null = null;
+    it('should create another post for the same blog', async () => {
         if (!createdBlogForPost) {
             throw new Error('test cannot be performed.');
         }
@@ -82,14 +82,21 @@ describe('CRUD tests for /posts', () => {
         }
 
         const {createdPost} = await postsTestManager.createPost(postData, HTTP_STATUSES.CREATED_201);
-        createdPostEntity2 = createdPost;
+        createdPost2 = createdPost;
     })
 
-    // get all posts for existing blog
-    it('should return all posts with pagination of posts for existing blog', async () => {
-        if (!createdBlogForPost) {
-            throw new Error('test cannot be performed.');
+    // update post
+    let updatedPost1: PostViewModel | null = null;
+    it('should update post', async () => {
+        if (!createdPost1 || !createdBlogForPost) throw new Error('test cannot be performed.');
+        const updatedPostData: CreatePostInputModel = {
+            "title": "updated title 2",
+            "content": "updated content 2",
+            "shortDescription": "updated some short description 2",
+            "blogId": createdBlogForPost.id
         }
+
+        await postsTestManager.updatePost(createdPost1._id.toString(), updatedPostData, HTTP_STATUSES.NO_CONTENT_204);
 
         await request(app)
             .get(`${RouterPaths.blogs}/${createdBlogForPost.id}/posts`)
@@ -98,7 +105,7 @@ describe('CRUD tests for /posts', () => {
                 page: 1,
                 pageSize: 10,
                 totalCount: 2,
-                items: [createdPostEntity2, createdPostEntity1]
+                items: [createdPost2, {...createdPost1, ...updatedPostData}]
             });
     })
 });

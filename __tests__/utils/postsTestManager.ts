@@ -6,6 +6,7 @@ import {HTTP_STATUSES, HttpStatusType} from "../../src/enums/http-statuses";
 import * as supertest from "supertest";
 import {CreatePostInputModel} from "../../src/models/post/create-post-input-model";
 import {PostViewModel} from "../../src/models/post/post-view-model";
+import {ObjectId} from "mongodb";
 
 
 export const postsTestManager = {
@@ -31,7 +32,7 @@ export const postsTestManager = {
 
             expect(createdPost).toEqual({
                 createdAt: expect.any(String),
-                id: expect.any(String),
+                _id: expect.any(String),
                 title: data.title,
                 content: data.content,
                 shortDescription: data.shortDescription,
@@ -41,5 +42,34 @@ export const postsTestManager = {
         }
 
         return {response, createdPost: createdPost};
+    },
+
+
+    async updatePost(post_id: string, data: CreatePostInputModel, expectedStatusCode: HttpStatusType)
+        : Promise<{ response: supertest.Response; updatedPost: PostViewModel | null }> {
+        const response: request.Response = await request(app)
+            .put(RouterPaths.posts + '/' + post_id)
+            .set(authBasicHeader)
+            .send(data)
+            .expect(expectedStatusCode);
+        let updatedPost: PostViewModel | null = null;
+
+        if (expectedStatusCode === HTTP_STATUSES.CREATED_201) {
+            updatedPost = response.body;
+
+            if (!updatedPost) throw new Error('test cannot be performed.');
+
+            expect(updatedPost).toEqual({
+                createdAt: expect.any(String),
+                _id: expect.any(String),
+                title: data.title,
+                content: data.content,
+                shortDescription: data.shortDescription,
+                blogId: updatedPost.blogId,
+                blogName: expect.any(String)
+            });
+        }
+
+        return {response, updatedPost: updatedPost};
     }
 }
