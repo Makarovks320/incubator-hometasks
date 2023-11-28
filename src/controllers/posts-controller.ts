@@ -13,6 +13,8 @@ import {WithPagination} from "../models/common-types-aliases-&-generics/with-pag
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 import mongoose from "mongoose";
 import {inject, injectable} from "inversify";
+import {BlogsRepository} from "../repositories/blogs-repository";
+
 @injectable()
 export class PostsController {
     constructor(
@@ -20,7 +22,8 @@ export class PostsController {
         @inject(CommentService) private commentService: CommentService,
         @inject(CommentsQueryRepository) private commentQueryRepository: CommentsQueryRepository,
         @inject(PostsQueryRepository) private postsQueryRepository: PostsQueryRepository,
-        @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository
+        @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository,
+        @inject(BlogsRepository) private blogsRepository: BlogsRepository
     ) {
     }
 
@@ -41,10 +44,13 @@ export class PostsController {
     }
 
     async createNewPost(req: Request, res: Response) {
+        const blog = await this.blogsRepository.findBlogById(req.body.blogId);
+        if (!blog) throw new Error('Incorrect blog id: blog is not found');
+
         const post: InputPost = {
             ...req.body,
             blogId: req.body.blogId ? req.body.blogId : req.params.id,// смотря какой эндпоинт: /posts или /blogs
-            blogName: req.blogName
+            blogName: blog.name
         }
         const result: PostViewModel | string = await this.postService.createNewPost(post);
         if (typeof result === 'string') {
@@ -55,7 +61,10 @@ export class PostsController {
     }
 
     async updatePost(req: Request, res: Response) {
-        const newPost = await this.postService.updatePostById(req.params.id, req.body)
+        const blog = await this.blogsRepository.findBlogById(req.body.blogId);
+        if (!blog) throw new Error('Incorrect blog id: blog is not found');
+
+        const newPost = await this.postService.updatePostById(req.params.id, {...req.body, blogName: blog.name});
         newPost ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.send(HTTP_STATUSES.NOT_FOUND_404);
     }
 
