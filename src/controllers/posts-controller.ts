@@ -15,6 +15,7 @@ import mongoose from "mongoose";
 import {inject, injectable} from "inversify";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {PostDBModel} from "../models/post/post-db-model";
+import {getPostViewModel} from "../helpers/post-view-model-mapper";
 
 @injectable()
 export class PostsController {
@@ -59,7 +60,7 @@ export class PostsController {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
             return;
         }
-        const createdPost: PostViewModel = result;// todo: обогатить свойством extendedLikesInfo
+        const createdPost: PostViewModel = getPostViewModel(result);
         res.status(HTTP_STATUSES.CREATED_201).send(createdPost);
     }
 

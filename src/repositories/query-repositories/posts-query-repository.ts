@@ -4,6 +4,7 @@ import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-
 import {PostDBModel, PostModel} from "../../models/post/post-db-model";
 import mongoose from "mongoose";
 import {injectable} from "inversify";
+import {getPostViewModel} from "../../helpers/post-view-model-mapper";
 
 @injectable()
 export class PostsQueryRepository {
@@ -16,7 +17,7 @@ export class PostsQueryRepository {
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const res = await PostModel.find(filter)
+        const posts = await PostModel.find(filter)
             .select(WITHOUT_v_MONGOOSE_PROJECTION)
             .lean()
             .sort(sort)
@@ -29,7 +30,7 @@ export class PostsQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount: totalCount,
-            items: res
+            items: posts.map(p => getPostViewModel(p))
         }
     }
 }
