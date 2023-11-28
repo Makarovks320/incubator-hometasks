@@ -42,7 +42,7 @@ export class PostsController {
 
     async getPostById(req: Request, res: Response) {
         const posts = await this.postService.getPostById(req.params.id);
-        posts ? res.send(posts) : res.send(HTTP_STATUSES.NOT_FOUND_404);
+        posts ? res.send(getPostViewModel(posts)) : res.send(HTTP_STATUSES.NOT_FOUND_404);
     }
 
     async createNewPost(req: Request, res: Response) {

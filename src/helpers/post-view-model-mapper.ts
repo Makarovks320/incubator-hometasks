@@ -6,7 +6,7 @@ export const getPostViewModel = (postDb: PostDBModel,
                                      likesCount: 0,
                                      dislikesCount: 0,
                                      myStatus: 'None',
-                                     newestLikes: null
+                                     newestLikes: []
                                  }
                                     ): PostViewModel => {
     return {
