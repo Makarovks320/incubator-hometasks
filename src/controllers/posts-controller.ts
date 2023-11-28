@@ -14,6 +14,7 @@ import {LikesQueryRepository} from "../repositories/query-repositories/likes-que
 import mongoose from "mongoose";
 import {inject, injectable} from "inversify";
 import {BlogsRepository} from "../repositories/blogs-repository";
+import {PostDBModel} from "../models/post/post-db-model";
 
 @injectable()
 export class PostsController {
@@ -52,12 +53,14 @@ export class PostsController {
             blogId: req.body.blogId ? req.body.blogId : req.params.id,// смотря какой эндпоинт: /posts или /blogs
             blogName: blog.name
         }
-        const result: PostViewModel | string = await this.postService.createNewPost(post);
+        const result: PostDBModel | string = await this.postService.createNewPost(post);
+
         if (typeof result === 'string') {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
             return;
         }
-        res.status(HTTP_STATUSES.CREATED_201).send(result);
+        const createdPost: PostViewModel = result;// todo: обогатить свойством extendedLikesInfo
+        res.status(HTTP_STATUSES.CREATED_201).send(createdPost);
     }
 
     async updatePost(req: Request, res: Response) {

@@ -4,8 +4,8 @@ import {
     LikeDbModel,
     LikeModel,
     likesCountInfo,
-    LikeStatusDbEnum,
-    LikeStatusType
+    LIKE_STATUS_DB_ENUM,
+    LikeStatusType, PARENT_TYPE_ENUM, PARENT_TYPE_DB_ENUM
 } from "../../models/like/like-db-model";
 import {CommentViewModel, LikesInfo} from "../../models/comment/comment-view-model";
 import {convertDbEnumToLikeStatus} from "../../helpers/like-status-converters";
@@ -16,10 +16,10 @@ import {injectable} from "inversify";
 @injectable()
 export class LikesQueryRepository {
 
-    private async getLikesAndDislikesCountForComment(comment_id: ObjectId): Promise<likesCountInfo> {
+    private async getLikesAndDislikesCountForComment(parentId: ObjectId): Promise<likesCountInfo> {
         try {
-            const likesCount = await LikeModel.countDocuments({ comment_id, type: LikeStatusDbEnum.LIKE }).lean();
-            const dislikesCount = await LikeModel.countDocuments({ comment_id, type: LikeStatusDbEnum.DISLIKE }).lean();
+            const likesCount = await LikeModel.countDocuments({ parent_id: parentId, type: LIKE_STATUS_DB_ENUM.LIKE }).lean();
+            const dislikesCount = await LikeModel.countDocuments({ parent_id: parentId, type: LIKE_STATUS_DB_ENUM.DISLIKE }).lean();
 
             return { likesCount: likesCount, dislikesCount: dislikesCount };
         } catch (error) {
@@ -27,13 +27,13 @@ export class LikesQueryRepository {
             throw error;
         }
     }
-    async getLikeForCommentForCurrentUser(comment_id: ObjectId, user_id: ObjectId): Promise<LikeDbModel | null> {
-        return LikeModel.findOne({ comment_id, user_id }).lean();
+    async getLikeForParentForCurrentUser(parent_id: ObjectId, user_id: ObjectId): Promise<LikeDbModel | null> {
+        return LikeModel.findOne({ parent_id, user_id }).lean();
     }
 
-    async getLikesInfo(commentId: ObjectId, userId: ObjectId): Promise<LikesInfo> {
-        const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(commentId);
-        const myLike: LikeDbModel | null = await this.getLikeForCommentForCurrentUser(commentId, userId);
+    async getLikesInfo(parentId: ObjectId, userId: ObjectId): Promise<LikesInfo> {
+        const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(parentId);
+        const myLike: LikeDbModel | null = await this.getLikeForParentForCurrentUser(parentId, userId);
         let myStatus: LikeStatusType = 'None';
         if (myLike) {
             myStatus = convertDbEnumToLikeStatus(myLike!.type);
@@ -45,7 +45,7 @@ export class LikesQueryRepository {
     async findLikesForManyComments(comments: WithPagination<CommentDBModel>, currentUserId: ObjectId): Promise<WithPagination<CommentViewModel>> {
         const viewCommentsWithLikesInfoPromises: Promise<CommentViewModel>[] = comments.items.map(async c => {
             const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(c._id);
-            const like: LikeDbModel | null = await this.getLikeForCommentForCurrentUser(c._id, currentUserId);
+            const like: LikeDbModel | null = await this.getLikeForParentForCurrentUser(c._id, currentUserId);
             const result = getCommentViewModel(c, {
                 likesCount: likesCountInfo.likesCount,
                 dislikesCount: likesCountInfo.dislikesCount,

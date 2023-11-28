@@ -7,7 +7,7 @@ import {UserService} from "../services/user-service";
 import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 import {LikeService} from "../services/like-service";
-import {LikeDbModel} from "../models/like/like-db-model";
+import {LikeDbModel, PARENT_TYPE_DB_ENUM, PARENT_TYPE_ENUM} from "../models/like/like-db-model";
 import mongoose from "mongoose";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
@@ -78,10 +78,10 @@ export class CommentsController {
             const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
 
             // если у текущего пользователя есть лайк для данного коммента, то изменим его, если нет - создадим
-            const currentLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForCommentForCurrentUser(comment!._id, req.userId);
+            const currentLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForParentForCurrentUser(comment!._id, req.userId);
             currentLike ?
                 await this.likeService.changeLikeStatus(currentLike, req.body.likeStatus)
-                : await this.likeService.createNewLike(comment!._id, req.userId, req.body.likeStatus);
+                : await this.likeService.createNewLike(PARENT_TYPE_DB_ENUM.COMMENT, comment!._id, req.userId, req.body.likeStatus);
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');

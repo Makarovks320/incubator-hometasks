@@ -17,7 +17,7 @@ export type InputPost = {
 export class PostService {
     constructor(@inject(PostsRepository) private postsRepository: PostsRepository) {}
 
-    async getPostById(id: string): Promise<PostViewModel | null> {
+    async getPostById(id: string): Promise<PostDBModel | null> {
         const objectId = stringToObjectIdMapper(id);
         return this.postsRepository.findPostById(objectId);
     }

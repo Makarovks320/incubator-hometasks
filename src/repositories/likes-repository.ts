@@ -4,7 +4,7 @@ import {injectable} from "inversify";
 @injectable()
 export class LikesRepository {
     async createNewLike(like: LikeDbModel): Promise<LikeDbModel> {
-        const result = await LikeModel.insertMany(like);
+        await LikeModel.insertMany(like);
         return like;
     }
 
