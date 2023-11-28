@@ -5,7 +5,7 @@ import {RouterPaths} from "../../src/helpers/router-paths";
 import {HTTP_STATUSES, HttpStatusType} from "../../src/enums/http-statuses";
 import * as supertest from "supertest";
 import {CreatePostInputModel} from "../../src/models/post/create-post-input-model";
-import {PostViewModel} from "../../src/models/post/post-view-model";
+import {ExtendedLikesInfoType, PostViewModel} from "../../src/models/post/post-view-model";
 import {ObjectId} from "mongodb";
 
 
@@ -32,12 +32,18 @@ export const postsTestManager = {
 
             expect(createdPost).toEqual({
                 createdAt: expect.any(String),
-                _id: expect.any(String),
+                id: expect.any(String),
                 title: data.title,
                 content: data.content,
                 shortDescription: data.shortDescription,
                 blogId: createdPost.blogId,
-                blogName: expect.any(String)
+                blogName: expect.any(String),
+                extendedLikesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None',
+                    newestLikes: null
+                }
             });
         }
 
