@@ -37,12 +37,12 @@ export class PostsController {
             req.query.sortDirection === 'asc' ? 'asc' : 'desc'
         )
         const posts = await this.postsQueryRepository.getPosts(queryParams);
-        res.send(posts);
+        res.status(HTTP_STATUSES.OK_200).send(posts);
     }
 
     async getPostById(req: Request, res: Response) {
         const posts = await this.postService.getPostById(req.params.id);
-        posts ? res.send(getPostViewModel(posts)) : res.send(HTTP_STATUSES.NOT_FOUND_404);
+        posts ? res.status(HTTP_STATUSES.OK_200).send(getPostViewModel(posts)) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
 
     async createNewPost(req: Request, res: Response) {
@@ -69,7 +69,7 @@ export class PostsController {
         if (!blog) throw new Error('Incorrect blog id: blog is not found');
 
         const newPost = await this.postService.updatePostById(req.params.id, {...req.body, blogName: blog.name});
-        newPost ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.send(HTTP_STATUSES.NOT_FOUND_404);
+        newPost ? res.sendStatus(HTTP_STATUSES.NO_CONTENT_204) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
 
     async deleteAllPosts(req: Request, res: Response) {
@@ -93,7 +93,7 @@ export class PostsController {
             )
             const foundComments: WithPagination<CommentDBModel> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
             const commentsWithLikesInfo: WithPagination<CommentViewModel> = await this.likesQueryRepository.findLikesForManyComments(foundComments, req.userId);
-            res.send(commentsWithLikesInfo);
+            res.status(HTTP_STATUSES.OK_200).send(commentsWithLikesInfo);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db Error');
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
