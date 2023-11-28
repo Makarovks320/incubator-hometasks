@@ -22,6 +22,8 @@ import {CreateCommentInputModel} from "../../../src/models/comment/create-input-
 import {commentsTestManager} from "../../utils/commentsTestManager";
 import {CommentViewModel} from "../../../src/models/comment/comment-view-model";
 import {authTestManager} from "../../utils/authTestManager";
+import {LIKE_STATUS_ENUM} from "../../../src/models/like/like-db-model";
+import {likeTestManager} from "../../utils/likeTestManager";
 
 describe('testing likes', () => {
     const email1: string = "email-1@mail.com";
@@ -31,14 +33,13 @@ describe('testing likes', () => {
 
     let blog: BlogViewModel | null;
     let post: PostViewModel | null;
-    let user: UserViewModel | null = null;
-    let user2: UserViewModel | null = null;
-    let user3: UserViewModel | null = null;
-    let authJWTHeader = {}
+    let user_1: UserViewModel | null = null;
+    let user_2: UserViewModel | null = null;
+    let user_3: UserViewModel | null = null;
+    let authJWTHeader1 = {}
+    let authJWTHeader2 = {}
+    let authJWTHeader3 = {}
     let comment: CommentViewModel | null = null;
-    // сюда сохраним токены юзера
-    let accessToken: string | null = null;
-    let refreshToken: string | null = null;
 
     beforeAll(connectToDataBases);
 
@@ -89,25 +90,25 @@ describe('testing likes', () => {
         }
 
         const {createdUser} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
-        user = createdUser;
+        user_1 = createdUser;
         const {createdUser: createdUser2} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
-        user2 = createdUser2;
+        user_2 = createdUser2;
         const {createdUser: createdUser3} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
-        user3 = createdUser3
+        user_3 = createdUser3
     });
 
     it('Check that necessary support objects have been successfully created', async () => {
         expect(blog).not.toBeNull();
         expect(post).not.toBeNull();
-        expect(user).not.toBeNull();
-        expect(user2).not.toBeNull();
-        expect(user3).not.toBeNull();
+        expect(user_1).not.toBeNull();
+        expect(user_2).not.toBeNull();
+        expect(user_3).not.toBeNull();
     });
 
-    it('should sign in user with correct credentials; status 200; ' +
+    it('should sign in user_1 with correct credentials; status 200; ' +
         'content: JWT access token, JWT refresh token in cookie (http only, secure);', async () => {
         const result: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email1, password: password});
-        authJWTHeader = {Authorization: `Bearer ${result!.accessToken}`}
+        authJWTHeader1 = {Authorization: `Bearer ${result!.accessToken}`}
     });
 
 
@@ -116,55 +117,47 @@ describe('testing likes', () => {
 
         const data: CreateCommentInputModel = {content: "Say my name! Heisenberg? You're goddamn right!"}
 
-        const {createdComment} = await commentsTestManager.createComment(post.id, data, HTTP_STATUSES.CREATED_201, authJWTHeader)
+        const {createdComment} = await commentsTestManager.createComment(post.id, data, HTTP_STATUSES.CREATED_201, authJWTHeader1)
 
         comment = createdComment;
 
         if (!comment) throw new Error('test cannot be performed.');
 
-        await request(app)
-            .get(`${RouterPaths.posts}/${post.id}/comments`)
-            .expect(HTTP_STATUSES.OK_200, {
-                pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                    id: comment.id,
-                    content: data.content,
-                    commentatorInfo: comment.commentatorInfo,
-                    createdAt: comment.createdAt,
-                    likesInfo: {
-                        likesCount: 0,
-                        dislikesCount: 0,
-                        myStatus: "None"
-                    }
-                }]
-            });
+        await likeTestManager.checkLikesForCommentByPostId(post.id, 0, 0, LIKE_STATUS_ENUM.NONE);
 
-        await request(app)
-            .get(`${RouterPaths.comments}/${comment.id}`)
-            .expect(HTTP_STATUSES.OK_200, {
-                id: comment.id,
-                content: data.content,
-                commentatorInfo: comment.commentatorInfo,
-                createdAt: comment.createdAt,
-                likesInfo: {
-                    likesCount: 0,
-                    dislikesCount: 0,
-                    myStatus: "None"
-                }
-            })
+        await likeTestManager.checkLikeStatusForCommentById(comment.id, 0, 0, LIKE_STATUS_ENUM.NONE);
     });
 
 
     it('should add like for comment', async () => {
         if (!comment) throw new Error('test cannot be performed.');
 
-        const data = {
-            likeStatus: "Like"
-        }
-        await request(app)
-            .put(`${RouterPaths.comments}/${comment.id}/like-status`)
-            .set(authJWTHeader)
-            .send(data)
-            .expect(HTTP_STATUSES.NO_CONTENT_204);
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader1, LIKE_STATUS_ENUM.LIKE);
+        // без заголовка авторизации не должен возвращать статус текущего юзера
+        await likeTestManager.checkLikeStatusForCommentById(comment.id, 1, 0, LIKE_STATUS_ENUM.NONE);
+        // с заголовком авторизации должен вернуть статус текущего юзера
+        await likeTestManager.checkLikeStatusForCommentById(comment.id, 1, 0, LIKE_STATUS_ENUM.LIKE, authJWTHeader1);
+
+    });
+
+
+    it('should remove like for comment', async () => {
+        if (!comment) throw new Error('test cannot be performed.');
+
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader1, LIKE_STATUS_ENUM.NONE);
+
+        await likeTestManager.checkLikeStatusForCommentById(comment.id, 0, 0, LIKE_STATUS_ENUM.NONE, authJWTHeader1);
+
+    });
+
+
+    it('should add dislike for comment', async () => {
+        if (!comment) throw new Error('test cannot be performed.');
+
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader1, LIKE_STATUS_ENUM.DISLIKE)
+
+        await likeTestManager.checkLikeStatusForCommentById(comment.id, 0, 1, LIKE_STATUS_ENUM.DISLIKE, authJWTHeader1);
+
     });
 
 })

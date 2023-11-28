@@ -13,6 +13,6 @@ export type CommentViewModel = {
 
 export type LikesInfo = {
     likesCount: number,
-        dislikesCount: number,
-        myStatus: "None" | "Like" | "Dislike"
+    dislikesCount: number,
+    myStatus: "None" | "Like" | "Dislike"
 }

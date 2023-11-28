@@ -12,6 +12,11 @@ export class LikeDbModel {
     ) {
     }
 }
+export enum LIKE_STATUS_ENUM  {
+    LIKE = 'Like',
+    DISLIKE = 'Dislike',
+    NONE = 'None'
+};
 export type LikeStatusType = 'Like' | 'Dislike' | 'None';
 export enum LikeStatusDbEnum  {
     LIKE,

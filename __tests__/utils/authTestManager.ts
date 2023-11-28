@@ -4,6 +4,7 @@ import {app} from "../../src/app_settings";
 import {RouterPaths} from "../../src/helpers/router-paths";
 import {AuthLoginInputData} from "../../src/models/auth/auth-model";
 import cookie from "cookie";
+import {LikeStatusType} from "../../src/models/like/like-db-model";
 
 export const authTestManager = {
     /*
@@ -12,7 +13,7 @@ export const authTestManager = {
     * */
 
     async loginUser(data: AuthLoginInputData, expectedStatusCode: HttpStatusType = HTTP_STATUSES.OK_200)
-    : Promise<{accessToken: string, refreshToken: string} | null>{
+        : Promise<{ accessToken: string, refreshToken: string } | null> {
         const response = await request(app)
             .post(`${RouterPaths.auth}/login`)
             .send({loginOrEmail: data.loginOrEmail, password: data.password})
