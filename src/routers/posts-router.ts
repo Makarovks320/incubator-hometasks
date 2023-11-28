@@ -49,7 +49,6 @@ postsRouter.delete('/:id', [
 ]);
 
 // комментарии
-
 postsRouter.get('/:id/comments', [
     authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
     postsValidations.checkPostExists.bind(postsValidations),

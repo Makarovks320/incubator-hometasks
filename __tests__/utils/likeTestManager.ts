@@ -6,6 +6,12 @@ import {AuthLoginInputData} from "../../src/models/auth/auth-model";
 import cookie from "cookie";
 import {LIKE_STATUS_ENUM, LikeStatusType} from "../../src/models/like/like-db-model";
 
+export type CommentWithLikeInfo = {
+    comment_id: string,
+    likesCount: number,
+    dislikesCount: number,
+    myStatus: LikeStatusType
+}
 export const likeTestManager = {
     /*
     добавление/удаление лайка/дизлайка
@@ -55,27 +61,33 @@ export const likeTestManager = {
     Предназначен для случая, если у поста есть только один коммент.
     Параметры пагинации прописаны хардкодом.
      */
-    async checkLikesForCommentByPostId(post_id: string,
-                                       likesCount: number,
-                                       dislikesCount: number,
-                                       myStatus: LikeStatusType = LIKE_STATUS_ENUM.NONE,
-                                       authJWTHeader = {}) {
+    async checkLikesForCommentListByPostId(post_id: string,
+                                           listOfComments: CommentWithLikeInfo[] = [{
+                                           comment_id: '',
+                                           likesCount: 0,
+                                           dislikesCount: 0,
+                                           myStatus: LIKE_STATUS_ENUM.NONE
+                                       }],
+                                           authJWTHeader = {}) {
         const response = await request(app)
             .get(`${RouterPaths.posts}/${post_id}/comments`)
             .set(authJWTHeader)
             .expect(HTTP_STATUSES.OK_200);
         expect(response.body).toEqual({
-            pagesCount: 1, page: 1, pageSize: 10, totalCount: 1, items: [{
-                id: expect.any(String),
-                content: expect.any(String),
-                commentatorInfo: expect.any(Object),
-                createdAt: expect.any(String),
-                likesInfo: {
-                    likesCount: likesCount,
-                    dislikesCount: dislikesCount,
-                    myStatus: myStatus
+            pagesCount: 1, page: 1, pageSize: 10, totalCount: listOfComments.length,
+            items: listOfComments.map(c => {
+                return {
+                    id: c.comment_id ? c.comment_id : expect.any(String),
+                    content: expect.any(String),
+                    commentatorInfo: expect.any(Object),
+                    createdAt: expect.any(String),
+                    likesInfo: {
+                        likesCount: c.likesCount,
+                        dislikesCount: c.dislikesCount,
+                        myStatus: c.myStatus
+                    }
                 }
-            }]
+            })
         })
     }
 }

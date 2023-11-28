@@ -69,6 +69,7 @@ export class PostsController {
         blog ? res.status(HTTP_STATUSES.NO_CONTENT_204).send() : res.status(HTTP_STATUSES.NOT_FOUND_404).send();
     }
 
+    // комментарии
     async getCommentsForPost(req: Request, res: Response) {
         try {
             const queryParams = new PostQueryParams(
