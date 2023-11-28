@@ -9,7 +9,7 @@ import {injectable} from "inversify";
 @injectable()
 export class UsersQueryRepository {
     async getUsers(queryParams: UsersQueryParams): Promise<WithPagination<UserDBModel>> {
-        let filter: mongoose.FilterQuery<PostDBModel> = {};
+        let filter: mongoose.FilterQuery<UserDBModel> = {};
         if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
             filter = {
                 $or: []

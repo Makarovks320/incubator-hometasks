@@ -1,4 +1,4 @@
-import {DEFAULT_MONGOOSE_PROJECTION} from "../../db/db";
+import {DEFAULT_MONGOOSE_PROJECTION, WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
 import {PostQueryParams} from "../../models/post/post-query-params-type";
 import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-model";
 import {PostDBModel, PostModel} from "../../models/post/post-db-model";
@@ -17,7 +17,7 @@ export class PostsQueryRepository {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
         const res = await PostModel.find(filter)
-            .select(DEFAULT_MONGOOSE_PROJECTION)
+            .select(WITHOUT_v_MONGOOSE_PROJECTION)
             .lean()
             .sort(sort)
             .skip((queryParams.pageNumber - 1) * queryParams.pageSize)

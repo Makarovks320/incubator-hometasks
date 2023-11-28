@@ -1,17 +1,21 @@
 import mongoose from "mongoose";
+import {ObjectId} from "mongodb";
 
-export type PostDBModel = {
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string
+export class PostDBModel {
+    constructor(
+        public _id: ObjectId,
+        public title: string,
+        public shortDescription: string,
+        public content: string,
+        public blogId: string,
+        public blogName: string,
+        public createdAt: string
+    ) {
+    }
 }
 
 const postMongoSchema = new mongoose.Schema<PostDBModel>({
-    id: {type: String, required: true},
+    _id: {type: mongoose.Schema.Types.ObjectId, required: true},
     title: {type: String, required: true},
     shortDescription: {type: String, required: true},
     content: {type: String, required: true},

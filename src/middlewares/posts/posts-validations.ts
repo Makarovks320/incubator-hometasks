@@ -5,6 +5,7 @@ import {NextFunction, Request, Response} from "express";
 import {HTTP_STATUSES} from "../../enums/http-statuses";
 import { PostsRepository } from "../../repositories/posts-repository";
 import {BlogsRepository} from "../../repositories/blogs-repository";
+import {stringToObjectIdMapper} from "../../helpers/string-to-object-id-mapper";
 
 @injectable()
 export class PostsValidations {
@@ -49,7 +50,7 @@ export class PostsValidations {
 
     async checkPostIdFromUri (req: Request, res: Response, next: NextFunction) {
         const id = req.params.id;
-        const exist = await this.postsRepository.findPostById(id);
+        const exist = await this.postsRepository.findPostById(stringToObjectIdMapper(id));
         exist ? next() :
             res.status(HTTP_STATUSES.NOT_FOUND_404).send();
     }
