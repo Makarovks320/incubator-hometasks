@@ -91,9 +91,9 @@ describe('testing likes', () => {
 
         const {createdUser} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
         user_1 = createdUser;
-        const {createdUser: createdUser2} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
+        const {createdUser: createdUser2} = await usersTestManager.createUser(userData2, HTTP_STATUSES.CREATED_201, authBasicHeader)
         user_2 = createdUser2;
-        const {createdUser: createdUser3} = await usersTestManager.createUser(userData, HTTP_STATUSES.CREATED_201, authBasicHeader)
+        const {createdUser: createdUser3} = await usersTestManager.createUser(userData3, HTTP_STATUSES.CREATED_201, authBasicHeader)
         user_3 = createdUser3
     });
 
@@ -160,4 +160,46 @@ describe('testing likes', () => {
 
     });
 
+
+    it('should remove dislike for comment', async () => {
+        if (!comment) throw new Error('test cannot be performed.');
+
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader1, LIKE_STATUS_ENUM.NONE);
+
+        await likeTestManager.checkLikeStatusForCommentById(comment.id, 0, 0, LIKE_STATUS_ENUM.NONE, authJWTHeader1);
+
+    });
+
+
+    it('should add likes and dislikes from several users for the comment', async () => {
+        if (!comment) throw new Error('test cannot be performed.');
+
+        // залогинимся под user_2
+        const user_2_authorizationResult: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: user_2!.email, password: password});
+        authJWTHeader2 = {Authorization: `Bearer ${user_2_authorizationResult!.accessToken}`}
+
+        // залогинимся под user_3
+        const user_3_authorizationResult: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: user_3!.email, password: password});
+        authJWTHeader3 = {Authorization: `Bearer ${user_3_authorizationResult!.accessToken}`}
+
+        //проверим, что на данный момент у коммента нет лайков
+        await likeTestManager.checkLikeStatusForCommentById(comment.id, 0, 0, LIKE_STATUS_ENUM.NONE);
+
+        // ставим 2 лайка  и один дизлайк от трех разных юзеров
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader1, LIKE_STATUS_ENUM.LIKE);
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader2, LIKE_STATUS_ENUM.LIKE);
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader3, LIKE_STATUS_ENUM.DISLIKE);
+
+        // проверяем likesInfo коммента, включая статус текущего юзера
+        await likeTestManager.checkLikesForCommentByPostId(post!.id, 2, 1, LIKE_STATUS_ENUM.DISLIKE, authJWTHeader3);
+        // проверяем likesInfo коммента анонимно
+        await likeTestManager.checkLikesForCommentByPostId(post!.id, 2, 1, LIKE_STATUS_ENUM.NONE);
+
+        // поменяем на 3 лайка
+        await likeTestManager.changeLikeStatusForComment(comment.id, authJWTHeader3, LIKE_STATUS_ENUM.LIKE);
+
+        // снова проверим likesInfo коммента, включая статус текущего юзера
+        await likeTestManager.checkLikesForCommentByPostId(post!.id, 3, 0, LIKE_STATUS_ENUM.LIKE, authJWTHeader3);
+
+    });
 })
