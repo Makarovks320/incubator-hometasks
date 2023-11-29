@@ -46,12 +46,12 @@ export class PostsController {
     }
 
     async createNewPost(req: Request, res: Response) {
-        const blog = await this.blogsRepository.findBlogById(req.body.blogId);
+        const blog = await this.blogsRepository.findBlogById(req.body.blogId || req.params.id);
         if (!blog) throw new Error('Incorrect blog id: blog is not found');
 
         const post: InputPost = {
             ...req.body,
-            blogId: req.body.blogId ? req.body.blogId : req.params.id,// смотря какой эндпоинт: /posts или /blogs
+            blogId: req.body.blogId || req.params.id,// смотря какой эндпоинт: /posts или /blogs
             blogName: blog.name
         }
         const result: PostDBModel | string = await this.postService.createNewPost(post);

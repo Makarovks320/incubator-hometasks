@@ -67,7 +67,7 @@ describe('CRUD tests for /posts', () => {
         createdPost1 = createdPost;
     });
 
-    // create another post
+    // create another post by '/blogs' router
     let createdPost2: PostViewModel | null = null;
     it('should create another post for the same blog', async () => {
         if (!createdBlogForPost) {
@@ -81,7 +81,7 @@ describe('CRUD tests for /posts', () => {
             "blogId": createdBlogForPost.id
         }
 
-        const {createdPost} = await postsTestManager.createPost(postData, HTTP_STATUSES.CREATED_201);
+        const {createdPost} = await postsTestManager.createPost(postData, HTTP_STATUSES.CREATED_201, true);
         createdPost2 = createdPost;
     })
 
@@ -96,7 +96,7 @@ describe('CRUD tests for /posts', () => {
             "blogId": createdBlogForPost.id
         }
 
-        await postsTestManager.updatePost(createdPost1._id.toString(), updatedPostData, HTTP_STATUSES.NO_CONTENT_204);
+        await postsTestManager.updatePost(createdPost1.id.toString(), updatedPostData, HTTP_STATUSES.NO_CONTENT_204);
 
         await request(app)
             .get(`${RouterPaths.blogs}/${createdBlogForPost.id}/posts`)

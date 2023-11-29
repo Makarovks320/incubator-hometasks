@@ -38,7 +38,7 @@ blogsRouter.post('/:id/posts', [
     postsValidations.shortDescriptionValidation.bind(postsValidations),
     postsValidations.contentValidation.bind(postsValidations),
     inputValidator,
-    postsController.createNewPost
+    postsController.createNewPost.bind(postsController)
 ]);
 
 blogsRouter.put('/:id', [

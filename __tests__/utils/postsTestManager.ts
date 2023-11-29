@@ -4,7 +4,7 @@ import {authBasicHeader} from "./test_utilities";
 import {RouterPaths} from "../../src/helpers/router-paths";
 import {HTTP_STATUSES, HttpStatusType} from "../../src/enums/http-statuses";
 import * as supertest from "supertest";
-import {CreatePostInputModel} from "../../src/models/post/create-post-input-model";
+import {CreatePostByBlogsRouterInputModel, CreatePostInputModel} from "../../src/models/post/create-post-input-model";
 import {ExtendedLikesInfoType, PostViewModel} from "../../src/models/post/post-view-model";
 import {ObjectId} from "mongodb";
 
@@ -14,12 +14,21 @@ export const postsTestManager = {
     * метод создания поста с ожидаемым в ответ кодом статуса (например, можно ожидать 201 или 400).
     * Если ожидаем успешное создание, метод выполнит проверку тела ответа.
     * */
-    async createPost(data: CreatePostInputModel, expectedStatusCode: HttpStatusType)
+    async createPost(data: CreatePostInputModel, expectedStatusCode: HttpStatusType, useBlogsRouter: boolean = false)
         : Promise<{ response: supertest.Response; createdPost: PostViewModel | null }> {
+        const path = useBlogsRouter ? `${RouterPaths.blogs}/${data.blogId}/posts` : RouterPaths.posts;
+        let sendData: CreatePostInputModel | CreatePostByBlogsRouterInputModel = data;
+        if (useBlogsRouter) {
+            sendData = {
+                title: data.title,
+                content: data.content,
+                shortDescription: data.shortDescription
+            }
+        };
         const response: request.Response = await request(app)
-            .post(RouterPaths.posts)
+            .post(path)
             .set(authBasicHeader)
-            .send(data)
+            .send(sendData)
             .expect(expectedStatusCode);
         let createdPost: PostViewModel | null = null;
 
@@ -42,7 +51,7 @@ export const postsTestManager = {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: 'None',
-                    newestLikes: null
+                    newestLikes: []
                 }
             });
         }
