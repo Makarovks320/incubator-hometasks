@@ -6,6 +6,7 @@ import {PostsController} from "../controllers/posts-controller";
 import {PostsValidations} from "../middlewares/posts/posts-validations";
 import {AuthMiddleware} from "../middlewares/auth/auth-middleware";
 import {CommentsValidations} from "../middlewares/comments/comments-validations";
+import {likeStatusValidation} from "../middlewares/likes/like-status-validation";
 
 const postsController = container.resolve(PostsController);
 const postsValidations = container.resolve(PostsValidations);
@@ -37,6 +38,13 @@ postsRouter.put('/:id', [
     inputValidator,
     postsController.updatePost.bind(postsController)
 ]);
+postsRouter.put('/:id/like-status', [
+    authMiddleware.checkBearerToken.bind(authMiddleware),
+    likeStatusValidation,
+    inputValidator,
+    postsValidations.checkPostExists.bind(postsValidations),
+    postsController.changeLikeStatus.bind(postsController)
+])
 
 postsRouter.delete('/', [
     authMiddleware.checkBasicAuthorization,

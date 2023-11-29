@@ -16,6 +16,8 @@ import {inject, injectable} from "inversify";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {PostDBModel} from "../models/post/post-db-model";
 import {getPostViewModel} from "../helpers/post-view-model-mapper";
+import {LikeDbModel, PARENT_TYPE_DB_ENUM} from "../models/like/like-db-model";
+import {LikeService} from "../services/like-service";
 
 @injectable()
 export class PostsController {
@@ -25,6 +27,7 @@ export class PostsController {
         @inject(CommentsQueryRepository) private commentQueryRepository: CommentsQueryRepository,
         @inject(PostsQueryRepository) private postsQueryRepository: PostsQueryRepository,
         @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository,
+        @inject(LikeService) private likeService: LikeService,
         @inject(BlogsRepository) private blogsRepository: BlogsRepository
     ) {
     }
@@ -112,5 +115,22 @@ export class PostsController {
         }
         const createdComment: CommentViewModel = getCommentViewModel(result);
         res.status(HTTP_STATUSES.CREATED_201).send(createdComment);
+    }
+
+    // лайки
+    async changeLikeStatus(req: Request, res: Response) {
+        try {
+            const post: PostDBModel | null = await this.postService.getPostById(req.params.id);
+
+            // если у текущего пользователя есть лайк для данного поста, то изменим его, если нет - создадим
+            const currentLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForParentForCurrentUser(post!._id, req.userId);
+            currentLike ?
+                await this.likeService.changeLikeStatus(currentLike, req.body.likeStatus)
+                : await this.likeService.createNewLike(PARENT_TYPE_DB_ENUM.POST, post!._id, req.userId, req.body.likeStatus);
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+        } catch (e) {
+            if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Something went wrong');
+        }
     }
 }
