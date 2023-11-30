@@ -5,6 +5,9 @@ import {RouterPaths} from "../../src/helpers/router-paths";
 import {AuthLoginInputData} from "../../src/models/auth/auth-model";
 import cookie from "cookie";
 import {LIKE_STATUS_ENUM, LikeStatusType} from "../../src/models/like/like-db-model";
+import {PostDBModel} from "../../src/models/post/post-db-model";
+import {ExtendedLikesInfoType, NewestLikesType, PostViewModel} from "../../src/models/post/post-view-model";
+import {UserViewModel} from "../../src/models/user/user-view-model";
 
 export type CommentWithLikeInfo = {
     comment_id: string,
@@ -63,11 +66,11 @@ export const likeTestManager = {
      */
     async checkLikesForCommentListByPostId(post_id: string,
                                            listOfComments: CommentWithLikeInfo[] = [{
-                                           comment_id: '',
-                                           likesCount: 0,
-                                           dislikesCount: 0,
-                                           myStatus: LIKE_STATUS_ENUM.NONE
-                                       }],
+                                               comment_id: '',
+                                               likesCount: 0,
+                                               dislikesCount: 0,
+                                               myStatus: LIKE_STATUS_ENUM.NONE
+                                           }],
                                            authJWTHeader = {}) {
         const response = await request(app)
             .get(`${RouterPaths.posts}/${post_id}/comments`)
@@ -89,5 +92,56 @@ export const likeTestManager = {
                 }
             })
         })
+    },
+
+    async changeLikeStatusForPost(
+        post_id: string,
+        authJWTHeader: Object,
+        likeStatus: LikeStatusType,
+        expectedStatusCode: HttpStatusType = HTTP_STATUSES.NO_CONTENT_204,
+    ): Promise<void> {
+        await request(app)
+            .put(`${RouterPaths.posts}/${post_id}/like-status`)
+            .set(authJWTHeader)
+            .send({likeStatus: likeStatus})
+            .expect(expectedStatusCode);
+    },
+
+    async checkLikeStatusForPostById(post_id: string,
+                                     likesCount: number,
+                                     dislikesCount: number,
+                                     lastLikedUsers: UserViewModel[] | [] = [],
+                                     // newestLikes: NewestLikesType[] | [] = [],
+                                     myStatus: LikeStatusType = LIKE_STATUS_ENUM.NONE,
+                                     authJWTHeader = {}): Promise<void> {
+        const response = await request(app)
+            .get(`${RouterPaths.posts}/${post_id}`)
+            .set(authJWTHeader)
+            .expect(HTTP_STATUSES.OK_200);
+        const result: PostViewModel = response.body;
+        expect(result).toEqual(
+            {
+                id: post_id,
+                title: expect.any(String),
+                shortDescription: expect.any(String),
+                content: expect.any(String),
+                blogId: expect.any(String),
+                blogName: expect.any(String),
+                createdAt: expect.any(String),
+                extendedLikesInfo: {
+                    likesCount,
+                    dislikesCount,
+                    myStatus,
+                    newestLikes: lastLikedUsers.map(u => {
+                        const newestLikeInfo: NewestLikesType = {
+                            addedAt: expect.any(String),
+                            userId: u.id,
+                            login: u.login
+                        }
+                        return newestLikeInfo;
+                    })
+                }
+            }
+        )
     }
 }
