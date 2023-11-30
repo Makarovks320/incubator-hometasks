@@ -1,6 +1,8 @@
-import {DEFAULT_MONGOOSE_PROJECTION, WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
-import {CommentViewModel} from "../../models/comment/comment-view-model";
+import {WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
 import {CommentDBModel, CommentModel} from "../../models/comment/comment-db-model";
+import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
+import {ObjectId} from "mongodb";
+import {injectable} from "inversify";
 type commentQueryParams = {
     pageNumber: number,
     pageSize: number,
@@ -9,22 +11,15 @@ type commentQueryParams = {
 }
 export const COMMENT_PROJECTION = {...WITHOUT_v_MONGOOSE_PROJECTION, postId: false}
 
-type CommentsOutput = {
-    pagesCount: number,
-    page: number,
-    pageSize: number,
-    totalCount: number,
-    items: CommentDBModel[]
-}
-
-export class CommentQueryRepository {
-    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<CommentsOutput> {
+@injectable()
+export class CommentsQueryRepository {
+    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<WithPagination<CommentDBModel>> {
 
         const sort: Record<string, -1 | 1> = {};
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const res = await CommentModel.find({postId})
+        const foundComments = await CommentModel.find({postId})
             .select(COMMENT_PROJECTION)
             .lean()
             .sort(sort)
@@ -37,7 +32,13 @@ export class CommentQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount: totalCount,
-            items: res
+            items: foundComments
         }
+    }
+
+    async getCommentById(_id: ObjectId): Promise<CommentDBModel | null> {
+        return CommentModel.findOne({_id})
+            .select(COMMENT_PROJECTION)
+            .lean();
     }
 }

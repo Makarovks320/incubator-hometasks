@@ -8,15 +8,16 @@ import {IpType, SessionDbModel} from "../models/session/session-model";
 import {v4 as uuidv4} from "uuid";
 import {UserDBModel} from "../models/user/user-db-model";
 import {UserAuthMeViewModel} from "../models/user/user-auth-me-view-model";
+import {inject, injectable} from "inversify";
 
 const refreshTokenOptions = {httpOnly: true, secure: true}
-
+@injectable()
 export class AuthController {
     constructor(
-        protected authService: AuthService,
-        protected userService: UserService,
-        protected sessionService: SessionService,
-        protected jwtService: JwtService
+        @inject(AuthService) private authService: AuthService,
+        @inject(UserService) private userService: UserService,
+        @inject(SessionService) private sessionService: SessionService,
+        @inject(JwtService) private jwtService: JwtService
     ){}
     async loginUser(req: Request, res: Response) {
         const user = await this.userService.checkCredentials(req.body.loginOrEmail, req.body.password);

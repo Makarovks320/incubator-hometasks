@@ -2,17 +2,30 @@ import {Request, Response} from "express";
 import {CommentService, InputComment} from "../services/comment-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {UserDBModel} from "../models/user/user-db-model";
-import {CommentViewModel} from "../models/comment/comment-view-model";
+import {CommentViewModel, LikesInfo} from "../models/comment/comment-view-model";
 import {UserService} from "../services/user-service";
 import {CommentDBModel} from "../models/comment/comment-db-model";
-
+import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
+import {LikeService} from "../services/like-service";
+import {LikeDbModel, PARENT_TYPE_DB_ENUM, PARENT_TYPE_ENUM} from "../models/like/like-db-model";
+import mongoose from "mongoose";
+import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
+import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
+import {ObjectId} from "mongodb";
+import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
+import {inject, injectable} from "inversify";
+@injectable()
 export class CommentsController {
     constructor(
-        protected commentService: CommentService,
-        protected userService: UserService
+        @inject(CommentService) private commentService: CommentService,
+        @inject(UserService) private userService: UserService,
+        @inject(LikeService) private likeService: LikeService,
+        @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository,
+        @inject(CommentsQueryRepository) private commentsQueryRepository: CommentsQueryRepository,
     ) {}
     async updateComment(req: Request, res: Response) {
-        const oldComment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
+        const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
+        const oldComment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
         if (!oldComment) {
             res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
             return;
@@ -30,16 +43,25 @@ export class CommentsController {
     }
 
     async getCommentById(req: Request, res: Response) {
-        const comment = await this.commentService.getCommentById(req.params.id);
-        comment ? res.send(comment) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        try {
+            const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
+            const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
+            if (!comment) {
+                res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+                return;
+            }
+            const likesInfo: LikesInfo = await this.likesQueryRepository.getLikesInfo(comment._id, req.userId);
+            const viewComment: CommentViewModel = getCommentViewModel(comment, likesInfo);
+            res.send(viewComment);
+        } catch (e) {
+            if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db Error');
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+        }
     }
 
     async deleteCommentById(req: Request, res: Response) {
-        const comment: CommentDBModel | null = await this.commentService.getCommentById(req.params.id);
-        if (!comment) {
-            res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
-            return;
-        }
+        const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
+        const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
         const user: UserDBModel | null = await this.userService.findUserById(req.userId!);
         if (!user || comment!.commentatorInfo.userLogin != user.accountData.userName) {
             res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
@@ -47,6 +69,24 @@ export class CommentsController {
         } else {
             await this.commentService.deleteCommentById(req.params.id);
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+        }
+    }
+
+    async changeLikeStatus(req: Request, res: Response) {
+        try {
+            const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
+            const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
+
+            //todo: перенести в сервис
+            // если у текущего пользователя есть лайк для данного коммента, то изменим его, если нет - создадим
+            const currentLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForParentForCurrentUser(comment!._id, req.userId);
+            currentLike ?
+                await this.likeService.changeLikeStatus(currentLike, req.body.likeStatus)
+                : await this.likeService.createNewLike(PARENT_TYPE_DB_ENUM.COMMENT, comment!._id, req.userId, req.body.likeStatus);
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+        } catch (e) {
+            if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');
+            res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Something went wrong');
         }
     }
 }

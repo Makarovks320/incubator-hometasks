@@ -12,13 +12,19 @@ import {CreateUserInputModel} from "../../src/models/user/create-input-user-mode
 import {UserViewModel} from "../../src/models/user/user-view-model";
 import {usersTestManager} from "../utils/usersTestManager";
 import {PasswordRecoveryType, UserDBModel, UserModel} from "../../src/models/user/user-db-model";
-import {jwtService, usersRepository} from "../../src/composition-root";
+import {EmailAdapter} from "../../src/adapters/email-adapter";
+import {container} from "../../src/composition-root";
+import {UsersRepository} from "../../src/repositories/users-repository";
+import {JwtService} from "../../src/application/jwt-service";
 
 const emailAdapter = {
     async sendEmail(email: string, subject: string, message: string): Promise<boolean> {
         return true;
     }
 }
+
+const jwtService = container.resolve(JwtService);
+const usersRepository = container.resolve(UsersRepository);
 
 describe('testing password recovery', () => {
 
@@ -189,3 +195,12 @@ describe('testing password recovery', () => {
 
 // todo:
 // замокать сервис почты (в джесте есть механизм Мокания данных)
+// const sendEmailConfirmation =
+//     jest.spyOn(EmailAdapter.prototype, 'sendEmail')
+//         .mockReturnValue(fakeSendEmail);
+//
+// const fakeSendEmail() : Promise<boolean> {
+//     return Promise.resolve(true);
+// }
+//
+// expect(sendEmailConfirmation).toHaveBeenCalledWith()

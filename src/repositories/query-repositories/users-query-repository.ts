@@ -4,10 +4,12 @@ import mongoose from "mongoose";
 import {PostDBModel} from "../../models/post/post-db-model";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {UserDBModel, UserModel} from "../../models/user/user-db-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class UsersQueryRepository {
     async getUsers(queryParams: UsersQueryParams): Promise<WithPagination<UserDBModel>> {
-        let filter: mongoose.FilterQuery<PostDBModel> = {};
+        let filter: mongoose.FilterQuery<UserDBModel> = {};
         if (queryParams.searchEmailTerm || queryParams.searchLoginTerm) {
             filter = {
                 $or: []

@@ -2,9 +2,9 @@ import {CommentsRepository} from "../repositories/comments-repository";
 import {ObjectId} from "mongodb";
 import {UserDBModel} from "../models/user/user-db-model";
 import {CommentDBModel} from "../models/comment/comment-db-model";
-import {CommentViewModel} from "../models/comment/comment-view-model";
 import {UserService} from "./user-service";
-import mongoose from "mongoose";
+import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
+import {inject, injectable} from "inversify";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -14,10 +14,11 @@ export type InputComment = {
     content: string
 }
 
+@injectable()
 export class CommentService {
     constructor(
-        protected commentsRepository: CommentsRepository,
-        protected userService: UserService
+        @inject(CommentsRepository) private commentsRepository: CommentsRepository,
+        @inject(UserService) private userService: UserService
     ) {
     }
 
@@ -41,7 +42,7 @@ export class CommentService {
 
     async updateComment(comment: InputComment, commentId: string): Promise<boolean> {
         //запросим существующий коммент, чтобы получить postId:
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(commentId);
+        const commentObjectId: ObjectId = stringToObjectIdMapper(commentId);
         const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
         if (!currentComment) {
             throw new Error('comment is not found');
@@ -60,17 +61,8 @@ export class CommentService {
         return !!isUpdated;
     }
 
-    async getCommentById(id: string): Promise<CommentDBModel | null> {
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
-        return await this.commentsRepository.getCommentById(commentObjectId);
-    }
-
     async deleteCommentById(id: string): Promise<boolean> {
-        const commentObjectId: ObjectId = new mongoose.Types.ObjectId(id);
+        const commentObjectId: ObjectId = stringToObjectIdMapper(id);
         return this.commentsRepository.deleteCommentById(commentObjectId);
-    }
-
-    async deleteAllComments(): Promise<void> {
-        await this.commentsRepository.deleteAllBlogs();
     }
 }

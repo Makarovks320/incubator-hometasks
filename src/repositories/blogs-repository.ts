@@ -1,7 +1,9 @@
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
 import {MongooseError} from "mongoose";
 import {BlogDBModel, BlogModel} from "../models/blog/blog-db-model";
+import {injectable} from "inversify";
 
+@injectable()
 export class BlogsRepository {
     async findBlogById(id: string): Promise<BlogDBModel | null> {
         return BlogModel.findOne({id}).select(DEFAULT_MONGOOSE_PROJECTION).lean();

@@ -1,70 +1,77 @@
 import {Router} from "express";
-import {authorization} from "../middlewares/authorization";
-import {
-    blogIdValidation,
-    contentValidation,
-    shortDescriptionValidation,
-    titleValidation
-} from "../middlewares/posts-validations";
-import {inputValidator} from "../middlewares/input-validator";
-import {checkIdFromUri} from "../middlewares/check-id-from-uri";
-import {authMiddleware} from "../composition-root";
-import {commentContentValidation} from "../middlewares/comment-validations";
-import {param} from "express-validator";
-import {checkPostExists} from "../middlewares/check-post-exists";
-import {idFromUrlExistingValidator} from "../middlewares/id-from-url-existing-validator";
-import {postsController} from "../composition-root";
+import {inputValidator} from "../middlewares/common/input-validator";
+import {container} from "../composition-root";
+import {idFromUrlExistingValidator} from "../middlewares/common/id-from-url-existing-validator";
+import {PostsController} from "../controllers/posts-controller";
+import {PostsValidations} from "../middlewares/posts/posts-validations";
+import {AuthMiddleware} from "../middlewares/auth/auth-middleware";
+import {CommentsValidations} from "../middlewares/comments/comments-validations";
+import {likeStatusValidation} from "../middlewares/likes/like-status-validation";
 
+const postsController = container.resolve(PostsController);
+const postsValidations = container.resolve(PostsValidations);
+const commentValidation = container.resolve(CommentsValidations);
+const authMiddleware = container.resolve(AuthMiddleware);
 export const postsRouter = Router();
 
 postsRouter.get('/', postsController.getPosts.bind(postsController));
 
-postsRouter.get('/:id', postsController.getPostById.bind(postsController));
+postsRouter.get('/:id', [
+    authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
+    postsController.getPostById.bind(postsController)
+]);
 
 postsRouter.post('/', [
-    authorization,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    blogIdValidation,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
+    postsValidations.titleValidation.bind(postsValidations),
+    postsValidations.shortDescriptionValidation.bind(postsValidations),
+    postsValidations.contentValidation.bind(postsValidations),
+    postsValidations.blogIdValidation.bind(postsValidations),
     inputValidator,
     postsController.createNewPost.bind(postsController)
 ]);
 
 postsRouter.put('/:id', [
-    authorization,
-    checkIdFromUri,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    blogIdValidation,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
+    postsValidations.checkPostIdFromUri.bind(postsValidations),
+    postsValidations.titleValidation.bind(postsValidations),
+    postsValidations.shortDescriptionValidation.bind(postsValidations),
+    postsValidations.contentValidation.bind(postsValidations),
+    postsValidations.blogIdValidation.bind(postsValidations),
     inputValidator,
     postsController.updatePost.bind(postsController)
 ]);
+postsRouter.put('/:id/like-status', [
+    authMiddleware.checkBearerToken.bind(authMiddleware),
+    likeStatusValidation,
+    inputValidator,
+    postsValidations.checkPostExists.bind(postsValidations),
+    postsController.changeLikeStatus.bind(postsController)
+])
 
 postsRouter.delete('/', [
-    authorization,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
     postsController.deleteAllPosts.bind(postsController)
 ]);
 
 postsRouter.delete('/:id', [
-    authorization,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
     postsController.deletePostById.bind(postsController)
 ]);
 
 // комментарии
-
 postsRouter.get('/:id/comments', [
-    param('id').custom(checkPostExists).withMessage('post is not found'),
+    authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
+    postsValidations.checkPostExists.bind(postsValidations),
     idFromUrlExistingValidator,
     postsController.getCommentsForPost.bind(postsController)
 ]);
 
 postsRouter.post('/:id/comments', [
     authMiddleware.checkBearerToken.bind(authMiddleware),
-    param('id').custom(checkPostExists).withMessage('post is not found'),
+    postsValidations.checkPostExists.bind(postsValidations),
     idFromUrlExistingValidator,
-    commentContentValidation,
+    commentValidation.commentContentValidation,
     inputValidator,
     postsController.createCommentToPost.bind(postsController)
 ]);

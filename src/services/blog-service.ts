@@ -2,9 +2,11 @@ import {BlogsRepository} from "../repositories/blogs-repository";
 import {BlogViewModel} from "../models/blog/blog-view-model";
 import {CreateBlogInputModel} from "../models/blog/create-input-blog-model";
 import {BlogDBModel} from "../models/blog/blog-db-model";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class BlogService {
-    constructor(protected blogsRepository: BlogsRepository) {}
+    constructor(@inject(BlogsRepository) private blogsRepository: BlogsRepository) {}
     async getBlogById(id: string): Promise<BlogViewModel | null> {
         return this.blogsRepository.findBlogById(id);
     }

@@ -1,11 +1,13 @@
-import {DEFAULT_PROJECTION} from "../db/db";
 import {InputPost} from "../services/post-service";
 import {MongooseError} from "mongoose";
 import {PostDBModel, PostModel} from "../models/post/post-db-model";
+import {injectable} from "inversify";
+import {ObjectId} from "mongodb";
 
+@injectable()
 export class PostsRepository {
-    async findPostById(id: string): Promise<PostDBModel | null> {
-        return PostModel.findOne({id}, { projection: DEFAULT_PROJECTION});
+    async findPostById(_id: ObjectId): Promise<PostDBModel | null> {
+        return PostModel.findOne({_id});
     }
     async createNewPost(p: PostDBModel): Promise<PostDBModel | string> {
         try {
@@ -17,16 +19,16 @@ export class PostsRepository {
             return 'Mongoose Error';
         }
     }
-    async updatePostById(id: string, post: InputPost): Promise<boolean> {
-        const result = await PostModel.updateOne({id}, post);
+    async updatePostById(_id: ObjectId, post: InputPost): Promise<boolean> {
+        const result = await PostModel.updateOne({_id}, post);
         return result.matchedCount === 1;
 
     }
     async deleteAllPosts(): Promise<void> {
         await PostModel.deleteMany({});
     }
-    async deletePostById(id: string): Promise<boolean> {
-        const result = await PostModel.deleteOne({id});
+    async deletePostById(_id: ObjectId): Promise<boolean> {
+        const result = await PostModel.deleteOne({_id});
         return result.deletedCount === 1
     }
 }

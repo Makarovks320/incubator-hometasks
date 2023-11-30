@@ -1,10 +1,10 @@
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
-import {COMMENT_PROJECTION} from "./query-repositories/comment-query-repository";
 import {CommentDBModel, CommentModel} from "../models/comment/comment-db-model";
-import {CommentViewModel} from "../models/comment/comment-view-model";
 import {MongooseError} from "mongoose";
 import {ObjectId} from "mongodb";
+import {injectable} from "inversify";
 
+@injectable()
 export class CommentsRepository {
     async createNewComment(comment: CommentDBModel): Promise<CommentDBModel | string> {
         try {
@@ -20,12 +20,6 @@ export class CommentsRepository {
     async updateComment(commentId: ObjectId, comment: CommentDBModel): Promise<boolean> {
             const result = await CommentModel.updateOne({_id: commentId}, comment);
             return result.modifiedCount === 1;
-    }
-
-    async getCommentById(_id: ObjectId): Promise<CommentDBModel | null> {
-        return CommentModel.findOne({_id})
-            .select(COMMENT_PROJECTION)
-            .lean();
     }
 
     async getCommentByIdWithPostId(_id: ObjectId): Promise<CommentDBModel | null> {
