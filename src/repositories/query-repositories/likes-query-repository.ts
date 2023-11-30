@@ -45,6 +45,7 @@ export class LikesQueryRepository {
     async findLikesForManyComments(comments: WithPagination<CommentDBModel>, currentUserId: ObjectId): Promise<WithPagination<CommentViewModel>> {
         //todo: здесь ходить за лайками, а не брать из параметров
         const viewCommentsWithLikesInfoPromises: Promise<CommentViewModel>[] = comments.items.map(async c => {
+            const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(c._id);
             // todo: Promise.all
             // достать все лайки для каждого коммента - ?
             // при создании сохранять в коллекцию комментов общее количетво лайков и дизлайков

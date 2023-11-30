@@ -2,11 +2,8 @@ import request from "supertest";
 import {HttpStatusType, HTTP_STATUSES} from "../../src/enums/http-statuses";
 import {app} from "../../src/app_settings";
 import {RouterPaths} from "../../src/helpers/router-paths";
-import {AuthLoginInputData} from "../../src/models/auth/auth-model";
-import cookie from "cookie";
 import {LIKE_STATUS_ENUM, LikeStatusType} from "../../src/models/like/like-db-model";
-import {PostDBModel} from "../../src/models/post/post-db-model";
-import {ExtendedLikesInfoType, NewestLikesType, PostViewModel} from "../../src/models/post/post-view-model";
+import {NewestLikesType, PostViewModel} from "../../src/models/post/post-view-model";
 import {UserViewModel} from "../../src/models/user/user-view-model";
 
 export type CommentWithLikeInfo = {

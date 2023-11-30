@@ -16,7 +16,7 @@ export type ExtendedLikesInfoType = {
     myStatus: LikeStatusType,
     newestLikes: NewestLikesType[] | []
 }
-type NewestLikesType = {
+export type NewestLikesType = {
     addedAt: string,
         userId: string,
         login: string
