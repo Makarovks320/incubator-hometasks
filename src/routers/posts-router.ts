@@ -16,10 +16,13 @@ export const postsRouter = Router();
 
 postsRouter.get('/', postsController.getPosts.bind(postsController));
 
-postsRouter.get('/:id', postsController.getPostById.bind(postsController));
+postsRouter.get('/:id', [
+    authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
+    postsController.getPostById.bind(postsController)
+]);
 
 postsRouter.post('/', [
-    authMiddleware.checkBasicAuthorization,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
     postsValidations.titleValidation.bind(postsValidations),
     postsValidations.shortDescriptionValidation.bind(postsValidations),
     postsValidations.contentValidation.bind(postsValidations),
@@ -29,7 +32,7 @@ postsRouter.post('/', [
 ]);
 
 postsRouter.put('/:id', [
-    authMiddleware.checkBasicAuthorization,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
     postsValidations.checkPostIdFromUri.bind(postsValidations),
     postsValidations.titleValidation.bind(postsValidations),
     postsValidations.shortDescriptionValidation.bind(postsValidations),
@@ -47,12 +50,12 @@ postsRouter.put('/:id/like-status', [
 ])
 
 postsRouter.delete('/', [
-    authMiddleware.checkBasicAuthorization,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
     postsController.deleteAllPosts.bind(postsController)
 ]);
 
 postsRouter.delete('/:id', [
-    authMiddleware.checkBasicAuthorization,
+    authMiddleware.checkBasicAuthorization.bind(authMiddleware),
     postsController.deletePostById.bind(postsController)
 ]);
 
