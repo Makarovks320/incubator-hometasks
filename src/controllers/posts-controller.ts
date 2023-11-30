@@ -88,6 +88,7 @@ export class PostsController {
     // комментарии
     async getCommentsForPost(req: Request, res: Response) {
         try {
+            //todo: перенести в хелперы getQueryParams()
             const queryParams = new PostQueryParams(
                 parseInt(req.query.pageNumber as string) || 1,
                 parseInt(req.query.pageSize as string) || 10,

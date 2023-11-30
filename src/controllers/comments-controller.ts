@@ -77,6 +77,7 @@ export class CommentsController {
             const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
             const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
 
+            //todo: перенести в сервис
             // если у текущего пользователя есть лайк для данного коммента, то изменим его, если нет - создадим
             const currentLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForParentForCurrentUser(comment!._id, req.userId);
             currentLike ?
