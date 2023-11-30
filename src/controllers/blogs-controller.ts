@@ -7,6 +7,8 @@ import {BlogQueryParams} from "../models/blog/blog-query-params-type";
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {BlogViewModel} from "../models/blog/blog-view-model";
 import {inject, injectable} from "inversify";
+import {getBlogQueryParams, getPostQueryParams} from "../helpers/get-query-params";
+
 @injectable()
 export class BlogsController {
     constructor(
@@ -17,13 +19,7 @@ export class BlogsController {
     }
 
     async getBlogs(req: Request, res: Response) {
-        const queryParams = new BlogQueryParams (
-            parseInt(req.query.pageNumber as string) || 1,
-            parseInt(req.query.pageSize as string) || 10,
-            req.query.sortBy as string || 'createdAt',
-            req.query.sortDirection === 'asc' ? 'asc' : 'desc',
-            req.query.searchNameTerm as string || null
-        )
+        const queryParams: BlogQueryParams = getBlogQueryParams(req);
         const blogs = await this.blogsQueryRepository.getBlogs(queryParams);
         res.send(blogs);
     }
@@ -45,12 +41,7 @@ export class BlogsController {
     async getPostsByBlogId(req: Request, res: Response) {
         const blog = await this.blogService.getBlogById(req.params.id);
         if (blog) {
-            const queryParams = new PostQueryParams(
-                parseInt(req.query.pageNumber as string) || 1,
-                parseInt(req.query.pageSize as string) || 10,
-                req.query.sortBy as string || 'createdAt',
-                req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-            )
+            const queryParams: PostQueryParams = getPostQueryParams(req);
             const posts = await this.postsQueryRepository.getPosts(queryParams, req.params.id);
             res.send(posts);
         } else {

@@ -18,6 +18,7 @@ import {PostDBModel} from "../models/post/post-db-model";
 import {getPostViewModel} from "../helpers/post-view-model-mapper";
 import {LikeDbModel, PARENT_TYPE_DB_ENUM} from "../models/like/like-db-model";
 import {LikeService} from "../services/like-service";
+import {getPostQueryParams} from "../helpers/get-query-params";
 
 @injectable()
 export class PostsController {
@@ -88,13 +89,7 @@ export class PostsController {
     // комментарии
     async getCommentsForPost(req: Request, res: Response) {
         try {
-            //todo: перенести в хелперы getQueryParams()
-            const queryParams = new PostQueryParams(
-                parseInt(req.query.pageNumber as string) || 1,
-                parseInt(req.query.pageSize as string) || 10,
-                req.query.sortBy as string || 'createdAt',
-                req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-            )
+            const queryParams: PostQueryParams = getPostQueryParams(req);
             const foundComments: WithPagination<CommentDBModel> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
             const commentsWithLikesInfo: WithPagination<CommentViewModel> = await this.likesQueryRepository.findLikesForManyComments(foundComments, req.userId);
             res.status(HTTP_STATUSES.OK_200).send(commentsWithLikesInfo);
