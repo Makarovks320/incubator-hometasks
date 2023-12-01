@@ -14,6 +14,7 @@ import {CommentsQueryRepository} from "../repositories/query-repositories/commen
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 import {inject, injectable} from "inversify";
+
 @injectable()
 export class CommentsController {
     constructor(
@@ -22,7 +23,9 @@ export class CommentsController {
         @inject(LikeService) private likeService: LikeService,
         @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository,
         @inject(CommentsQueryRepository) private commentsQueryRepository: CommentsQueryRepository,
-    ) {}
+    ) {
+    }
+
     async updateComment(req: Request, res: Response) {
         const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
         const oldComment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
@@ -74,15 +77,7 @@ export class CommentsController {
 
     async changeLikeStatus(req: Request, res: Response) {
         try {
-            const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
-            const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
-
-            //todo: перенести в сервис
-            // если у текущего пользователя есть лайк для данного коммента, то изменим его, если нет - создадим
-            const currentLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForParentForCurrentUser(comment!._id, req.userId);
-            currentLike ?
-                await this.likeService.changeLikeStatus(currentLike, req.body.likeStatus)
-                : await this.likeService.createNewLike(PARENT_TYPE_DB_ENUM.COMMENT, comment!._id, req.userId, req.body.likeStatus);
+            await this.likeService.changeLikeStatus(req.params.id, req.body.likeStatus, req.userId);
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');

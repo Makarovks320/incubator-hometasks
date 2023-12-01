@@ -6,7 +6,6 @@ import {likeStatusValidation} from "../middlewares/likes/like-status-validation"
 import {AuthMiddleware} from "../middlewares/auth/auth-middleware";
 import {CommentsController} from "../controllers/comments-controller";
 
-
 const authMiddleware = container.resolve(AuthMiddleware);
 const commentValidations = container.resolve(CommentsValidations);
 const commentsController = container.resolve(CommentsController);
