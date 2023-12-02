@@ -116,7 +116,7 @@ export class PostsController {
     // лайки
     async changeLikeStatus(req: Request, res: Response) {
         try {
-            await this.likeService.changeLikeStatus(req.params.id, req.body.likeStatus, req.body.userId);
+            await this.likeService.changeLikeStatus(req.params.id, req.body.likeStatus, req.userId);
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');
