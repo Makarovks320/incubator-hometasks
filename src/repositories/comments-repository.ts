@@ -1,12 +1,13 @@
 import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
-import {CommentDBModel, CommentModel} from "../models/comment/comment-db-model";
+import {CommentModel} from "../models/comment/comment-db-model";
 import {MongooseError} from "mongoose";
 import {ObjectId} from "mongodb";
 import {injectable} from "inversify";
+import {CommentDbType, CommentDocument} from "../models/comment/comment-types";
 
 @injectable()
 export class CommentsRepository {
-    async createNewComment(comment: CommentDBModel): Promise<CommentDBModel | string> {
+    async createNewComment(comment: CommentDbType): Promise<CommentDbType | string> {
         try {
             await CommentModel.insertMany(comment);
         } catch (e) {
@@ -17,12 +18,12 @@ export class CommentsRepository {
         return comment;
     }
 
-    async updateComment(commentId: ObjectId, comment: CommentDBModel): Promise<boolean> {
+    async updateComment(commentId: ObjectId, comment: CommentDbType): Promise<boolean> {
             const result = await CommentModel.updateOne({_id: commentId}, comment);
             return result.modifiedCount === 1;
     }
 
-    async getCommentByIdWithPostId(_id: ObjectId): Promise<CommentDBModel | null> {
+    async getCommentByIdWithPostId(_id: ObjectId): Promise<CommentDbType | null> {
         return CommentModel.findOne({_id})
             .select(DEFAULT_MONGOOSE_PROJECTION)
             .lean();
@@ -35,5 +36,9 @@ export class CommentsRepository {
 
     async deleteAllBlogs(): Promise<void> {
         await CommentModel.deleteMany({});
+    }
+
+    async save(comment: CommentDocument) {
+        await comment.save();
     }
 }

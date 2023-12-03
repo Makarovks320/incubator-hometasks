@@ -7,7 +7,6 @@ import {CommentService, InputCommentWithPostId} from "../services/comment-servic
 import {PostQueryParams} from "../models/post/post-query-params-type";
 import {PostViewModel} from "../models/post/post-view-model";
 import {CommentViewModel} from "../models/comment/comment-view-model";
-import {CommentDBModel} from "../models/comment/comment-db-model";
 import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
@@ -16,9 +15,9 @@ import {inject, injectable} from "inversify";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {PostDBModel} from "../models/post/post-db-model";
 import {getPostViewModel} from "../helpers/post-view-model-mapper";
-import {LikeDbModel, PARENT_TYPE_DB_ENUM} from "../models/like/like-db-model";
 import {LikeService} from "../services/like-service";
 import {getPostQueryParams} from "../helpers/get-query-params";
+import {CommentDbType} from "../models/comment/comment-types";
 
 @injectable()
 export class PostsController {
@@ -90,7 +89,7 @@ export class PostsController {
     async getCommentsForPost(req: Request, res: Response) {
         try {
             const queryParams: PostQueryParams = getPostQueryParams(req);
-            const foundComments: WithPagination<CommentDBModel> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
+            const foundComments: WithPagination<CommentDbType> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
             const commentsWithLikesInfo: WithPagination<CommentViewModel> = await this.likesQueryRepository.findLikesForManyComments(foundComments, req.userId);
             res.status(HTTP_STATUSES.OK_200).send(commentsWithLikesInfo);
         } catch (e) {
@@ -104,7 +103,7 @@ export class PostsController {
             content: req.body.content,
             postId: req.params.id
         }
-        const result: CommentDBModel | string = await this.commentService.createNewComment(comment, req.userId);
+        const result: CommentDbType | string = await this.commentService.createNewComment(comment, req.userId);
         if (typeof result === 'string') {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
             return;

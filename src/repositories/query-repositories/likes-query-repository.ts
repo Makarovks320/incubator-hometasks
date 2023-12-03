@@ -1,17 +1,18 @@
-import {CommentDBModel} from "../../models/comment/comment-db-model";
 import {ObjectId} from "mongodb";
 import {
+    LIKE_STATUS_DB_ENUM,
+    LIKE_STATUS_ENUM,
     LikeDbModel,
     LikeModel,
     likesCountInfo,
-    LIKE_STATUS_DB_ENUM,
-    LikeStatusType, PARENT_TYPE_ENUM, PARENT_TYPE_DB_ENUM
+    LikeStatusType
 } from "../../models/like/like-db-model";
 import {CommentViewModel, LikesInfo} from "../../models/comment/comment-view-model";
 import {convertDbEnumToLikeStatus} from "../../helpers/like-status-converters";
 import {getCommentViewModel} from "../../helpers/comment-view-model-mapper";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {injectable} from "inversify";
+import {CommentDbType} from "../../models/comment/comment-types";
 
 @injectable()
 export class LikesQueryRepository {
@@ -34,7 +35,7 @@ export class LikesQueryRepository {
     async getLikesInfo(parentId: ObjectId, userId: ObjectId): Promise<LikesInfo> {
         const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(parentId);
         const myLike: LikeDbModel | null = await this.getLikeForParentForCurrentUser(parentId, userId);
-        let myStatus: LikeStatusType = 'None';
+        let myStatus: LikeStatusType = LIKE_STATUS_ENUM.NONE;
         if (myLike) {
             myStatus = convertDbEnumToLikeStatus(myLike!.type);
         }
@@ -42,7 +43,7 @@ export class LikesQueryRepository {
         return likesInfo;
     }
 
-    async findLikesForManyComments(comments: WithPagination<CommentDBModel>, currentUserId: ObjectId): Promise<WithPagination<CommentViewModel>> {
+    async findLikesForManyComments(comments: WithPagination<CommentDbType>, currentUserId: ObjectId): Promise<WithPagination<CommentViewModel>> {
         //todo: здесь ходить за лайками, а не брать из параметров
         const viewCommentsWithLikesInfoPromises: Promise<CommentViewModel>[] = comments.items.map(async c => {
             const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(c._id);

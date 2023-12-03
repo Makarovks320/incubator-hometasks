@@ -30,7 +30,7 @@ export enum LIKE_STATUS_ENUM  {
     DISLIKE = 'Dislike',
     NONE = 'None'
 };
-export type LikeStatusType = 'Like' | 'Dislike' | 'None';
+export type LikeStatusType = LIKE_STATUS_ENUM.LIKE | LIKE_STATUS_ENUM.DISLIKE | LIKE_STATUS_ENUM.NONE;
 export enum LIKE_STATUS_DB_ENUM  {
     LIKE,
     DISLIKE,

@@ -10,9 +10,9 @@ import {LikesRepository} from "../repositories/likes-repository";
 import {convertLikeStatusToDbEnum, convertParentTypeToDbEnum} from "../helpers/like-status-converters";
 import {inject, injectable} from "inversify";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
-import {CommentDBModel} from "../models/comment/comment-db-model";
 import {CommentsQueryRepository} from "../repositories/query-repositories/comments-query-repository";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
+import {CommentDbType} from "../models/comment/comment-types";
 
 @injectable()
 export class LikeService {

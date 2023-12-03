@@ -1,8 +1,9 @@
 import {WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
-import {CommentDBModel, CommentModel} from "../../models/comment/comment-db-model";
+import {CommentModel} from "../../models/comment/comment-db-model";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {ObjectId} from "mongodb";
 import {injectable} from "inversify";
+import {CommentDbType} from "../../models/comment/comment-types";
 type commentQueryParams = {
     pageNumber: number,
     pageSize: number,
@@ -13,7 +14,7 @@ export const COMMENT_PROJECTION = {...WITHOUT_v_MONGOOSE_PROJECTION, postId: fal
 
 @injectable()
 export class CommentsQueryRepository {
-    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<WithPagination<CommentDBModel>> {
+    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<WithPagination<CommentDbType>> {
 
         const sort: Record<string, -1 | 1> = {};
         if (queryParams.sortBy) {
@@ -36,7 +37,7 @@ export class CommentsQueryRepository {
         }
     }
 
-    async getCommentById(_id: ObjectId): Promise<CommentDBModel | null> {
+    async getCommentById(_id: ObjectId): Promise<CommentDbType | null> {
         return CommentModel.findOne({_id})
             .select(COMMENT_PROJECTION)
             .lean();

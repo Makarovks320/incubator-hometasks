@@ -4,8 +4,8 @@ import {CommentsQueryRepository} from "../../repositories/query-repositories/com
 import {NextFunction, Request, Response} from "express";
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../../helpers/string-to-object-id-mapper";
-import {CommentDBModel} from "../../models/comment/comment-db-model";
 import {HTTP_STATUSES} from "../../enums/http-statuses";
+import {CommentDbType} from "../../models/comment/comment-types";
 
 @injectable()
 export class CommentsValidations {
@@ -23,7 +23,7 @@ export class CommentsValidations {
         try {
             const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
 
-            const comment: CommentDBModel | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
+            const comment: CommentDbType | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
             if (!comment) {
                 res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
                 return;

@@ -1,7 +1,7 @@
-import {CommentDBModel} from "../models/comment/comment-db-model";
 import {CommentViewModel, LikesInfo} from "../models/comment/comment-view-model";
+import {CommentDbType} from "../models/comment/comment-types";
 
-export const getCommentViewModel = (commentDb: CommentDBModel,
+export const getCommentViewModel = (commentDb: CommentDbType,
                                     likesInfo: LikesInfo = {
                                         likesCount: 0,
                                         dislikesCount: 0,

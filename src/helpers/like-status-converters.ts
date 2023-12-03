@@ -1,5 +1,6 @@
 import {
     LIKE_STATUS_DB_ENUM,
+    LIKE_STATUS_ENUM,
     LikeStatusType,
     PARENT_TYPE_DB_ENUM,
     PARENT_TYPE_ENUM,
@@ -22,11 +23,11 @@ export function convertLikeStatusToDbEnum(likeStatus: LikeStatusType): LIKE_STAT
 export function convertDbEnumToLikeStatus(dbEnumValue: LIKE_STATUS_DB_ENUM): LikeStatusType {
     switch (dbEnumValue) {
         case LIKE_STATUS_DB_ENUM.LIKE:
-            return 'Like';
+            return LIKE_STATUS_ENUM.LIKE;
         case LIKE_STATUS_DB_ENUM.DISLIKE:
-            return 'Dislike';
+            return LIKE_STATUS_ENUM.DISLIKE;
         case LIKE_STATUS_DB_ENUM.NONE:
-            return 'None';
+            return LIKE_STATUS_ENUM.NONE;
         default:
             throw new Error('Invalid LikeStatusDbEnum');
     }

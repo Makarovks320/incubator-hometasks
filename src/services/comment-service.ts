@@ -1,10 +1,11 @@
 import {CommentsRepository} from "../repositories/comments-repository";
 import {ObjectId} from "mongodb";
 import {UserDBModel} from "../models/user/user-db-model";
-import {CommentDBModel} from "../models/comment/comment-db-model";
+import {CommentModel} from "../models/comment/comment-db-model";
 import {UserService} from "./user-service";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 import {inject, injectable} from "inversify";
+import {CommentDbType, CommentDocument, CreateCommentDto} from "../models/comment/comment-types";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -22,39 +23,43 @@ export class CommentService {
     ) {
     }
 
-    async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentDBModel | string> {
+    async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentDocument | string> {
         // найдем userLogin
         const user: UserDBModel | null = await this.userService.findUserById(userId);
         if (!user) throw new Error('user is not found');
 
-        const comment: CommentDBModel = {
+        const commentDto: CreateCommentDto = {
             _id: new ObjectId(),
             postId: c.postId,
             content: c.content,
-            commentatorInfo: {
-                userId: userId,
-                userLogin: user.accountData.userName
-            },
-            createdAt: (new Date()).toISOString()
+            userId: userId,
+            userLogin: user.accountData.userName
         }
-        return await this.commentsRepository.createNewComment(comment);
+        const comment: CommentDocument = await CommentModel.createComment(commentDto);
+        await this.commentsRepository.save(comment);
+        return comment;
     }
 
     async updateComment(comment: InputComment, commentId: string): Promise<boolean> {
         //запросим существующий коммент, чтобы получить postId:
         const commentObjectId: ObjectId = stringToObjectIdMapper(commentId);
-        const currentComment: CommentDBModel | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
+        const currentComment: CommentDbType | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
         if (!currentComment) {
             throw new Error('comment is not found');
             return false;
         }
 
-        const updatedComment: CommentDBModel = {
+        const updatedComment: CommentDbType = {
             _id: commentObjectId,
             postId: currentComment!.postId,
             content: comment.content,
             commentatorInfo: currentComment.commentatorInfo,
-            createdAt: currentComment.createdAt
+            createdAt: currentComment.createdAt,
+            dbLikesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                likes: []
+            }
         }
         const isUpdated = await this.commentsRepository.updateComment(commentObjectId, updatedComment);
 
