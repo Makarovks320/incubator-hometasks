@@ -44,7 +44,7 @@ export class CommentsValidations {
                 res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
                 return;
             }
-            if (comment.commentatorInfo.userId != req.userId) {
+            if (comment.commentatorInfo.userId.toString() != req.userId.toString()) {
                 res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
                 return;
             }

@@ -13,6 +13,7 @@ import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 import {inject, injectable} from "inversify";
 import {CommentDbType} from "../models/comment/comment-types";
+import {CommentModel} from "../models/comment/comment-db-model";
 
 @injectable()
 export class CommentsController {
@@ -27,20 +28,7 @@ export class CommentsController {
 
     async updateComment(req: Request, res: Response) {
         const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
-        const oldComment: CommentDbType | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
-        if (!oldComment) {
-            res.status(HTTP_STATUSES.NOT_FOUND_404).send('Comment is not found');
-            return;
-        }
-        const user: UserDBModel | null = await this.userService.findUserById(req.userId!);
-        if (oldComment.commentatorInfo.userLogin != user!.accountData.userName) {
-            res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
-            return;
-        }
-        const commentForUpdate: InputComment = {
-            content: req.body.content,
-        }
-        const result = await this.commentService.updateComment(commentForUpdate, req.params.id);
+        const result = await this.commentService.updateComment(req.body.content, commentObjectId, req.userId);
         res.status(HTTP_STATUSES.NO_CONTENT_204).send(result);
     }
 

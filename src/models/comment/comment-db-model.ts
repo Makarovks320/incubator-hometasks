@@ -54,10 +54,20 @@ export const commentStatics: any = {
             }
             return new CommentModel(comment);
     },
-
+    async findCommentById(_id: ObjectId): Promise<CommentDocument> {
+         return this.findOne(_id)
+    }
 
 }
-export const commentMethods = {}
+export const commentMethods = {
+    updateContent(userId: ObjectId, content: string) {
+        const that = this as CommentDbType & CommentMethodsType;
+        if (that.commentatorInfo.userId.toString() != userId.toString()) {
+            throw new Error('Comment does not below to the user');
+        }
+        that.content = content;
+    }
+}
 
 commentSchema.methods = commentMethods;
 commentSchema.statics = commentStatics;
