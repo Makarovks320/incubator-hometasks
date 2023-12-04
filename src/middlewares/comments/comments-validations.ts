@@ -34,5 +34,25 @@ export class CommentsValidations {
             return;
         }
     };
+
+    async checkCommentBelongsToUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
+
+            const comment: CommentDbType | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
+            if (!comment) {
+                res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+                return;
+            }
+            if (comment.commentatorInfo.userId != req.userId) {
+                res.status(HTTP_STATUSES.FORBIDDEN_403).send('Comment is not your own');
+                return;
+            }
+            next();
+        } catch {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+            return;
+        }
+    };
 }
 

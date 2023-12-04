@@ -15,7 +15,7 @@ commentsRouter.put('/:id', [
     authMiddleware.checkBearerToken.bind(authMiddleware),
     commentValidations.commentContentValidation,
     inputValidator,
-    commentValidations.checkCommentExists.bind(commentValidations),
+    commentValidations.checkCommentBelongsToUser.bind(commentValidations),
     commentsController.updateComment.bind(commentsController)
 ]);
 
