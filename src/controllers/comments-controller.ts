@@ -1,10 +1,9 @@
 import {Request, Response} from "express";
-import {CommentService, InputComment} from "../services/comment-service";
+import {CommentService} from "../services/comment-service";
 import {HTTP_STATUSES} from "../enums/http-statuses";
 import {UserDBModel} from "../models/user/user-db-model";
-import {CommentViewModel, LikesInfo} from "../models/comment/comment-view-model";
+import {CommentViewModel} from "../models/comment/comment-view-model";
 import {UserService} from "../services/user-service";
-import {getCommentViewModel} from "../helpers/comment-view-model-mapper";
 import {LikeService} from "../services/like-service";
 import mongoose from "mongoose";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
@@ -12,9 +11,7 @@ import {CommentsQueryRepository} from "../repositories/query-repositories/commen
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 import {inject, injectable} from "inversify";
-import {CommentDbType, CommentDocument} from "../models/comment/comment-types";
-import {CommentModel} from "../models/comment/comment-db-model";
-import {LikeStatusType} from "../models/like/like-db-model";
+import {CommentDbType} from "../models/comment/comment-types";
 
 @injectable()
 export class CommentsController {

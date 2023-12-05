@@ -3,8 +3,7 @@ import {CommentModel} from "../../models/comment/comment-db-model";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {ObjectId} from "mongodb";
 import {injectable} from "inversify";
-import {CommentDbType, CommentDocument} from "../../models/comment/comment-types";
-import {LikeStatusType} from "../../models/like/like-db-model";
+import {CommentDbType} from "../../models/comment/comment-types";
 import {CommentViewModel} from "../../models/comment/comment-view-model";
 import {getCommentViewModel} from "../../helpers/comment-view-model-mapper";
 type commentQueryParams = {

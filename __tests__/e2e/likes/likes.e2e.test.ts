@@ -1,17 +1,13 @@
-import request from 'supertest'
 import {HTTP_STATUSES} from "../../../src/enums/http-statuses";
-import {app} from "../../../src/app_settings";
 import {
     authBasicHeader,
     clearDatabase,
     connectToDataBases,
     disconnectFromDataBases, generateString
 } from "../../utils/test_utilities";
-import {RouterPaths} from "../../../src/helpers/router-paths";
 import {CreateUserInputModel} from "../../../src/models/user/create-input-user-model";
 import {UserViewModel} from "../../../src/models/user/user-view-model";
 import {usersTestManager} from "../../utils/usersTestManager";
-import cookie from "cookie";
 import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {PostViewModel} from "../../../src/models/post/post-view-model";
 import {CreatePostInputModel} from "../../../src/models/post/create-post-input-model";
@@ -22,7 +18,7 @@ import {CreateCommentInputModel} from "../../../src/models/comment/create-input-
 import {commentsTestManager} from "../../utils/commentsTestManager";
 import {CommentViewModel} from "../../../src/models/comment/comment-view-model";
 import {authTestManager} from "../../utils/authTestManager";
-import {LIKE_STATUS_ENUM, LikeStatusType} from "../../../src/models/like/like-db-model";
+import {LIKE_STATUS_ENUM} from "../../../src/models/like/like-db-model";
 import {CommentWithLikeInfo, likeTestManager} from "../../utils/likeTestManager";
 
 describe('testing likes', () => {

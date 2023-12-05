@@ -9,7 +9,6 @@ if (!mongoUri) {
 }
 const DbName =  process.env.MONGO_DB_NAME || "incubator-project";
 
-export const DEFAULT_PROJECTION = { _id: false };
 export const DEFAULT_MONGOOSE_PROJECTION = { _id: 0, __v: 0 };
 export const WITHOUT_v_MONGOOSE_PROJECTION = { __v: 0 };
 
