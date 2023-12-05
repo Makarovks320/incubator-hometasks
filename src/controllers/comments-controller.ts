@@ -12,8 +12,9 @@ import {CommentsQueryRepository} from "../repositories/query-repositories/commen
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 import {inject, injectable} from "inversify";
-import {CommentDbType} from "../models/comment/comment-types";
+import {CommentDbType, CommentDocument} from "../models/comment/comment-types";
 import {CommentModel} from "../models/comment/comment-db-model";
+import {LikeStatusType} from "../models/like/like-db-model";
 
 @injectable()
 export class CommentsController {
@@ -36,12 +37,11 @@ export class CommentsController {
         try {
             const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
             const comment: CommentDbType | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
-            if (!comment) {
+            const viewComment: CommentViewModel | null = await this.commentsQueryRepository.getCommentViewModel(commentObjectId, req.userId);
+            if (!viewComment) {
                 res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
                 return;
             }
-            const likesInfo: LikesInfo = await this.likesQueryRepository.getLikesInfo(comment._id, req.userId);
-            const viewComment: CommentViewModel = getCommentViewModel(comment, likesInfo);
             res.send(viewComment);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db Error');
@@ -64,7 +64,8 @@ export class CommentsController {
 
     async changeLikeStatus(req: Request, res: Response) {
         try {
-            await this.likeService.changeLikeStatus(req.params.id, req.body.likeStatus, req.userId);
+            await this.commentService.changeLikeStatus(req.params.id, req.body.likeStatus, req.userId);
+            // await this.likeService.changeLikeStatus(req.params.id, req.body.likeStatus, req.userId);
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');

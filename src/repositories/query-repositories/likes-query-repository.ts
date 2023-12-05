@@ -31,7 +31,7 @@ export class LikesQueryRepository {
     async getLikeForParentForCurrentUser(parent_id: ObjectId, user_id: ObjectId): Promise<LikeDbModel | null> {
         return LikeModel.findOne({ parent_id, user_id }).lean();
     }
-
+    // метод, использованный до того, как лайки стали хранитьтся в комментах
     async getLikesInfo(parentId: ObjectId, userId: ObjectId): Promise<LikesInfo> {
         const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(parentId);
         const myLike: LikeDbModel | null = await this.getLikeForParentForCurrentUser(parentId, userId);
@@ -42,30 +42,29 @@ export class LikesQueryRepository {
         const likesInfo: LikesInfo = {...likesCountInfo, myStatus};
         return likesInfo;
     }
+    // async findLikesForManyComments(comments: WithPagination<CommentDbType>, currentUserId: ObjectId): Promise<WithPagination<CommentViewModel>> {
+    //     //todo: здесь ходить за лайками, а не брать из параметров
+    //     const viewCommentsWithLikesInfoPromises: Promise<CommentViewModel>[] = comments.items.map(async c => {
+    //         const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(c._id);
+    //         // todo: Promise.all
+    //         // достать все лайки для каждого коммента - ?
+    //         // при создании сохранять в коллекцию комментов общее количетво лайков и дизлайков
+    //         const like: LikeDbModel | null = await this.getLikeForParentForCurrentUser(c._id, currentUserId);
+    //         const result = getCommentViewModel(c, {
+    //             likesCount: likesCountInfo.likesCount,
+    //             dislikesCount: likesCountInfo.dislikesCount,
+    //             myStatus: like ? convertDbEnumToLikeStatus(like.type) : 'None'
+    //         })
+    //         return result;
+    //     });
 
-    async findLikesForManyComments(comments: WithPagination<CommentDbType>, currentUserId: ObjectId): Promise<WithPagination<CommentViewModel>> {
-        //todo: здесь ходить за лайками, а не брать из параметров
-        const viewCommentsWithLikesInfoPromises: Promise<CommentViewModel>[] = comments.items.map(async c => {
-            const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(c._id);
-            // todo: Promise.all
-            // достать все лайки для каждого коммента - ?
-            // при создании сохранять в коллекцию комментов общее количетво лайков и дизлайков
-            const like: LikeDbModel | null = await this.getLikeForParentForCurrentUser(c._id, currentUserId);
-            const result = getCommentViewModel(c, {
-                likesCount: likesCountInfo.likesCount,
-                dislikesCount: likesCountInfo.dislikesCount,
-                myStatus: like ? convertDbEnumToLikeStatus(like.type) : 'None'
-            })
-            return result;
-        });
-
-        const commentsWithLikes: CommentViewModel[] = await Promise.all(viewCommentsWithLikesInfoPromises);
-        return {
-            pagesCount: comments.pagesCount,
-            page: comments.page,
-            pageSize: comments.pageSize,
-            totalCount: comments.totalCount,
-            items: commentsWithLikes
-        }
-    }
+    //     const commentsWithLikes: CommentViewModel[] = await Promise.all(viewCommentsWithLikesInfoPromises);
+    //     return {
+    //         pagesCount: comments.pagesCount,
+    //         page: comments.page,
+    //         pageSize: comments.pageSize,
+    //         totalCount: comments.totalCount,
+    //         items: commentsWithLikes
+    //     }
+    // }
 }

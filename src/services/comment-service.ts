@@ -5,7 +5,9 @@ import {CommentModel} from "../models/comment/comment-db-model";
 import {UserService} from "./user-service";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 import {inject, injectable} from "inversify";
-import {CommentDbType, CommentDocument, CreateCommentDto} from "../models/comment/comment-types";
+import {CommentDocument, CreateCommentDto} from "../models/comment/comment-types";
+import {LikeStatusType} from "../models/like/like-db-model";
+import {CommentViewModel, LikesInfo} from "../models/comment/comment-view-model";
 
 export type InputCommentWithPostId = {
     content: string,
@@ -40,38 +42,16 @@ export class CommentService {
         return comment;
     }
 
-    async updateComment(content: string, commentId: ObjectId, userId: ObjectId): Promise<boolean> {
-        const comment = await CommentModel.findCommentById(commentId);
+    async updateComment(content: string, commentId: ObjectId, userId: ObjectId): Promise<void> {
+        const comment: CommentDocument | null = await this.commentsRepository.findCommentById(commentId);
         comment.updateContent(userId, content);
         await this.commentsRepository.save(comment);
-        return true;
+    }
 
-
-        // todo: в коде ниже мы получали подтверждение через <result.modifiedCount === 1> в репозитории. А теперь?
-        // CommentModel.updateContent(req.body.content)
-        //запросим существующий коммент, чтобы получить postId:
-        // const commentObjectId: ObjectId = stringToObjectIdMapper(commentId);
-        // const currentComment: CommentDbType | null = await this.commentsRepository.getCommentByIdWithPostId(commentObjectId);
-        // if (!currentComment) {
-        //     throw new Error('comment is not found');
-        //     return false;
-        // }
-        //
-        // const updatedComment: CommentDbType = {
-        //     _id: commentObjectId,
-        //     postId: currentComment!.postId,
-        //     content: comment.content,
-        //     commentatorInfo: currentComment.commentatorInfo,
-        //     createdAt: currentComment.createdAt,
-        //     dbLikesInfo: {
-        //         likesCount: 0,
-        //         dislikesCount: 0,
-        //         likes: []
-        //     }
-        // }
-        // const isUpdated = await this.commentsRepository.updateComment(commentObjectId, updatedComment);
-        //
-        // return !!isUpdated;
+    async changeLikeStatus(commentId: string, likeStatus: LikeStatusType, userId: ObjectId): Promise<void> {
+        const comment: CommentDocument | null = await this.commentsRepository.findCommentById(stringToObjectIdMapper(commentId));
+        comment.changeLikeStatusForComment(likeStatus, userId);
+        await this.commentsRepository.save(comment);
     }
 
     async deleteCommentById(id: string): Promise<boolean> {

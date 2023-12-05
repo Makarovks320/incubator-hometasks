@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import {LikeStatusType} from "../like/like-db-model";
 
 export type CommentViewModel = {
     id: string,
@@ -14,5 +15,5 @@ export type CommentViewModel = {
 export type LikesInfo = {
     likesCount: number,
     dislikesCount: number,
-    myStatus: "None" | "Like" | "Dislike"
+    myStatus: LikeStatusType
 }

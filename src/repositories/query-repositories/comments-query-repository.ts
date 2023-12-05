@@ -3,7 +3,10 @@ import {CommentModel} from "../../models/comment/comment-db-model";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {ObjectId} from "mongodb";
 import {injectable} from "inversify";
-import {CommentDbType} from "../../models/comment/comment-types";
+import {CommentDbType, CommentDocument} from "../../models/comment/comment-types";
+import {LikeStatusType} from "../../models/like/like-db-model";
+import {CommentViewModel} from "../../models/comment/comment-view-model";
+import {getCommentViewModel} from "../../helpers/comment-view-model-mapper";
 type commentQueryParams = {
     pageNumber: number,
     pageSize: number,
@@ -14,13 +17,13 @@ export const COMMENT_PROJECTION = {...WITHOUT_v_MONGOOSE_PROJECTION, postId: fal
 
 @injectable()
 export class CommentsQueryRepository {
-    async getCommentsForPost(postId: string, queryParams: commentQueryParams): Promise<WithPagination<CommentDbType>> {
+    async getCommentsForPost(postId: string, queryParams: commentQueryParams, userId: ObjectId): Promise<WithPagination<CommentViewModel>> {
 
         const sort: Record<string, -1 | 1> = {};
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const foundComments = await CommentModel.find({postId})
+        const foundComments: CommentDbType[] = await CommentModel.find({postId})
             .select(COMMENT_PROJECTION)
             .lean()
             .sort(sort)
@@ -33,7 +36,7 @@ export class CommentsQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount: totalCount,
-            items: foundComments
+            items: foundComments.map( c => getCommentViewModel(c, userId))
         }
     }
 
@@ -41,5 +44,13 @@ export class CommentsQueryRepository {
         return CommentModel.findOne({_id})
             .select(COMMENT_PROJECTION)
             .lean();
+    }
+
+    async getCommentViewModel(commentId: ObjectId, userId: ObjectId): Promise<CommentViewModel | null> {
+        const commentFromDb = await CommentModel.findOne({_id: commentId})
+            .select(COMMENT_PROJECTION)
+            .lean();
+        if (!commentFromDb) return null;
+        return getCommentViewModel(commentFromDb, userId);
     }
 }

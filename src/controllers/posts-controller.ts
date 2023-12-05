@@ -89,9 +89,8 @@ export class PostsController {
     async getCommentsForPost(req: Request, res: Response) {
         try {
             const queryParams: PostQueryParams = getPostQueryParams(req);
-            const foundComments: WithPagination<CommentDbType> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams);
-            const commentsWithLikesInfo: WithPagination<CommentViewModel> = await this.likesQueryRepository.findLikesForManyComments(foundComments, req.userId);
-            res.status(HTTP_STATUSES.OK_200).send(commentsWithLikesInfo);
+            const foundComments: WithPagination<CommentViewModel> = await this.commentQueryRepository.getCommentsForPost(req.params.id, queryParams, req.userId);
+            res.status(HTTP_STATUSES.OK_200).send(foundComments);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db Error');
             res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);

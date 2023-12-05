@@ -1,4 +1,4 @@
-import {DEFAULT_MONGOOSE_PROJECTION} from "../db/db";
+import {DEFAULT_MONGOOSE_PROJECTION, WITHOUT_v_MONGOOSE_PROJECTION} from "../db/db";
 import {CommentModel} from "../models/comment/comment-db-model";
 import {MongooseError} from "mongoose";
 import {ObjectId} from "mongodb";
@@ -29,6 +29,10 @@ export class CommentsRepository {
             .lean();
     }
 
+    async findCommentById(_id: ObjectId | string): Promise<CommentDocument | null> {
+        return CommentModel.findOne({_id})
+            .select(WITHOUT_v_MONGOOSE_PROJECTION);
+    }
     async deleteCommentById(_id: ObjectId): Promise<boolean> {
         const result = await CommentModel.deleteOne({_id});
         return result.deletedCount === 1;

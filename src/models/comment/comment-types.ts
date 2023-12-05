@@ -27,7 +27,7 @@ export type  dbLikesInfoType = {
     dislikesCount: number,
     likes: likeForComment[] | []
 }
-export type likeForComment = [] | {
+export type likeForComment = {
     userId: ObjectId,
     likeStatus: LIKE_STATUS_DB_ENUM
 }
