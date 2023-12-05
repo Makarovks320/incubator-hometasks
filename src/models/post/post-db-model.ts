@@ -3,7 +3,6 @@ import {ObjectId} from "mongodb";
 import {NewestLikesType} from "./post-view-model";
 import {InputPost} from "../../services/post-service";
 import {LIKE_STATUS_DB_ENUM, LIKE_STATUS_ENUM, LikeStatusType} from "../like/like-db-model";
-import {CommentDbType, CommentMethodsType} from "../comment/comment-types";
 import {convertDbEnumToLikeStatus} from "../../helpers/like-status-converters";
 
 export type PostDBType = {
@@ -20,7 +19,7 @@ export type PostDBType = {
 }
 
 // типизация методов класса (статических)
-type PostStaticsType = typeof postStatic;
+type PostStaticsType = typeof postStatics;
 // типизация методов экземпляра
 export type PostMethodsType = typeof postMethods;
 
@@ -52,7 +51,7 @@ const postSchema = new mongoose.Schema<PostDBType, PostModelFullType, PostMethod
     newestLikes: [{type: brieflyLikeSchema, required: true, default: []}]
 })
 
-const postStatic: any = {
+const postStatics: any = {
     createPost(p: InputPost): PostDocument {
         const post: PostDBType = {
             _id: new ObjectId(),
@@ -99,4 +98,6 @@ const postMethods = {
     }
 }
 
+postSchema.methods = postMethods;
+postSchema.statics = postStatics;
 export const PostModel = mongoose.model<PostDBType, PostModelFullType>('posts', postSchema);
