@@ -1,7 +1,7 @@
-import {DEFAULT_MONGOOSE_PROJECTION, WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
+import {WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
 import {PostQueryParams} from "../../models/post/post-query-params-type";
 import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-model";
-import {PostDBModel, PostModel} from "../../models/post/post-db-model";
+import {PostDBType, PostModel} from "../../models/post/post-db-model";
 import mongoose from "mongoose";
 import {injectable} from "inversify";
 import {getPostViewModel} from "../../helpers/post-view-model-mapper";
@@ -9,7 +9,7 @@ import {getPostViewModel} from "../../helpers/post-view-model-mapper";
 @injectable()
 export class PostsQueryRepository {
     async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsWithPaginationModel> {
-        const filter: mongoose.FilterQuery<PostDBModel> = {};
+        const filter: mongoose.FilterQuery<PostDBType> = {};
         if (blogId) {
             filter.blogId = blogId;
         }
@@ -17,7 +17,7 @@ export class PostsQueryRepository {
         if (queryParams.sortBy) {
             sort[queryParams.sortBy] = queryParams.sortDirection === 'asc' ? 1 : -1;
         }
-        const posts = await PostModel.find(filter)
+        const posts: PostDBType[] = await PostModel.find(filter)
             .select(WITHOUT_v_MONGOOSE_PROJECTION)
             .lean()
             .sort(sort)

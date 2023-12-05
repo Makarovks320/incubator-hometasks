@@ -13,11 +13,13 @@ import {LikesQueryRepository} from "../repositories/query-repositories/likes-que
 import mongoose from "mongoose";
 import {inject, injectable} from "inversify";
 import {BlogsRepository} from "../repositories/blogs-repository";
-import {PostDBModel} from "../models/post/post-db-model";
+import {PostDBType} from "../models/post/post-db-model";
 import {getPostViewModel} from "../helpers/post-view-model-mapper";
 import {LikeService} from "../services/like-service";
 import {getPostQueryParams} from "../helpers/get-query-params";
 import {CommentDbType} from "../models/comment/comment-types";
+import {ObjectId} from "mongodb";
+import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
 
 @injectable()
 export class PostsController {
@@ -57,7 +59,7 @@ export class PostsController {
             blogId: req.body.blogId || req.params.id,// смотря какой эндпоинт: /posts или /blogs
             blogName: blog.name
         }
-        const result: PostDBModel | string = await this.postService.createNewPost(post);
+        const result: PostDBType | string = await this.postService.createNewPost(post);
 
         if (typeof result === 'string') {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
@@ -68,11 +70,17 @@ export class PostsController {
     }
 
     async updatePost(req: Request, res: Response) {
+        try {
+
         const blog = await this.blogsRepository.findBlogById(req.body.blogId);
         if (!blog) throw new Error('Incorrect blog id: blog is not found');
 
-        const newPost = await this.postService.updatePostById(req.params.id, {...req.body, blogName: blog.name});
-        newPost ? res.sendStatus(HTTP_STATUSES.NO_CONTENT_204) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        await this.postService.updatePostById(req.params.id, {...req.body, blogName: blog.name}, req.userId);
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+        }
     }
 
     async deleteAllPosts(req: Request, res: Response) {
@@ -114,7 +122,8 @@ export class PostsController {
     // лайки
     async changeLikeStatus(req: Request, res: Response) {
         try {
-            await this.likeService.changeLikeStatus(req.params.id, req.body.likeStatus, req.userId);
+            const postObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
+            await this.postService.changeLikeStatus(postObjectId, req.body.likeStatus, req.userId);
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
         } catch (e) {
             if (e instanceof mongoose.Error) res.status(HTTP_STATUSES.SERVER_ERROR_500).send('Db error');

@@ -18,6 +18,6 @@ export type ExtendedLikesInfoType = {
 }
 export type NewestLikesType = {
     addedAt: string,
-        userId: string,
-        login: string
+    userId: string,
+    login: string
 }

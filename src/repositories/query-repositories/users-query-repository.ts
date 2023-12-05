@@ -1,7 +1,6 @@
 import {WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
 import {UsersQueryParams} from "../../models/user/users-query-params";
 import mongoose from "mongoose";
-import {PostDBModel} from "../../models/post/post-db-model";
 import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {UserDBModel, UserModel} from "../../models/user/user-db-model";
 import {injectable} from "inversify";

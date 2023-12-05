@@ -25,7 +25,7 @@ export class CommentService {
     ) {
     }
 
-    async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentDocument | string> {
+    async createNewComment(c: InputCommentWithPostId, userId: ObjectId): Promise<CommentDocument> {
         // найдем userLogin
         const user: UserDBModel | null = await this.userService.findUserById(userId);
         if (!user) throw new Error('user is not found');

@@ -42,6 +42,7 @@ export class LikesQueryRepository {
         const likesInfo: LikesInfo = {...likesCountInfo, myStatus};
         return likesInfo;
     }
+
     // async findLikesForManyComments(comments: WithPagination<CommentDbType>, currentUserId: ObjectId): Promise<WithPagination<CommentViewModel>> {
     //     //todo: здесь ходить за лайками, а не брать из параметров
     //     const viewCommentsWithLikesInfoPromises: Promise<CommentViewModel>[] = comments.items.map(async c => {
