@@ -2,13 +2,7 @@ import {ExtendedLikesInfoType, PostViewModel} from "../models/post/post-view-mod
 import {PostDBType} from "../models/post/post-db-model";
 import {LIKE_STATUS_ENUM} from "../models/like/like-db-model";
 
-export const getPostViewModel = (postDb: PostDBType,
-                                 extendedLikesInfo: ExtendedLikesInfoType = {
-                                     likesCount: 0,
-                                     dislikesCount: 0,
-                                     myStatus: LIKE_STATUS_ENUM.NONE,
-                                     newestLikes: []
-                                 }
+export const getPostViewModel = (postDb: PostDBType, myStatus: LIKE_STATUS_ENUM | null,
                                     ): PostViewModel => {
     return {
         id: postDb._id.toString(),
@@ -18,6 +12,11 @@ export const getPostViewModel = (postDb: PostDBType,
         blogId: postDb.blogId,
         blogName: postDb.blogName,
         createdAt: postDb.createdAt,
-        extendedLikesInfo
+        extendedLikesInfo: {
+            likesCount: postDb.likesCount,
+            dislikesCount: postDb.dislikesCount,
+            myStatus: myStatus || LIKE_STATUS_ENUM.NONE,
+            newestLikes: postDb.newestLikes
+        }
     }
 }

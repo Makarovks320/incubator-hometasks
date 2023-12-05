@@ -7,6 +7,9 @@ import {LIKE_STATUS_ENUM, LikeDbModel, LikeStatusType} from "../models/like/like
 import {LikeService} from "./like-service";
 import {LikesQueryRepository} from "../repositories/query-repositories/likes-query-repository";
 import {UserService} from "./user-service";
+import {convertDbEnumToLikeStatus} from "../helpers/like-status-converters";
+import {getPostViewModel} from "../helpers/post-view-model-mapper";
+import {PostViewModel} from "../models/post/post-view-model";
 
 export type InputPost = {
     title: string,
@@ -25,9 +28,19 @@ export class PostService {
                 ) {
     }
 
-    async getPostById(id: string): Promise<PostDBType | null> {
-        const objectId = stringToObjectIdMapper(id);
-        return this.postsRepository.findPostById(objectId);
+    async getPostById(id: string, userId: ObjectId): Promise<PostViewModel | null> {
+        const postObjectId = stringToObjectIdMapper(id);
+        const posts = await this.postsRepository.findPostById(postObjectId);
+        // сходим за статусом лайка от текущего юзера, если текущий юзер авторизован
+        let myStatus: LIKE_STATUS_ENUM | null = null;
+        if (userId) {
+            const myLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForParentForCurrentUser(postObjectId, userId);
+            if (myLike) {
+                myStatus = convertDbEnumToLikeStatus(myLike.type)
+            }
+        }
+
+        return getPostViewModel(posts, myStatus)
     }
 
     async createNewPost(p: InputPost): Promise<PostDocument> {

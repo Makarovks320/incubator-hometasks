@@ -20,6 +20,8 @@ import {getPostQueryParams} from "../helpers/get-query-params";
 import {CommentDbType} from "../models/comment/comment-types";
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
+import {LIKE_STATUS_DB_ENUM, LIKE_STATUS_ENUM, LikeDbModel} from "../models/like/like-db-model";
+import {convertDbEnumToLikeStatus} from "../helpers/like-status-converters";
 
 @injectable()
 export class PostsController {
@@ -46,8 +48,14 @@ export class PostsController {
     }
 
     async getPostById(req: Request, res: Response) {
-        const posts = await this.postService.getPostById(req.params.id);
-        posts ? res.status(HTTP_STATUSES.OK_200).send(getPostViewModel(posts)) : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        try {
+            const posts: PostViewModel | null = await this.postService.getPostById(req.params.id, req.userId);
+            posts ? res.status(HTTP_STATUSES.OK_200).send(posts)
+                : res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+        }
     }
 
     async createNewPost(req: Request, res: Response) {
@@ -65,7 +73,7 @@ export class PostsController {
             res.status(HTTP_STATUSES.SERVER_ERROR_500).send(result);
             return;
         }
-        const createdPost: PostViewModel = getPostViewModel(result);
+        const createdPost: PostViewModel = getPostViewModel(result, null);
         res.status(HTTP_STATUSES.CREATED_201).send(createdPost);
     }
 

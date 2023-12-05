@@ -30,7 +30,7 @@ export class PostsQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount: totalCount,
-            items: posts.map(p => getPostViewModel(p))
+            items: posts.map(p => getPostViewModel(p, null))
         }
     }
 }

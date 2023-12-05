@@ -14,7 +14,10 @@ const commentValidation = container.resolve(CommentsValidations);
 const authMiddleware = container.resolve(AuthMiddleware);
 export const postsRouter = Router();
 
-postsRouter.get('/', postsController.getPosts.bind(postsController));
+postsRouter.get('/', [
+    authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
+    postsController.getPosts.bind(postsController)
+]);
 
 postsRouter.get('/:id', [
     authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
