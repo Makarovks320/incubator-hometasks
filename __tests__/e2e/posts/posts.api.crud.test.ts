@@ -9,6 +9,7 @@ import {BlogViewModel} from "../../../src/models/blog/blog-view-model";
 import {PostViewModel} from "../../../src/models/post/post-view-model";
 import {CreatePostInputModel} from "../../../src/models/post/create-post-input-model";
 import {postsTestManager} from "../../utils/postsTestManager";
+import {ObjectId} from "mongodb";
 
 
 describe('CRUD tests for /posts', () => {
@@ -87,6 +88,30 @@ describe('CRUD tests for /posts', () => {
 
     // update post
     let updatedPost1: PostViewModel | null = null;
+    it('should not update post if :id from uri param not found; status 404; ', async () => {
+        if (!createdPost1 || !createdBlogForPost) throw new Error('test cannot be performed.');
+        const updatedPostData: CreatePostInputModel = {
+            "title": "updated title 2",
+            "content": "updated content 2",
+            "shortDescription": "updated some short description 2",
+            "blogId": createdBlogForPost.id
+        }
+
+        await postsTestManager.updatePost((new ObjectId()).toString(), updatedPostData, HTTP_STATUSES.NOT_FOUND_404);
+
+        await postsTestManager.updatePost('unoformatted wrong id', updatedPostData, HTTP_STATUSES.NOT_FOUND_404);
+
+        await request(app)
+            .get(`${RouterPaths.blogs}/${createdBlogForPost.id}/posts`)
+            .expect(HTTP_STATUSES.OK_200, {
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: 2,
+                items: [createdPost2, createdPost1]
+            });
+    })
+
     it('should update post', async () => {
         if (!createdPost1 || !createdBlogForPost) throw new Error('test cannot be performed.');
         const updatedPostData: CreatePostInputModel = {
