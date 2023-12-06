@@ -95,6 +95,7 @@ const postMethods = {
             login: userLogin
         }
         that.newestLikes.unshift(newLike);
+        if (that.newestLikes.length === 4) that.newestLikes.splice(-1, 1);
     },
     extractLikeFromList(previousLike: LikeDbModel) {
         const that = this as PostDBType & PostMethodsType;

@@ -111,11 +111,11 @@ describe('testing likes', () => {
         'content: JWT access token, JWT refresh token in cookie (http only, secure);', async () => {
         const result1: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email1, password: password});
         authJWTHeader1 = {Authorization: `Bearer ${result1!.accessToken}`}
-        const result2: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email1, password: password});
+        const result2: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email2, password: password});
         authJWTHeader2 = {Authorization: `Bearer ${result2!.accessToken}`}
-        const result3: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email1, password: password});
+        const result3: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email3, password: password});
         authJWTHeader3 = {Authorization: `Bearer ${result3!.accessToken}`}
-        const result4: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email1, password: password});
+        const result4: { accessToken: string; refreshToken: string } | null = await authTestManager.loginUser({loginOrEmail: email4, password: password});
         authJWTHeader4 = {Authorization: `Bearer ${result4!.accessToken}`}
     });
 
@@ -133,8 +133,17 @@ describe('testing likes', () => {
 
     });
 
+    it('should change like to dislike for post', async () => {
+        if (!post) throw new Error('test cannot be performed.');
+        if (!user_1) throw new Error('test cannot be performed.');
 
-    it('should remove like for post', async () => {
+        await likeTestManager.changeLikeStatusForPost(post.id, authJWTHeader1, LIKE_STATUS_ENUM.DISLIKE);
+
+        await likeTestManager.checkLikeStatusForPostById(post.id, 0, 1, [], LIKE_STATUS_ENUM.DISLIKE, authJWTHeader1);
+
+    });
+
+    it('should remove dislike for post', async () => {
         if (!post) throw new Error('test cannot be performed.');
         if (!user_1) throw new Error('test cannot be performed.');
 
@@ -143,6 +152,28 @@ describe('testing likes', () => {
         await likeTestManager.checkLikeStatusForPostById(post.id, 0, 0, [], LIKE_STATUS_ENUM.NONE, authJWTHeader1);
 
     });
+
+
+    it('like the post by user 1, user 2, user 3, user 4. get the post after each like by user 1.' +
+        '   NewestLikes should be sorted in descending; status 204;', async () => {
+        if (!post || !user_1 || !user_2 || !user_3 || !user_4) throw new Error('test cannot be performed.');
+        // like the post by user_1
+        await likeTestManager.changeLikeStatusForPost(post.id, authJWTHeader1, LIKE_STATUS_ENUM.LIKE);
+
+        await likeTestManager.checkLikeStatusForPostById(post.id, 1, 0, [user_1], LIKE_STATUS_ENUM.LIKE, authJWTHeader1);
+        // like the post by user_2
+        await likeTestManager.changeLikeStatusForPost(post.id, authJWTHeader2, LIKE_STATUS_ENUM.LIKE);
+        await likeTestManager.checkLikeStatusForPostById(post.id, 2, 0, [user_2, user_1], LIKE_STATUS_ENUM.LIKE, authJWTHeader1);
+        // like the post by user_3
+        await likeTestManager.changeLikeStatusForPost(post.id, authJWTHeader3, LIKE_STATUS_ENUM.LIKE);
+        await likeTestManager.checkLikeStatusForPostById(post.id, 3, 0, [user_3, user_2, user_1], LIKE_STATUS_ENUM.LIKE, authJWTHeader1);
+        // like the post by user_4
+        await likeTestManager.changeLikeStatusForPost(post.id, authJWTHeader4, LIKE_STATUS_ENUM.LIKE);
+        await likeTestManager.checkLikeStatusForPostById(post.id, 4, 0, [user_4, user_3, user_2], LIKE_STATUS_ENUM.LIKE, authJWTHeader1);
+
+
+
+    })
 //
 //
 //     it('should add dislike for comment', async () => {
