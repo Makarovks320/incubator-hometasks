@@ -28,7 +28,10 @@ blogsRouter.post('/', [
     blogsController.createNewBlog.bind(blogsController)
 ]);
 
-blogsRouter.get('/:id/posts', blogsController.getPostsByBlogId.bind(blogsController));
+blogsRouter.get('/:id/posts', [
+    authMiddleware.lookBearerTokenForCurrentUserId.bind(authMiddleware),
+    postsController.getPosts.bind(postsController)
+]);
 
 blogsRouter.post('/:id/posts', [
     authMiddleware.checkBasicAuthorization,

@@ -10,6 +10,9 @@ import {UserService} from "./user-service";
 import {convertDbEnumToLikeStatus} from "../helpers/like-status-converters";
 import {getPostViewModel} from "../helpers/post-view-model-mapper";
 import {PostViewModel} from "../models/post/post-view-model";
+import {PostQueryParams} from "../models/post/post-query-params-type";
+import {PostsQueryRepository} from "../repositories/query-repositories/posts-query-repository";
+import {WithPagination} from "../models/common-types-aliases-&-generics/with-pagination-type";
 
 export type InputPost = {
     title: string,
@@ -24,8 +27,40 @@ export class PostService {
     constructor(@inject(PostsRepository) private postsRepository: PostsRepository,
                 @inject(LikeService) private likeService: LikeService,
                 @inject(LikesQueryRepository) private likesQueryRepository: LikesQueryRepository,
+                @inject(PostsQueryRepository) private postsQueryRepository: PostsQueryRepository,
                 @inject(UserService) private userService: UserService,
-                ) {
+    ) {
+    }
+
+    async getPosts(id: string, userId: ObjectId, queryParams: PostQueryParams): Promise<WithPagination<PostViewModel>> {
+        const posts: WithPagination<PostDBType> = await this.postsQueryRepository.getPosts(queryParams);
+        const promises = posts.items.map(p => {
+            return this.likesQueryRepository.getLikeForParentForCurrentUser(p._id, userId);
+        });
+        const statuses: Array<LikeDbModel | null> = await Promise.all([...promises]).then(data => data);
+        const arr: PostViewModel[] = posts.items.map((p, index) => {
+            return {
+                    id: p._id.toString(),
+                    title: p.title,
+                    shortDescription: p.shortDescription,
+                    content: p.content,
+                    blogId: p.blogId,
+                    blogName: p.blogName,
+                    createdAt: p.createdAt,
+                    extendedLikesInfo: {
+                        likesCount: p.likesCount,
+                        dislikesCount: p.dislikesCount,
+                        myStatus: statuses[index] ? convertDbEnumToLikeStatus(statuses[index]!.type)
+                                                    : LIKE_STATUS_ENUM.NONE,
+                        newestLikes: p.newestLikes
+                    }
+                }
+        });
+        return {
+            ...posts,
+            items: arr
+        }
+
     }
 
     async getPostById(id: string, userId: ObjectId): Promise<PostViewModel | null> {
@@ -35,9 +70,7 @@ export class PostService {
         let myStatus: LIKE_STATUS_ENUM | null = null;
         if (userId) {
             const myLike: LikeDbModel | null = await this.likesQueryRepository.getLikeForParentForCurrentUser(postObjectId, userId);
-            if (myLike) {
-                myStatus = convertDbEnumToLikeStatus(myLike.type)
-            }
+            if (myLike) myStatus = convertDbEnumToLikeStatus(myLike.type);
         }
 
         return getPostViewModel(posts, myStatus)

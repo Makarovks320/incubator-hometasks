@@ -20,8 +20,6 @@ import {getPostQueryParams} from "../helpers/get-query-params";
 import {CommentDbType} from "../models/comment/comment-types";
 import {ObjectId} from "mongodb";
 import {stringToObjectIdMapper} from "../helpers/string-to-object-id-mapper";
-import {LIKE_STATUS_DB_ENUM, LIKE_STATUS_ENUM, LikeDbModel} from "../models/like/like-db-model";
-import {convertDbEnumToLikeStatus} from "../helpers/like-status-converters";
 
 @injectable()
 export class PostsController {
@@ -37,14 +35,14 @@ export class PostsController {
     }
 
     async getPosts(req: Request, res: Response) {
-        const queryParams = new PostQueryParams(
-            parseInt(req.query.pageNumber as string) || 1,
-            parseInt(req.query.pageSize as string) || 10,
-            req.query.sortBy as string || 'createdAt',
-            req.query.sortDirection === 'asc' ? 'asc' : 'desc'
-        )
-        const posts = await this.postsQueryRepository.getPosts(queryParams);
-        res.status(HTTP_STATUSES.OK_200).send(posts);
+        try {
+            const queryParams: PostQueryParams = getPostQueryParams(req);
+            const posts: WithPagination<PostViewModel> = await this.postService.getPosts(req.params.id, req.userId, queryParams);
+            res.status(HTTP_STATUSES.OK_200).send(posts);
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(HTTP_STATUSES.SERVER_ERROR_500);
+        }
     }
 
     async getPostById(req: Request, res: Response) {

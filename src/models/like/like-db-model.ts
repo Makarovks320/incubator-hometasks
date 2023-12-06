@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import {ObjectId} from "mongodb";
-import {HTTP_STATUSES} from "../../enums/http-statuses";
 
 export class LikeDbModel {
     constructor(

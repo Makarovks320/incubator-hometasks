@@ -7,12 +7,9 @@ import {
     likesCountInfo,
     LikeStatusType
 } from "../../models/like/like-db-model";
-import {CommentViewModel, LikesInfo} from "../../models/comment/comment-view-model";
+import {LikesInfo} from "../../models/comment/comment-view-model";
 import {convertDbEnumToLikeStatus} from "../../helpers/like-status-converters";
-import {getCommentViewModel} from "../../helpers/comment-view-model-mapper";
-import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 import {injectable} from "inversify";
-import {CommentDbType} from "../../models/comment/comment-types";
 
 @injectable()
 export class LikesQueryRepository {
@@ -31,6 +28,7 @@ export class LikesQueryRepository {
     async getLikeForParentForCurrentUser(parent_id: ObjectId, user_id: ObjectId): Promise<LikeDbModel | null> {
         return LikeModel.findOne({ parent_id, user_id }).lean();
     }
+
     // метод, использованный до того, как лайки стали хранитьтся в комментах
     async getLikesInfo(parentId: ObjectId, userId: ObjectId): Promise<LikesInfo> {
         const likesCountInfo: likesCountInfo = await this.getLikesAndDislikesCountForComment(parentId);

@@ -1,14 +1,13 @@
 import {WITHOUT_v_MONGOOSE_PROJECTION} from "../../db/db";
 import {PostQueryParams} from "../../models/post/post-query-params-type";
-import {PostsWithPaginationModel} from "../../models/post/posts-with-pagination-model";
 import {PostDBType, PostModel} from "../../models/post/post-db-model";
 import mongoose from "mongoose";
 import {injectable} from "inversify";
-import {getPostViewModel} from "../../helpers/post-view-model-mapper";
+import {WithPagination} from "../../models/common-types-aliases-&-generics/with-pagination-type";
 
 @injectable()
 export class PostsQueryRepository {
-    async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<PostsWithPaginationModel> {
+    async getPosts(queryParams: PostQueryParams, blogId?: string): Promise<WithPagination<PostDBType>> {
         const filter: mongoose.FilterQuery<PostDBType> = {};
         if (blogId) {
             filter.blogId = blogId;
@@ -30,7 +29,7 @@ export class PostsQueryRepository {
             page: queryParams.pageNumber,
             pageSize: queryParams.pageSize,
             totalCount: totalCount,
-            items: posts.map(p => getPostViewModel(p, null))
+            items: posts
         }
     }
 }

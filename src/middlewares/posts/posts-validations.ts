@@ -1,6 +1,5 @@
-import {body, CustomValidator, param} from "express-validator";
+import {body, param} from "express-validator";
 import {inject, injectable} from "inversify";
-import {BlogsValidations} from "../blogs/blogs-validations";
 import {NextFunction, Request, Response} from "express";
 import {HTTP_STATUSES} from "../../enums/http-statuses";
 import { PostsRepository } from "../../repositories/posts-repository";
