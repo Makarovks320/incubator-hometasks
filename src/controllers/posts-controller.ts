@@ -37,7 +37,7 @@ export class PostsController {
     async getPosts(req: Request, res: Response) {
         try {
             const queryParams: PostQueryParams = getPostQueryParams(req);
-            const posts: WithPagination<PostViewModel> = await this.postService.getPosts(req.params.id, req.userId, queryParams);
+            const posts: WithPagination<PostViewModel> = await this.postService.getPosts(req.userId, queryParams, req.params.id);
             res.status(HTTP_STATUSES.OK_200).send(posts);
         } catch (e) {
             console.log(e);

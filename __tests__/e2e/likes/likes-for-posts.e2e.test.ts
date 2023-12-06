@@ -18,7 +18,7 @@ import {authTestManager} from "../../utils/authTestManager";
 import {LIKE_STATUS_ENUM} from "../../../src/models/like/like-db-model";
 import {likeTestManager} from "../../utils/likeTestManager";
 
-describe('testing likes', () => {
+describe('testing likes for posts', () => {
     const email1: string = "email-1@mail.com";
     const email2: string = "email-2@mail.com";
     const email3: string = "email-3@mail.com";
@@ -170,11 +170,8 @@ describe('testing likes', () => {
         // like the post by user_4
         await likeTestManager.changeLikeStatusForPost(post.id, authJWTHeader4, LIKE_STATUS_ENUM.LIKE);
         await likeTestManager.checkLikeStatusForPostById(post.id, 4, 0, [user_4, user_3, user_2], LIKE_STATUS_ENUM.LIKE, authJWTHeader1);
-
-
-
     })
-//
+
 //
 //     it('should add dislike for comment', async () => {
 //         if (!comment1) throw new Error('test cannot be performed.');

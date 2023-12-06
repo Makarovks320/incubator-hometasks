@@ -134,4 +134,4 @@ describe('CRUD tests for /posts', () => {
             });
     })
 });
-
+//todo: добавить тест, который проверяет, что работает вывод постов по указанному blogId - blogsRouter.get('/:id/posts')

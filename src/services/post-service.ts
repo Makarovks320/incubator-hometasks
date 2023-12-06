@@ -32,8 +32,8 @@ export class PostService {
     ) {
     }
 
-    async getPosts(id: string, userId: ObjectId, queryParams: PostQueryParams): Promise<WithPagination<PostViewModel>> {
-        const posts: WithPagination<PostDBType> = await this.postsQueryRepository.getPosts(queryParams);
+    async getPosts(userId: ObjectId, queryParams: PostQueryParams, blogId?: string ): Promise<WithPagination<PostViewModel>> {
+        const posts: WithPagination<PostDBType> = await this.postsQueryRepository.getPosts(queryParams, blogId);
         const promises = posts.items.map(p => {
             return this.likesQueryRepository.getLikeForParentForCurrentUser(p._id, userId);
         });
