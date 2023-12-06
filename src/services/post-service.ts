@@ -52,7 +52,13 @@ export class PostService {
                         dislikesCount: p.dislikesCount,
                         myStatus: statuses[index] ? convertDbEnumToLikeStatus(statuses[index]!.type)
                                                     : LIKE_STATUS_ENUM.NONE,
-                        newestLikes: p.newestLikes
+                        newestLikes: p.newestLikes.map(nl => {
+                            return {
+                                addedAt: nl.addedAt,
+                                userId: nl.userId,
+                                login: nl.login
+                            }
+                        })
                     }
                 }
         });
