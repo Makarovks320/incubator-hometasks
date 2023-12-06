@@ -2,7 +2,7 @@ import mongoose, {HydratedDocument, Model} from "mongoose";
 import {ObjectId} from "mongodb";
 import {NewestLikesType} from "./post-view-model";
 import {InputPost} from "../../services/post-service";
-import {LIKE_STATUS_DB_ENUM, LIKE_STATUS_ENUM, LikeStatusType} from "../like/like-db-model";
+import {LIKE_STATUS_DB_ENUM, LIKE_STATUS_ENUM, LikeDbModel, LikeStatusType} from "../like/like-db-model";
 import {convertDbEnumToLikeStatus} from "../../helpers/like-status-converters";
 
 export type PostDBType = {
@@ -95,6 +95,10 @@ const postMethods = {
             login: userLogin
         }
         that.newestLikes.unshift(newLike);
+    },
+    extractLikeFromList(previousLike: LikeDbModel) {
+        const that = this as PostDBType & PostMethodsType;
+        that.newestLikes = that.newestLikes.filter(l => !previousLike.user_id.equals(l.userId));
     }
 }
 

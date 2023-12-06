@@ -29,7 +29,7 @@ export const likeTestManager = {
             .expect(expectedStatusCode);
     },
     /*
-    проверяет единичный коммент на соответствие по количеству лайков, дизлайков и статуса лайка текущего юзера.
+    Проверяет единичный коммент на соответствие по количеству лайков, дизлайков и статуса лайка текущего юзера.
     Опционально принимает заголовок авторизации, что позволяет получать статус Лайка от текущего юзера.
      */
     async checkLikeStatusForCommentById(comment_id: string,
@@ -56,7 +56,7 @@ export const likeTestManager = {
         )
     },
     /*
-    проверяет коммент на соответствие по количеству лайков, дизлайков и статуса лайка текущего юзера
+    Проверяет коммент на соответствие по количеству лайков, дизлайков и статуса лайка текущего юзера
     в представлении View модели поста с массивом комментов с пагинацией.
     Предназначен для случая, если у поста есть только один коммент.
     Параметры пагинации прописаны хардкодом.
@@ -108,7 +108,6 @@ export const likeTestManager = {
                                      likesCount: number,
                                      dislikesCount: number,
                                      lastLikedUsers: UserViewModel[] | [] = [],
-                                     // newestLikes: NewestLikesType[] | [] = [],
                                      myStatus: LikeStatusType = LIKE_STATUS_ENUM.NONE,
                                      authJWTHeader = {}): Promise<void> {
         const response = await request(app)
