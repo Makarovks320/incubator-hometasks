@@ -133,5 +133,60 @@ describe('CRUD tests for /posts', () => {
                 items: [createdPost2, {...createdPost1, ...updatedPostData}]
             });
     })
+
+    // create another blog + post
+    let createdBlogForPost2: BlogViewModel | null = null;
+    let createdPost3: PostViewModel | null = null;
+    it('should get posts by special blog', async () => {
+        const blogData: CreateBlogInputModel = {
+            name: "name test3",
+            description: "description test 3",
+            websiteUrl: "http://test.ru"
+        };
+        const {createdBlog} = await blogsTestManager.createBlog(blogData, HTTP_STATUSES.CREATED_201);
+        createdBlogForPost2 = createdBlog;
+        if (!createdBlogForPost || !createdBlogForPost2) {
+            throw new Error('test cannot be performed.');
+        }
+        //создадим пост для второго блога
+        const postData: CreatePostInputModel = {
+            "title": "title 3",
+            "content": "content 3",
+            "shortDescription": "some short description",
+            "blogId": createdBlogForPost2.id
+        }
+
+        const {createdPost} = await postsTestManager.createPost(postData, HTTP_STATUSES.CREATED_201);
+        createdPost3 = createdPost;
+
+        await request(app)
+            .get(`${RouterPaths.posts}`)
+            .expect(HTTP_STATUSES.OK_200, {
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: 2,
+                items: [createdPost3, createdPost2, createdPost1]
+            });
+
+        await request(app)
+            .get(`${RouterPaths.blogs}/${createdBlogForPost.id}/posts`)
+            .expect(HTTP_STATUSES.OK_200, {
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: 2,
+                items: [createdPost2, createdPost1]
+            });
+
+        await request(app)
+            .get(`${RouterPaths.blogs}/${createdBlogForPost2.id}/posts`)
+            .expect(HTTP_STATUSES.OK_200, {
+                pagesCount: 1,
+                page: 1,
+                pageSize: 10,
+                totalCount: 2,
+                items: [createdPost3]
+            });
+    });
 });
-//todo: добавить тест, который проверяет, что работает вывод постов по указанному blogId - blogsRouter.get('/:id/posts')
