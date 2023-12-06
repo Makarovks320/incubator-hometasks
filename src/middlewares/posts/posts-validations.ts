@@ -5,6 +5,7 @@ import {HTTP_STATUSES} from "../../enums/http-statuses";
 import { PostsRepository } from "../../repositories/posts-repository";
 import {BlogsRepository} from "../../repositories/blogs-repository";
 import {stringToObjectIdMapper} from "../../helpers/string-to-object-id-mapper";
+import {PostDocument} from "../../models/post/post-db-model";
 
 @injectable()
 export class PostsValidations {
@@ -39,7 +40,7 @@ export class PostsValidations {
         .withMessage('blog is not found');
 
     checkPostExists = param('id').custom(async (value)=> {
-        const post = await this.postsRepository.findPostById(value);
+        const post: PostDocument | null = await this.postsRepository.findPostById(value);
         if (!post) {
             throw new Error('Incorrect post id: post is not found');
         }
@@ -48,7 +49,14 @@ export class PostsValidations {
 
 
     async checkPostIdFromUri (req: Request, res: Response, next: NextFunction) {
-        const id = req.params.id;
+        const id = req.params.id
+
+        const checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');
+        if (id.length !== 24 || !checkForHexRegExp.test(id)) {
+            res.status(HTTP_STATUSES.NOT_FOUND_404).send();
+            return;
+        }
+
         const exist = await this.postsRepository.findPostById(stringToObjectIdMapper(id));
         exist ? next() :
             res.status(HTTP_STATUSES.NOT_FOUND_404).send();

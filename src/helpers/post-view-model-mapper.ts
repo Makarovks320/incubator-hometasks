@@ -16,7 +16,13 @@ export const getPostViewModel = (postDb: PostDBType, myStatus: LIKE_STATUS_ENUM 
             likesCount: postDb.likesCount,
             dislikesCount: postDb.dislikesCount,
             myStatus: myStatus || LIKE_STATUS_ENUM.NONE,
-            newestLikes: postDb.newestLikes
+            newestLikes: postDb.newestLikes.map(l => {
+                return {
+                    addedAt: l.addedAt,
+                    userId: l.userId,
+                    login: l.login
+                }
+            })
         }
     }
 }

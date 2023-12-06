@@ -75,7 +75,7 @@ const postMethods = {
         that.blogId = postNewData.blogId;
         that.blogName = postNewData.blogName;
     },
-    recalculateLikesCount(previousLikeType: LIKE_STATUS_DB_ENUM, updateLikeStatus: LikeStatusType) {
+    recalculateLikesCount(updateLikeStatus: LikeStatusType, previousLikeType: LIKE_STATUS_DB_ENUM =  LIKE_STATUS_DB_ENUM.NONE) {
         const that = this as PostDBType & PostMethodsType;
         // если нет смысла менять
         if (convertDbEnumToLikeStatus(previousLikeType) === updateLikeStatus) return;

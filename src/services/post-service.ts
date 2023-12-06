@@ -108,9 +108,10 @@ export class PostService {
         let newOrUpdatedLike: LikeDbModel | null = null;
         if (previousLike) {
             newOrUpdatedLike = await this.likeService.changeLikeStatus(previousLike, updateLikeStatus);
-            post.recalculateLikesCount(previousLike.type, updateLikeStatus);
+            post.recalculateLikesCount(updateLikeStatus, previousLike.type);
         } else {
             newOrUpdatedLike = await this.likeService.createNewLike(postId, updateLikeStatus, userId);
+            post.recalculateLikesCount(updateLikeStatus);
         }
         if (updateLikeStatus === LIKE_STATUS_ENUM.LIKE) {
             post.insertNewLikeToList(newOrUpdatedLike.updatedAt, userId, userLogin)

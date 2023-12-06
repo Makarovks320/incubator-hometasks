@@ -46,9 +46,9 @@ postsRouter.put('/:id', [
 ]);
 postsRouter.put('/:id/like-status', [
     authMiddleware.checkBearerToken.bind(authMiddleware),
+    postsValidations.checkPostIdFromUri.bind(postsValidations),
     likeStatusValidation,
     inputValidator,
-    postsValidations.checkPostExists.bind(postsValidations),
     postsController.changeLikeStatus.bind(postsController)
 ])
 
