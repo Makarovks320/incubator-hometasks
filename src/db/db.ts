@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const mongoUri: string = process.env.MONGO_CLOUD_URL || '';
+const mongoUri: string | undefined = process.env.MONGO_LOCAL_URL;
+// const mongoUri: string = process.env.MONGO_CLOUD_URL || '';
 if (!mongoUri) {
     throw new Error('db uri is not passed');
 }
