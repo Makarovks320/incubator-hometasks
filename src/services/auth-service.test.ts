@@ -6,6 +6,11 @@ import {EmailAdapter} from "../adapters/email-adapter";
 import {AuthService} from "./auth-service";
 import {MongoMemoryServer} from "mongodb-memory-server";
 import mongoose from "mongoose";
+import {UserModel} from "../models/user/user-db-model";
+import {ObjectId} from "mongodb";
+import {addMinutes} from "date-fns";
+
+//jest.setTimeout(100000000);// для дебаггинга
 
 describe('integration test for AuthService', () => {
     let mongoServer: MongoMemoryServer
@@ -23,7 +28,7 @@ describe('integration test for AuthService', () => {
     const usersRepository = new UsersRepository;
     const jwtService = new JwtService;
     const emailAdapterMock: jest.Mocked<EmailAdapter> = {
-        sendEmail: jest.fn(async (email, subject, message)=> Promise.resolve(true))
+        sendEmail: jest.fn(async (email, subject, message) => Promise.resolve(true))
     }
 
     const emailManager = new EmailManager(emailAdapterMock);
@@ -49,6 +54,43 @@ describe('integration test for AuthService', () => {
             expect(result.accountData.email).toBe(email);
             expect(result.accountData.userName).toBe(login);
             expect(result.emailConfirmation.isConfirmed).toBe(false);
+        })
+    });
+
+    describe('confirm email', () => {
+        it('should return false for expired confirmation code', async () => {
+            await UserModel.insertMany([
+                {
+                    _id: new ObjectId(),
+                    accountData: {
+                        userName: "name 1",
+                        email: "email@email.email",
+                        salt: "salt",
+                        hash: "hash",
+                        createdAt: new Date(),
+                    },
+                    emailConfirmation: {
+                        confirmationCode: "some confirmation code",
+                        isConfirmed: false,
+                        expirationDate: addMinutes(new Date, -1),
+                    },
+                    passwordRecovery: {
+                        passwordRecoveryCode: "",
+                        active: false
+                    }
+                }
+            ]);
+
+            const result = await authService.confirmEmailByCodeOrEmail("some confirmation code");
+
+            expect(result).toBeFalsy();
+        })
+
+        it('should return false for not existing confirmation code', async () => {
+
+            const result = await authService.confirmEmailByCodeOrEmail("WRONG confirmation code");
+
+            expect(result).toBeFalsy();
         })
     })
 })
