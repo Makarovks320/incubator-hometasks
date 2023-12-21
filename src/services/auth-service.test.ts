@@ -31,9 +31,19 @@ describe('integration test for AuthService', () => {
     const authService = new AuthService(usersRepository, jwtService, emailManager);
 
     describe('create user', () => {
-        it('should return', async () => {
-            const email = 'email@mail.com';
+
+        it('email Adapter Mock should be called', async () => {
+            const email = 'email1@mail.com';
             const login = 'login1';
+            const result = await authService.createUser(login, email, 'password123');
+            if (!result) throw new Error('test can not be performed');
+
+            expect(emailAdapterMock.sendEmail).toBeCalled();
+        });
+
+        it('should return correct created user', async () => {
+            const email = 'email2@mail.com';
+            const login = 'login2';
             const result = await authService.createUser(login, email, 'password123');
             if (!result) throw new Error('test can not be performed');
             expect(result.accountData.email).toBe(email);
