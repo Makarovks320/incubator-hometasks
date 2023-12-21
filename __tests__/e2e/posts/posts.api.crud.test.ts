@@ -115,23 +115,27 @@ describe('CRUD tests for /posts', () => {
     it('should update post', async () => {
         if (!createdPost1 || !createdBlogForPost) throw new Error('test cannot be performed.');
         const updatedPostData: CreatePostInputModel = {
-            "title": "updated title 2",
-            "content": "updated content 2",
-            "shortDescription": "updated some short description 2",
+            "title": "updated title 1",
+            "content": "updated content 1",
+            "shortDescription": "updated some short description 1",
             "blogId": createdBlogForPost.id
         }
 
         await postsTestManager.updatePost(createdPost1.id.toString(), updatedPostData, HTTP_STATUSES.NO_CONTENT_204);
 
-        await request(app)
+        const response = await request(app)
             .get(`${RouterPaths.blogs}/${createdBlogForPost.id}/posts`)
-            .expect(HTTP_STATUSES.OK_200, {
+            .expect(HTTP_STATUSES.OK_200);
+        const body = response.body;
+        expect(body).toEqual({
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
                 totalCount: 2,
                 items: [createdPost2, {...createdPost1, ...updatedPostData}]
             });
+        // обновляем пост во внешнем скоупе для следующих тест кейсов.
+        createdPost1 = body.items[1];
     })
 
     // create another blog + post
@@ -165,7 +169,7 @@ describe('CRUD tests for /posts', () => {
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
-                totalCount: 2,
+                totalCount: 3,
                 items: [createdPost3, createdPost2, createdPost1]
             });
 
@@ -185,7 +189,7 @@ describe('CRUD tests for /posts', () => {
                 pagesCount: 1,
                 page: 1,
                 pageSize: 10,
-                totalCount: 2,
+                totalCount: 1,
                 items: [createdPost3]
             });
     });
