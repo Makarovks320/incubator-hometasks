@@ -92,5 +92,33 @@ describe('integration test for AuthService', () => {
 
             expect(result).toBeFalsy();
         })
+
+        it('should return true for existing and not expired confirmation code', async () => {
+            await UserModel.insertMany([
+                {
+                    _id: new ObjectId(),
+                    accountData: {
+                        userName: "name 2",
+                        email: "email2@email.email",
+                        salt: "salt",
+                        hash: "hash",
+                        createdAt: new Date(),
+                    },
+                    emailConfirmation: {
+                        confirmationCode: "good confirmation code",
+                        isConfirmed: false,
+                        expirationDate: addMinutes(new Date, 5),
+                    },
+                    passwordRecovery: {
+                        passwordRecoveryCode: "",
+                        active: false
+                    }
+                }
+            ]);
+
+            const result = await authService.confirmEmailByCodeOrEmail("good confirmation code");
+
+            expect(result).toBeTruthy();
+        })
     })
 })
