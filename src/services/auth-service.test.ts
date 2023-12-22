@@ -42,6 +42,10 @@ describe('integration test for AuthService', () => {
         const email2 = 'email2@mail.com';
         const login2 = 'login2';
 
+        beforeAll(async () => {
+            await mongoose.connection.db.dropDatabase();
+        });
+
         it('email Adapter Mock should be called', async () => {
             const result = await authService.createUser(login1, email1, 'password123');
             if (!result) throw new Error('test can not be performed');
@@ -88,6 +92,15 @@ describe('integration test for AuthService', () => {
             }
         }
 
+        beforeAll(async () => {
+            await mongoose.connection.db.dropDatabase();
+        });
+
+        it('DB should be empty', async () => {
+            const count = await UserModel.countDocuments({});
+            expect(count).toBe(0);
+        });
+
         it('should return false for expired confirmation code', async () => {
             await UserModel.insertMany([
                 createUserToInsertToDB(loginUser1, emailUser1, confirmationCode1, addMinutes(new Date, -1))
@@ -96,7 +109,7 @@ describe('integration test for AuthService', () => {
             const result = await authService.confirmEmailByCodeOrEmail(confirmationCode1);
 
             expect(result).toBeFalsy();
-        })
+        });
 
         it('should return false for not existing confirmation code', async () => {
             // начинаем следить за функцией с помощью обертки-шпиона:
@@ -105,7 +118,7 @@ describe('integration test for AuthService', () => {
 
             expect(result).toBeFalsy();
             expect(spy).not.toBeCalled();
-        })
+        });
 
         it('should return true for existing and not expired confirmation code', async () => {
             await UserModel.insertMany([
@@ -115,6 +128,6 @@ describe('integration test for AuthService', () => {
             const result = await authService.confirmEmailByCodeOrEmail(confirmationCode2);
 
             expect(result).toBeTruthy();
-        })
+        });
     })
 })
