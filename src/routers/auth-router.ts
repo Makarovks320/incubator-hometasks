@@ -51,7 +51,6 @@ authRouter.post('/registration', [
 
 ]);
 authRouter.post('/registration-confirmation', [
-    //todo: какая же длинная строка получилась из-за того, что кастомный валидатор перевел в класс authMiddleware!
     body('code').custom(authMiddleware.checkConfirmationData.bind(authMiddleware))
         .withMessage('wrong code or user is already confirmed'),
     inputValidator,

@@ -53,7 +53,7 @@ export class AuthMiddleware {
     /* проверяет заголовок authorization,
     достает bearer token,
     дергает getUserIdByToken из jwtService.
-    если юзера нет, то 401
+    если юзера нет, то ошибки нет, просто идем дальше без знаний о userId
     если юзер есть, то добавляет юзер id в реквест в поле userId */
     async lookBearerTokenForCurrentUserId(req: Request, res: Response, next: NextFunction) {
         if (!req.headers.authorization) {

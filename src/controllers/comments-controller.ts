@@ -33,7 +33,6 @@ export class CommentsController {
     async getCommentById(req: Request, res: Response) {
         try {
             const commentObjectId: ObjectId = stringToObjectIdMapper(req.params.id);
-            const comment: CommentDbType | null = await this.commentsQueryRepository.getCommentById(commentObjectId);
             const viewComment: CommentViewModel | null = await this.commentsQueryRepository.getCommentViewModel(commentObjectId, req.userId);
             if (!viewComment) {
                 res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
