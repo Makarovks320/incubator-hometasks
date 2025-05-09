@@ -17,12 +17,6 @@ import {container} from "../../src/composition-root";
 import {UsersRepository} from "../../src/repositories/users-repository";
 import {JwtService} from "../../src/application/jwt-service";
 
-const emailAdapter = {
-    async sendEmail(email: string, subject: string, message: string): Promise<boolean> {
-        return true;
-    }
-}
-
 const jwtService = container.resolve(JwtService);
 const usersRepository = container.resolve(UsersRepository);
 
@@ -38,11 +32,6 @@ describe('testing password recovery', () => {
         // restore the spy created with spyOn
         jest.restoreAllMocks();
     });
-
-    // const isPlaying = video.play();
-    //
-    // expect(spy).toHaveBeenCalled();
-    // expect(isPlaying).toBe(true);
 
     // изначальные credentials
     const email: string = "email123@mail.com";
@@ -83,10 +72,8 @@ describe('testing password recovery', () => {
     });
 
     it('should send email with correct recovery code', async () => {
-        //todo: Как правильно замокать?
-        //@ts-ignore
-        const spyForSendEmail = jest.spyOn(emailAdapter, 'sendEmail');
-        const isPlaying = await emailAdapter.sendEmail('a', 'b', 'c');
+        const spyForSendEmail = jest.spyOn(EmailAdapter.prototype, 'sendEmail')
+            .mockImplementation((email, subject, message) => Promise.resolve(true));
 
         if (!user) throw new Error('test cannot be performed.');
         const userDB: UserDBModel | null = await usersRepository.findUserByLoginOrEmail(user.email);
@@ -102,7 +89,6 @@ describe('testing password recovery', () => {
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
         expect(spyForSendEmail).toHaveBeenCalled();
-        expect(isPlaying).toBe(true);
 
         // Response получен, теперь проверим, что код сохранился верный.
         const userWithCreatedPasswordRecoveryCode: UserDBModel | null = await UserModel.findOne({'accountData.email': data.email})
@@ -192,15 +178,3 @@ describe('testing password recovery', () => {
         expect(response.body.accessToken).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_.+/=]*$/);
     });
 })
-
-// todo:
-// замокать сервис почты (в джесте есть механизм Мокания данных)
-// const sendEmailConfirmation =
-//     jest.spyOn(EmailAdapter.prototype, 'sendEmail')
-//         .mockReturnValue(fakeSendEmail);
-//
-// const fakeSendEmail() : Promise<boolean> {
-//     return Promise.resolve(true);
-// }
-//
-// expect(sendEmailConfirmation).toHaveBeenCalledWith()
